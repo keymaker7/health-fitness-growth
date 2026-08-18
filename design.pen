@@ -1,0 +1,2029 @@
+{
+  "version": "2.17",
+  "variables": {
+    "color.bg": {
+      "type": "color",
+      "value": "#F3F7F4"
+    },
+    "color.card": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "color.ink": {
+      "type": "color",
+      "value": "#10241E"
+    },
+    "color.muted": {
+      "type": "color",
+      "value": "#5A7269"
+    },
+    "color.line": {
+      "type": "color",
+      "value": "#D7E5DE"
+    },
+    "color.brand": {
+      "type": "color",
+      "value": "#0F766E"
+    },
+    "color.brandSoft": {
+      "type": "color",
+      "value": "#CCFBF1"
+    },
+    "color.brandInk": {
+      "type": "color",
+      "value": "#134E4A"
+    },
+    "color.accent": {
+      "type": "color",
+      "value": "#F59E0B"
+    },
+    "color.danger": {
+      "type": "color",
+      "value": "#E11D48"
+    },
+    "color.cardio": {
+      "type": "color",
+      "value": "#E11D48"
+    },
+    "color.strength": {
+      "type": "color",
+      "value": "#EA580C"
+    },
+    "color.flex": {
+      "type": "color",
+      "value": "#7C3AED"
+    },
+    "color.body": {
+      "type": "color",
+      "value": "#0284C7"
+    },
+    "radius.card": {
+      "type": "number",
+      "value": 20
+    },
+    "radius.btn": {
+      "type": "number",
+      "value": 16
+    },
+    "space.gap": {
+      "type": "number",
+      "value": 16
+    },
+    "font.title": {
+      "type": "number",
+      "value": 32
+    },
+    "font.body": {
+      "type": "number",
+      "value": 16
+    }
+  },
+  "children": [
+    {
+      "id": "brief",
+      "type": "note",
+      "x": 0,
+      "y": -180,
+      "width": 640,
+      "height": 140,
+      "fontFamily": "Noto Sans KR",
+      "fontSize": 14,
+      "content": "건강체력 성장일지 · Active / Healthy / Friendly / Modern\n화이트 베이스 + 체력요소 컬러. 초등 체육수업용(태블릿/크롬북/PC).\n이 파일이 디자인 소스입니다. 코드는 토큰·레이아웃을 그대로 구현합니다."
+    },
+    {
+      "id": "cmp-btn-primary",
+      "name": "Button / Primary",
+      "type": "frame",
+      "reusable": true,
+      "x": 0,
+      "y": 0,
+      "layout": "horizontal",
+      "padding": [
+        14,
+        20
+      ],
+      "gap": 8,
+      "alignItems": "center",
+      "justifyContent": "center",
+      "fill": "$color.brand",
+      "cornerRadius": "$radius.btn",
+      "children": [
+        {
+          "id": "cmp-btn-primary-label",
+          "type": "text",
+          "fontFamily": "Noto Sans KR",
+          "textGrowth": "auto",
+          "content": "추천 운동 시작",
+          "fill": "#FFFFFF",
+          "fontSize": 16,
+          "fontWeight": "700"
+        }
+      ]
+    },
+    {
+      "id": "cmp-btn-ghost",
+      "name": "Button / Ghost",
+      "type": "frame",
+      "reusable": true,
+      "x": 220,
+      "y": 0,
+      "layout": "horizontal",
+      "padding": [
+        14,
+        20
+      ],
+      "gap": 8,
+      "alignItems": "center",
+      "fill": "$color.card",
+      "stroke": "$color.line",
+      "strokeWidth": 1,
+      "cornerRadius": "$radius.btn",
+      "children": [
+        {
+          "id": "cmp-btn-ghost-label",
+          "type": "text",
+          "fontFamily": "Noto Sans KR",
+          "textGrowth": "auto",
+          "content": "체력 게임",
+          "fill": "$color.ink",
+          "fontSize": 16,
+          "fontWeight": "700"
+        }
+      ]
+    },
+    {
+      "id": "cmp-card",
+      "name": "Card",
+      "type": "frame",
+      "reusable": true,
+      "x": 400,
+      "y": 0,
+      "width": 280,
+      "layout": "vertical",
+      "padding": 20,
+      "gap": 8,
+      "fill": "$color.card",
+      "stroke": "$color.line",
+      "strokeWidth": 1,
+      "cornerRadius": "$radius.card",
+      "children": [
+        {
+          "id": "cmp-card-kicker",
+          "type": "text",
+          "fontFamily": "Noto Sans KR",
+          "textGrowth": "auto",
+          "content": "오늘 운동",
+          "fill": "$color.muted",
+          "fontSize": 13,
+          "fontWeight": "600"
+        },
+        {
+          "id": "cmp-card-value",
+          "type": "text",
+          "fontFamily": "Noto Sans KR",
+          "textGrowth": "auto",
+          "content": "2회",
+          "fill": "$color.ink",
+          "fontSize": 28,
+          "fontWeight": "800"
+        }
+      ]
+    },
+    {
+      "id": "cmp-nav-active",
+      "name": "Nav / Active",
+      "type": "frame",
+      "reusable": true,
+      "x": 700,
+      "y": 0,
+      "width": 216,
+      "layout": "horizontal",
+      "padding": [
+        10,
+        12
+      ],
+      "gap": 10,
+      "alignItems": "center",
+      "fill": "$color.brand",
+      "cornerRadius": 14,
+      "children": [
+        {
+          "id": "cmp-nav-active-ico",
+          "type": "icon",
+          "library": "lucide",
+          "icon": "house",
+          "width": 18,
+          "height": 18,
+          "fill": "#FFFFFF"
+        },
+        {
+          "id": "cmp-nav-active-label",
+          "type": "text",
+          "fontFamily": "Noto Sans KR",
+          "textGrowth": "auto",
+          "content": "홈",
+          "fill": "#FFFFFF",
+          "fontSize": 14,
+          "fontWeight": "700"
+        }
+      ]
+    },
+    {
+      "id": "cmp-nav",
+      "name": "Nav / Idle",
+      "type": "frame",
+      "reusable": true,
+      "x": 940,
+      "y": 0,
+      "width": 216,
+      "layout": "horizontal",
+      "padding": [
+        10,
+        12
+      ],
+      "gap": 10,
+      "alignItems": "center",
+      "cornerRadius": 14,
+      "children": [
+        {
+          "id": "cmp-nav-ico",
+          "type": "icon",
+          "library": "lucide",
+          "icon": "gamepad-2",
+          "width": 18,
+          "height": 18,
+          "fill": "$color.muted"
+        },
+        {
+          "id": "cmp-nav-label",
+          "type": "text",
+          "fontFamily": "Noto Sans KR",
+          "textGrowth": "auto",
+          "content": "체력 게임",
+          "fill": "$color.muted",
+          "fontSize": 14,
+          "fontWeight": "700"
+        }
+      ]
+    },
+    {
+      "id": "screen-home-desktop",
+      "name": "Home / Desktop 1440",
+      "type": "frame",
+      "x": 0,
+      "y": 160,
+      "width": 1440,
+      "height": 900,
+      "fill": "$color.bg",
+      "clip": true,
+      "layout": "horizontal",
+      "children": [
+        {
+          "id": "sidebar",
+          "type": "frame",
+          "width": 248,
+          "height": 900,
+          "fill": "$color.card",
+          "stroke": {
+            "type": "color",
+            "color": "$color.line"
+          },
+          "strokeWidth": {
+            "right": 1
+          },
+          "layout": "vertical",
+          "padding": 20,
+          "gap": 8,
+          "children": [
+            {
+              "id": "brand-block",
+              "type": "frame",
+              "layout": "vertical",
+              "gap": 6,
+              "padding": [
+                8,
+                4,
+                16,
+                4
+              ],
+              "children": [
+                {
+                  "id": "brand-kicker",
+                  "type": "text",
+                  "fontFamily": "Noto Sans KR",
+                  "textGrowth": "auto",
+                  "content": "GROWTH PE",
+                  "fill": "$color.brand",
+                  "fontSize": 11,
+                  "fontWeight": "800",
+                  "letterSpacing": 1.2
+                },
+                {
+                  "id": "brand-title",
+                  "type": "text",
+                  "fontFamily": "Noto Sans KR",
+                  "textGrowth": "auto",
+                  "content": "건강체력 성장일지",
+                  "fill": "$color.ink",
+                  "fontSize": 18,
+                  "fontWeight": "800"
+                },
+                {
+                  "id": "student-chip",
+                  "type": "frame",
+                  "layout": "horizontal",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "padding": [
+                    8,
+                    10
+                  ],
+                  "fill": "$color.brandSoft",
+                  "cornerRadius": 999,
+                  "children": [
+                    {
+                      "id": "avatar",
+                      "type": "ellipse",
+                      "width": 22,
+                      "height": 22,
+                      "fill": "$color.brand"
+                    },
+                    {
+                      "id": "student-name",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "김하준 · 5학년 3반",
+                      "fill": "$color.brandInk",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "nav-home",
+              "type": "ref",
+              "ref": "cmp-nav-active"
+            },
+            {
+              "id": "nav-mine",
+              "type": "ref",
+              "ref": "cmp-nav",
+              "descendants": {
+                "cmp-nav-label": {
+                  "content": "나의 건강체력"
+                },
+                "cmp-nav-ico": {
+                  "icon": "heart-pulse"
+                }
+              }
+            },
+            {
+              "id": "nav-paps",
+              "type": "ref",
+              "ref": "cmp-nav",
+              "descendants": {
+                "cmp-nav-label": {
+                  "content": "PAPS 알아보기"
+                },
+                "cmp-nav-ico": {
+                  "icon": "book-open"
+                }
+              }
+            },
+            {
+              "id": "nav-health",
+              "type": "ref",
+              "ref": "cmp-nav",
+              "descendants": {
+                "cmp-nav-label": {
+                  "content": "건강체력"
+                },
+                "cmp-nav-ico": {
+                  "icon": "activity"
+                }
+              }
+            },
+            {
+              "id": "nav-sport",
+              "type": "ref",
+              "ref": "cmp-nav",
+              "descendants": {
+                "cmp-nav-label": {
+                  "content": "운동체력"
+                },
+                "cmp-nav-ico": {
+                  "icon": "dumbbell"
+                }
+              }
+            },
+            {
+              "id": "nav-rec",
+              "type": "ref",
+              "ref": "cmp-nav",
+              "descendants": {
+                "cmp-nav-label": {
+                  "content": "맞춤 운동"
+                },
+                "cmp-nav-ico": {
+                  "icon": "sparkles"
+                }
+              }
+            },
+            {
+              "id": "nav-games",
+              "type": "ref",
+              "ref": "cmp-nav",
+              "descendants": {
+                "cmp-nav-label": {
+                  "content": "체력 게임"
+                },
+                "cmp-nav-ico": {
+                  "icon": "gamepad-2"
+                }
+              }
+            },
+            {
+              "id": "nav-journal",
+              "type": "ref",
+              "ref": "cmp-nav",
+              "descendants": {
+                "cmp-nav-label": {
+                  "content": "건강체력 일지"
+                },
+                "cmp-nav-ico": {
+                  "icon": "notebook-pen"
+                }
+              }
+            },
+            {
+              "id": "nav-growth",
+              "type": "ref",
+              "ref": "cmp-nav",
+              "descendants": {
+                "cmp-nav-label": {
+                  "content": "나의 성장"
+                },
+                "cmp-nav-ico": {
+                  "icon": "line-chart"
+                }
+              }
+            },
+            {
+              "id": "nav-brain",
+              "type": "ref",
+              "ref": "cmp-nav",
+              "descendants": {
+                "cmp-nav-label": {
+                  "content": "마음·몸 회복"
+                },
+                "cmp-nav-ico": {
+                  "icon": "brain"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "main",
+          "type": "frame",
+          "width": 1192,
+          "height": 900,
+          "layout": "vertical",
+          "padding": [
+            32,
+            40
+          ],
+          "gap": 20,
+          "fill": "$color.bg",
+          "children": [
+            {
+              "id": "hero",
+              "type": "frame",
+              "layout": "vertical",
+              "padding": 28,
+              "gap": 8,
+              "fill": "$color.brand",
+              "cornerRadius": 28,
+              "children": [
+                {
+                  "id": "hero-kicker",
+                  "type": "text",
+                  "fontFamily": "Noto Sans KR",
+                  "textGrowth": "auto",
+                  "content": "측정하는 체육에서 성장하는 체육으로",
+                  "fill": "#99F6E4",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "id": "hero-title",
+                  "type": "text",
+                  "fontFamily": "Noto Sans KR",
+                  "textGrowth": "auto",
+                  "content": "오늘도 내 몸을 성장시켜 볼까요?",
+                  "fill": "#FFFFFF",
+                  "fontSize": 32,
+                  "fontWeight": "800"
+                },
+                {
+                  "id": "hero-sub",
+                  "type": "text",
+                  "fontFamily": "Noto Sans KR",
+                  "textGrowth": "auto",
+                  "content": "김하준 · 체력의 변화뿐 아니라, 운동으로 달라지는 마음까지 기록해요.",
+                  "fill": "#CCFBF1",
+                  "fontSize": 15
+                }
+              ]
+            },
+            {
+              "id": "metrics",
+              "type": "frame",
+              "layout": "horizontal",
+              "gap": 16,
+              "children": [
+                {
+                  "id": "m1",
+                  "type": "frame",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "padding": 18,
+                  "gap": 4,
+                  "fill": "$color.card",
+                  "stroke": "$color.line",
+                  "strokeWidth": 1,
+                  "cornerRadius": 20,
+                  "children": [
+                    {
+                      "id": "m1-k",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "오늘 운동",
+                      "fill": "$color.muted",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "id": "m1-v",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "2회",
+                      "fill": "$color.ink",
+                      "fontSize": 26,
+                      "fontWeight": "800"
+                    }
+                  ]
+                },
+                {
+                  "id": "m2",
+                  "type": "frame",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "padding": 18,
+                  "gap": 4,
+                  "fill": "$color.card",
+                  "stroke": "$color.line",
+                  "strokeWidth": 1,
+                  "cornerRadius": 20,
+                  "children": [
+                    {
+                      "id": "m2-k",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "연속 운동",
+                      "fill": "$color.muted",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "id": "m2-v",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "5일 🔥",
+                      "fill": "$color.ink",
+                      "fontSize": 26,
+                      "fontWeight": "800"
+                    }
+                  ]
+                },
+                {
+                  "id": "m3",
+                  "type": "frame",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "padding": 18,
+                  "gap": 4,
+                  "fill": "$color.card",
+                  "stroke": "$color.line",
+                  "strokeWidth": 1,
+                  "cornerRadius": 20,
+                  "children": [
+                    {
+                      "id": "m3-k",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "이번 주",
+                      "fill": "$color.muted",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "id": "m3-v",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "74분",
+                      "fill": "$color.ink",
+                      "fontSize": 26,
+                      "fontWeight": "800"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "two-col",
+              "type": "frame",
+              "layout": "horizontal",
+              "gap": 16,
+              "children": [
+                {
+                  "id": "fitness-panel",
+                  "type": "frame",
+                  "width": 560,
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "id": "fit-h",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "나의 건강체력",
+                      "fill": "$color.ink",
+                      "fontSize": 18,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "id": "f-cardio",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "padding": 14,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "fill": "$color.card",
+                      "stroke": "$color.line",
+                      "strokeWidth": 1,
+                      "cornerRadius": 18,
+                      "children": [
+                        {
+                          "id": "f-cardio-bar",
+                          "type": "rectangle",
+                          "width": 6,
+                          "height": 36,
+                          "fill": "$color.cardio",
+                          "cornerRadius": 99
+                        },
+                        {
+                          "id": "f-cardio-txt",
+                          "type": "frame",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "width": "fill_container",
+                          "children": [
+                            {
+                              "id": "f-cardio-n",
+                              "type": "text",
+                              "fontFamily": "Noto Sans KR",
+                              "textGrowth": "auto",
+                              "content": "심폐지구력",
+                              "fill": "$color.ink",
+                              "fontSize": 15,
+                              "fontWeight": "800"
+                            },
+                            {
+                              "id": "f-cardio-d",
+                              "type": "text",
+                              "fontFamily": "Noto Sans KR",
+                              "textGrowth": "auto",
+                              "content": "오랫동안 운동할 수 있는 힘",
+                              "fill": "$color.muted",
+                              "fontSize": 12
+                            }
+                          ]
+                        },
+                        {
+                          "id": "f-cardio-s",
+                          "type": "text",
+                          "fontFamily": "Noto Sans KR",
+                          "textGrowth": "auto",
+                          "content": "★★★★☆",
+                          "fill": "$color.cardio",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "f-str",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "padding": 14,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "fill": "$color.card",
+                      "stroke": "$color.line",
+                      "strokeWidth": 1,
+                      "cornerRadius": 18,
+                      "children": [
+                        {
+                          "id": "f-str-bar",
+                          "type": "rectangle",
+                          "width": 6,
+                          "height": 36,
+                          "fill": "$color.strength",
+                          "cornerRadius": 99
+                        },
+                        {
+                          "id": "f-str-txt",
+                          "type": "frame",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "width": "fill_container",
+                          "children": [
+                            {
+                              "id": "f-str-n",
+                              "type": "text",
+                              "fontFamily": "Noto Sans KR",
+                              "textGrowth": "auto",
+                              "content": "근력·근지구력",
+                              "fill": "$color.ink",
+                              "fontSize": 15,
+                              "fontWeight": "800"
+                            },
+                            {
+                              "id": "f-str-d",
+                              "type": "text",
+                              "fontFamily": "Noto Sans KR",
+                              "textGrowth": "auto",
+                              "content": "반복해서 힘을 내는 힘",
+                              "fill": "$color.muted",
+                              "fontSize": 12
+                            }
+                          ]
+                        },
+                        {
+                          "id": "f-str-s",
+                          "type": "text",
+                          "fontFamily": "Noto Sans KR",
+                          "textGrowth": "auto",
+                          "content": "★★★☆☆",
+                          "fill": "$color.strength",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "f-flex",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "padding": 14,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "fill": "$color.card",
+                      "stroke": "$color.line",
+                      "strokeWidth": 1,
+                      "cornerRadius": 18,
+                      "children": [
+                        {
+                          "id": "f-flex-bar",
+                          "type": "rectangle",
+                          "width": 6,
+                          "height": 36,
+                          "fill": "$color.flex",
+                          "cornerRadius": 99
+                        },
+                        {
+                          "id": "f-flex-txt",
+                          "type": "frame",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "width": "fill_container",
+                          "children": [
+                            {
+                              "id": "f-flex-n",
+                              "type": "text",
+                              "fontFamily": "Noto Sans KR",
+                              "textGrowth": "auto",
+                              "content": "유연성",
+                              "fill": "$color.ink",
+                              "fontSize": 15,
+                              "fontWeight": "800"
+                            },
+                            {
+                              "id": "f-flex-d",
+                              "type": "text",
+                              "fontFamily": "Noto Sans KR",
+                              "textGrowth": "auto",
+                              "content": "관절이 잘 움직이는 힘",
+                              "fill": "$color.muted",
+                              "fontSize": 12
+                            }
+                          ]
+                        },
+                        {
+                          "id": "f-flex-s",
+                          "type": "text",
+                          "fontFamily": "Noto Sans KR",
+                          "textGrowth": "auto",
+                          "content": "★★☆☆☆",
+                          "fill": "$color.flex",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "f-body",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "padding": 14,
+                      "gap": 12,
+                      "alignItems": "center",
+                      "fill": "$color.card",
+                      "stroke": "$color.line",
+                      "strokeWidth": 1,
+                      "cornerRadius": 18,
+                      "children": [
+                        {
+                          "id": "f-body-bar",
+                          "type": "rectangle",
+                          "width": 6,
+                          "height": 36,
+                          "fill": "$color.body",
+                          "cornerRadius": 99
+                        },
+                        {
+                          "id": "f-body-txt",
+                          "type": "frame",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "width": "fill_container",
+                          "children": [
+                            {
+                              "id": "f-body-n",
+                              "type": "text",
+                              "fontFamily": "Noto Sans KR",
+                              "textGrowth": "auto",
+                              "content": "신체조성",
+                              "fill": "$color.ink",
+                              "fontSize": 15,
+                              "fontWeight": "800"
+                            },
+                            {
+                              "id": "f-body-d",
+                              "type": "text",
+                              "fontFamily": "Noto Sans KR",
+                              "textGrowth": "auto",
+                              "content": "건강한 몸의 균형",
+                              "fill": "$color.muted",
+                              "fontSize": 12
+                            }
+                          ]
+                        },
+                        {
+                          "id": "f-body-s",
+                          "type": "text",
+                          "fontFamily": "Noto Sans KR",
+                          "textGrowth": "auto",
+                          "content": "★★★★☆",
+                          "fill": "$color.body",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "action-col",
+                  "type": "frame",
+                  "width": 536,
+                  "layout": "vertical",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "id": "rec-card",
+                      "type": "frame",
+                      "layout": "vertical",
+                      "padding": 22,
+                      "gap": 12,
+                      "fill": "$color.card",
+                      "stroke": "$color.line",
+                      "strokeWidth": 1,
+                      "cornerRadius": 24,
+                      "children": [
+                        {
+                          "id": "rec-h",
+                          "type": "text",
+                          "fontFamily": "Noto Sans KR",
+                          "textGrowth": "auto",
+                          "content": "오늘의 추천",
+                          "fill": "$color.ink",
+                          "fontSize": 18,
+                          "fontWeight": "800"
+                        },
+                        {
+                          "id": "rec-why",
+                          "type": "text",
+                          "fontFamily": "Noto Sans KR",
+                          "textGrowth": "auto",
+                          "content": "🧘 유연성이 조금 부족해요.",
+                          "fill": "$color.flex",
+                          "fontSize": 15,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "id": "ri1",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "fill": "$color.bg",
+                          "cornerRadius": 12,
+                          "children": [
+                            {
+                              "id": "ri1-t",
+                              "type": "text",
+                              "fontFamily": "Noto Sans KR",
+                              "textGrowth": "auto",
+                              "content": "5분 전신 스트레칭",
+                              "fill": "$color.ink",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "ri2",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "fill": "$color.bg",
+                          "cornerRadius": 12,
+                          "children": [
+                            {
+                              "id": "ri2-t",
+                              "type": "text",
+                              "fontFamily": "Noto Sans KR",
+                              "textGrowth": "auto",
+                              "content": "앉아 윗몸 앞으로 굽히기 연습",
+                              "fill": "$color.ink",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "ri3",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "fill": "$color.bg",
+                          "cornerRadius": 12,
+                          "children": [
+                            {
+                              "id": "ri3-t",
+                              "type": "text",
+                              "fontFamily": "Noto Sans KR",
+                              "textGrowth": "auto",
+                              "content": "하체 스트레칭",
+                              "fill": "$color.ink",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "rec-cta",
+                          "type": "ref",
+                          "ref": "cmp-btn-primary"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "challenge",
+                      "type": "frame",
+                      "layout": "vertical",
+                      "padding": 22,
+                      "gap": 10,
+                      "fill": "#FFFBEB",
+                      "stroke": "#FDE68A",
+                      "strokeWidth": 1,
+                      "cornerRadius": 24,
+                      "children": [
+                        {
+                          "id": "ch-h",
+                          "type": "text",
+                          "fontFamily": "Noto Sans KR",
+                          "textGrowth": "auto",
+                          "content": "오늘의 도전",
+                          "fill": "$color.ink",
+                          "fontSize": 18,
+                          "fontWeight": "800"
+                        },
+                        {
+                          "id": "ch-1",
+                          "type": "text",
+                          "fontFamily": "Noto Sans KR",
+                          "textGrowth": "auto",
+                          "content": "🪢  줄넘기 100회",
+                          "fill": "$color.ink",
+                          "fontSize": 16,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "id": "ch-2",
+                          "type": "text",
+                          "fontFamily": "Noto Sans KR",
+                          "textGrowth": "auto",
+                          "content": "🏋️  스쿼트 30회",
+                          "fill": "$color.ink",
+                          "fontSize": 16,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "id": "ch-cta",
+                          "type": "ref",
+                          "ref": "cmp-btn-ghost"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "screen-home-mobile",
+      "name": "Home / Mobile 390",
+      "type": "frame",
+      "x": 1520,
+      "y": 160,
+      "width": 390,
+      "height": 844,
+      "fill": "$color.bg",
+      "clip": true,
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "m-top",
+          "type": "frame",
+          "width": 390,
+          "layout": "horizontal",
+          "padding": [
+            14,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "fill": "$color.card",
+          "stroke": {
+            "type": "color",
+            "color": "$color.line"
+          },
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "children": [
+            {
+              "id": "m-menu",
+              "type": "icon",
+              "library": "lucide",
+              "icon": "menu",
+              "width": 20,
+              "height": 20,
+              "fill": "$color.ink"
+            },
+            {
+              "id": "m-top-title",
+              "type": "text",
+              "fontFamily": "Noto Sans KR",
+              "textGrowth": "auto",
+              "content": "건강체력 성장일지",
+              "fill": "$color.ink",
+              "fontSize": 15,
+              "fontWeight": "800"
+            },
+            {
+              "id": "m-spacer",
+              "type": "frame",
+              "width": 20,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "id": "m-scroll",
+          "type": "frame",
+          "width": 390,
+          "height": 700,
+          "layout": "vertical",
+          "padding": 16,
+          "gap": 14,
+          "children": [
+            {
+              "id": "m-hero",
+              "type": "frame",
+              "layout": "vertical",
+              "padding": 20,
+              "gap": 6,
+              "fill": "$color.brand",
+              "cornerRadius": 22,
+              "children": [
+                {
+                  "id": "m-hero-k",
+                  "type": "text",
+                  "fontFamily": "Noto Sans KR",
+                  "textGrowth": "auto",
+                  "content": "GROWTH PE",
+                  "fill": "#99F6E4",
+                  "fontSize": 11,
+                  "fontWeight": "800"
+                },
+                {
+                  "id": "m-hero-t",
+                  "type": "text",
+                  "fontFamily": "Noto Sans KR",
+                  "textGrowth": "auto",
+                  "content": "오늘 뭐 해볼까?",
+                  "fill": "#FFFFFF",
+                  "fontSize": 24,
+                  "fontWeight": "800"
+                },
+                {
+                  "id": "m-hero-s",
+                  "type": "text",
+                  "fontFamily": "Noto Sans KR",
+                  "textGrowth": "auto",
+                  "content": "김하준, 유연성을 키워볼까요?",
+                  "fill": "#CCFBF1",
+                  "fontSize": 13
+                }
+              ]
+            },
+            {
+              "id": "m-metrics",
+              "type": "frame",
+              "layout": "horizontal",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "mm1",
+                  "type": "frame",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "padding": [
+                    12,
+                    10
+                  ],
+                  "gap": 2,
+                  "alignItems": "center",
+                  "fill": "$color.card",
+                  "stroke": "$color.line",
+                  "strokeWidth": 1,
+                  "cornerRadius": 16,
+                  "children": [
+                    {
+                      "id": "mm1-k",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "오늘",
+                      "fill": "$color.muted",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "id": "mm1-v",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "2회",
+                      "fill": "$color.ink",
+                      "fontSize": 16,
+                      "fontWeight": "800"
+                    }
+                  ]
+                },
+                {
+                  "id": "mm2",
+                  "type": "frame",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "padding": [
+                    12,
+                    10
+                  ],
+                  "gap": 2,
+                  "alignItems": "center",
+                  "fill": "$color.card",
+                  "stroke": "$color.line",
+                  "strokeWidth": 1,
+                  "cornerRadius": 16,
+                  "children": [
+                    {
+                      "id": "mm2-k",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "연속",
+                      "fill": "$color.muted",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "id": "mm2-v",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "5일",
+                      "fill": "$color.ink",
+                      "fontSize": 16,
+                      "fontWeight": "800"
+                    }
+                  ]
+                },
+                {
+                  "id": "mm3",
+                  "type": "frame",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "padding": [
+                    12,
+                    10
+                  ],
+                  "gap": 2,
+                  "alignItems": "center",
+                  "fill": "$color.card",
+                  "stroke": "$color.line",
+                  "strokeWidth": 1,
+                  "cornerRadius": 16,
+                  "children": [
+                    {
+                      "id": "mm3-k",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "이번주",
+                      "fill": "$color.muted",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "id": "mm3-v",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "74분",
+                      "fill": "$color.ink",
+                      "fontSize": 16,
+                      "fontWeight": "800"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mf1",
+              "type": "frame",
+              "layout": "horizontal",
+              "padding": 14,
+              "gap": 12,
+              "alignItems": "center",
+              "fill": "$color.card",
+              "stroke": "$color.line",
+              "strokeWidth": 1,
+              "cornerRadius": 18,
+              "children": [
+                {
+                  "id": "mf1-bar",
+                  "type": "rectangle",
+                  "width": 6,
+                  "height": 36,
+                  "fill": "$color.flex",
+                  "cornerRadius": 99
+                },
+                {
+                  "id": "mf1-txt",
+                  "type": "frame",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "width": "fill_container",
+                  "children": [
+                    {
+                      "id": "mf1-n",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "유연성",
+                      "fill": "$color.ink",
+                      "fontSize": 15,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "id": "mf1-d",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "조금 부족해요",
+                      "fill": "$color.muted",
+                      "fontSize": 12
+                    }
+                  ]
+                },
+                {
+                  "id": "mf1-s",
+                  "type": "text",
+                  "fontFamily": "Noto Sans KR",
+                  "textGrowth": "auto",
+                  "content": "★★☆☆☆",
+                  "fill": "$color.flex",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "id": "m-cta-row",
+              "type": "frame",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "m-cta1",
+                  "type": "ref",
+                  "ref": "cmp-btn-primary",
+                  "descendants": {
+                    "cmp-btn-primary-label": {
+                      "content": "추천 운동 시작"
+                    }
+                  }
+                },
+                {
+                  "id": "m-cta2",
+                  "type": "ref",
+                  "ref": "cmp-btn-ghost",
+                  "descendants": {
+                    "cmp-btn-ghost-label": {
+                      "content": "체력 게임 시작"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "m-bottom",
+          "type": "frame",
+          "width": 390,
+          "layout": "horizontal",
+          "padding": [
+            8,
+            6,
+            12,
+            6
+          ],
+          "justifyContent": "space_between",
+          "fill": "$color.card",
+          "stroke": {
+            "type": "color",
+            "color": "$color.line"
+          },
+          "strokeWidth": {
+            "top": 1
+          },
+          "children": [
+            {
+              "id": "b1",
+              "type": "frame",
+              "width": 68,
+              "layout": "vertical",
+              "gap": 2,
+              "alignItems": "center",
+              "padding": [
+                6,
+                4
+              ],
+              "fill": "$color.brandSoft",
+              "cornerRadius": 12,
+              "children": [
+                {
+                  "id": "b1-i",
+                  "type": "icon",
+                  "library": "lucide",
+                  "icon": "house",
+                  "width": 20,
+                  "height": 20,
+                  "fill": "$color.brand"
+                },
+                {
+                  "id": "b1-l",
+                  "type": "text",
+                  "fontFamily": "Noto Sans KR",
+                  "textGrowth": "auto",
+                  "content": "홈",
+                  "fill": "$color.brand",
+                  "fontSize": 11,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "id": "b2",
+              "type": "frame",
+              "width": 68,
+              "layout": "vertical",
+              "gap": 2,
+              "alignItems": "center",
+              "padding": [
+                6,
+                4
+              ],
+              "fill": "#00000000",
+              "cornerRadius": 12,
+              "children": [
+                {
+                  "id": "b2-i",
+                  "type": "icon",
+                  "library": "lucide",
+                  "icon": "sparkles",
+                  "width": 20,
+                  "height": 20,
+                  "fill": "$color.muted"
+                },
+                {
+                  "id": "b2-l",
+                  "type": "text",
+                  "fontFamily": "Noto Sans KR",
+                  "textGrowth": "auto",
+                  "content": "운동",
+                  "fill": "$color.muted",
+                  "fontSize": 11,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "id": "b3",
+              "type": "frame",
+              "width": 68,
+              "layout": "vertical",
+              "gap": 2,
+              "alignItems": "center",
+              "padding": [
+                6,
+                4
+              ],
+              "fill": "#00000000",
+              "cornerRadius": 12,
+              "children": [
+                {
+                  "id": "b3-i",
+                  "type": "icon",
+                  "library": "lucide",
+                  "icon": "gamepad-2",
+                  "width": 20,
+                  "height": 20,
+                  "fill": "$color.muted"
+                },
+                {
+                  "id": "b3-l",
+                  "type": "text",
+                  "fontFamily": "Noto Sans KR",
+                  "textGrowth": "auto",
+                  "content": "게임",
+                  "fill": "$color.muted",
+                  "fontSize": 11,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "id": "b4",
+              "type": "frame",
+              "width": 68,
+              "layout": "vertical",
+              "gap": 2,
+              "alignItems": "center",
+              "padding": [
+                6,
+                4
+              ],
+              "fill": "#00000000",
+              "cornerRadius": 12,
+              "children": [
+                {
+                  "id": "b4-i",
+                  "type": "icon",
+                  "library": "lucide",
+                  "icon": "book-open",
+                  "width": 20,
+                  "height": 20,
+                  "fill": "$color.muted"
+                },
+                {
+                  "id": "b4-l",
+                  "type": "text",
+                  "fontFamily": "Noto Sans KR",
+                  "textGrowth": "auto",
+                  "content": "일지",
+                  "fill": "$color.muted",
+                  "fontSize": 11,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "id": "b5",
+              "type": "frame",
+              "width": 68,
+              "layout": "vertical",
+              "gap": 2,
+              "alignItems": "center",
+              "padding": [
+                6,
+                4
+              ],
+              "fill": "#00000000",
+              "cornerRadius": 12,
+              "children": [
+                {
+                  "id": "b5-i",
+                  "type": "icon",
+                  "library": "lucide",
+                  "icon": "trophy",
+                  "width": 20,
+                  "height": 20,
+                  "fill": "$color.muted"
+                },
+                {
+                  "id": "b5-l",
+                  "type": "text",
+                  "fontFamily": "Noto Sans KR",
+                  "textGrowth": "auto",
+                  "content": "성장",
+                  "fill": "$color.muted",
+                  "fontSize": 11,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "screen-games",
+      "name": "Games / Desktop",
+      "type": "frame",
+      "x": 0,
+      "y": 1120,
+      "width": 1440,
+      "height": 900,
+      "fill": "$color.bg",
+      "layout": "horizontal",
+      "clip": true,
+      "children": [
+        {
+          "id": "g-side",
+          "type": "frame",
+          "width": 248,
+          "height": 900,
+          "fill": "$color.card",
+          "children": []
+        },
+        {
+          "id": "g-main",
+          "type": "frame",
+          "width": 1192,
+          "layout": "vertical",
+          "padding": [
+            32,
+            40
+          ],
+          "gap": 20,
+          "children": [
+            {
+              "id": "g-kicker",
+              "type": "text",
+              "fontFamily": "Noto Sans KR",
+              "textGrowth": "auto",
+              "content": "체력 게임",
+              "fill": "$color.brand",
+              "fontSize": 13,
+              "fontWeight": "800"
+            },
+            {
+              "id": "g-title",
+              "type": "text",
+              "fontFamily": "Noto Sans KR",
+              "textGrowth": "auto",
+              "content": "오늘 뭐 해볼까?",
+              "fill": "$color.ink",
+              "fontSize": 32,
+              "fontWeight": "800"
+            },
+            {
+              "id": "g-sub",
+              "type": "text",
+              "fontFamily": "Noto Sans KR",
+              "textGrowth": "auto",
+              "content": "혼자 도전하거나, 친구와 힘을 합쳐요. 경쟁보다 성장이에요.",
+              "fill": "$color.muted",
+              "fontSize": 15
+            },
+            {
+              "id": "g-grid",
+              "type": "frame",
+              "layout": "horizontal",
+              "gap": 16,
+              "children": [
+                {
+                  "id": "gt1",
+                  "type": "frame",
+                  "width": 260,
+                  "layout": "vertical",
+                  "padding": 22,
+                  "gap": 8,
+                  "fill": "$color.card",
+                  "stroke": "$color.line",
+                  "strokeWidth": 1,
+                  "cornerRadius": 24,
+                  "children": [
+                    {
+                      "id": "gt1-e",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "🪢",
+                      "fontSize": 32
+                    },
+                    {
+                      "id": "gt1-t",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "개인 줄넘기",
+                      "fill": "$color.ink",
+                      "fontSize": 18,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "id": "gt1-d",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "Micro:bit 또는 시뮬레이션",
+                      "fill": "$color.muted",
+                      "fontSize": 13
+                    }
+                  ]
+                },
+                {
+                  "id": "gt2",
+                  "type": "frame",
+                  "width": 260,
+                  "layout": "vertical",
+                  "padding": 22,
+                  "gap": 8,
+                  "fill": "$color.card",
+                  "stroke": "$color.line",
+                  "strokeWidth": 1,
+                  "cornerRadius": 24,
+                  "children": [
+                    {
+                      "id": "gt2-e",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "👥",
+                      "fontSize": 32
+                    },
+                    {
+                      "id": "gt2-t",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "다인원 줄넘기",
+                      "fill": "$color.ink",
+                      "fontSize": 18,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "id": "gt2-d",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "카메라로 ID를 유지하며 세기",
+                      "fill": "$color.muted",
+                      "fontSize": 13
+                    }
+                  ]
+                },
+                {
+                  "id": "gt3",
+                  "type": "frame",
+                  "width": 260,
+                  "layout": "vertical",
+                  "padding": 22,
+                  "gap": 8,
+                  "fill": "$color.card",
+                  "stroke": "$color.line",
+                  "strokeWidth": 1,
+                  "cornerRadius": 24,
+                  "children": [
+                    {
+                      "id": "gt3-e",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "🏃",
+                      "fontSize": 32
+                    },
+                    {
+                      "id": "gt3-t",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "스쿼트 레이스",
+                      "fill": "$color.ink",
+                      "fontSize": 18,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "id": "gt3-d",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "바른 자세로 캐릭터 전진",
+                      "fill": "$color.muted",
+                      "fontSize": 13
+                    }
+                  ]
+                },
+                {
+                  "id": "gt4",
+                  "type": "frame",
+                  "width": 260,
+                  "layout": "vertical",
+                  "padding": 22,
+                  "gap": 8,
+                  "fill": "$color.card",
+                  "stroke": "$color.line",
+                  "strokeWidth": 1,
+                  "cornerRadius": 24,
+                  "children": [
+                    {
+                      "id": "gt4-e",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "🐲",
+                      "fontSize": 32
+                    },
+                    {
+                      "id": "gt4-t",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "팀 보스 배틀",
+                      "fill": "$color.ink",
+                      "fontSize": 18,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "id": "gt4-d",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "함께 스쿼트해서 HP 줄이기",
+                      "fill": "$color.muted",
+                      "fontSize": 13
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "screen-jump",
+      "name": "Jump Rope / Session",
+      "type": "frame",
+      "x": 1520,
+      "y": 1120,
+      "width": 390,
+      "height": 844,
+      "fill": "$color.bg",
+      "layout": "vertical",
+      "padding": 16,
+      "gap": 14,
+      "clip": true,
+      "children": [
+        {
+          "id": "j-k",
+          "type": "text",
+          "fontFamily": "Noto Sans KR",
+          "textGrowth": "auto",
+          "content": "개인 줄넘기",
+          "fill": "$color.brand",
+          "fontSize": 13,
+          "fontWeight": "800"
+        },
+        {
+          "id": "j-name",
+          "type": "text",
+          "fontFamily": "Noto Sans KR",
+          "textGrowth": "auto",
+          "content": "🪢  김하준",
+          "fill": "$color.ink",
+          "fontSize": 22,
+          "fontWeight": "800"
+        },
+        {
+          "id": "j-count",
+          "type": "frame",
+          "layout": "vertical",
+          "padding": 28,
+          "gap": 6,
+          "alignItems": "center",
+          "fill": "$color.card",
+          "stroke": "$color.line",
+          "strokeWidth": 1,
+          "cornerRadius": 28,
+          "children": [
+            {
+              "id": "j-cl",
+              "type": "text",
+              "fontFamily": "Noto Sans KR",
+              "textGrowth": "auto",
+              "content": "현재 기록",
+              "fill": "$color.muted",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "id": "j-cv",
+              "type": "text",
+              "fontFamily": "Noto Sans KR",
+              "textGrowth": "auto",
+              "content": "127회",
+              "fill": "$color.brand",
+              "fontSize": 56,
+              "fontWeight": "800"
+            },
+            {
+              "id": "j-stats",
+              "type": "frame",
+              "layout": "horizontal",
+              "gap": 24,
+              "children": [
+                {
+                  "id": "js1",
+                  "type": "frame",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "js1-k",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "운동시간",
+                      "fill": "$color.muted",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "id": "js1-v",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "02:03",
+                      "fill": "$color.ink",
+                      "fontSize": 16,
+                      "fontWeight": "800"
+                    }
+                  ]
+                },
+                {
+                  "id": "js2",
+                  "type": "frame",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "js2-k",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "최고 연속",
+                      "fill": "$color.muted",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "id": "js2-v",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "53회",
+                      "fill": "$color.ink",
+                      "fontSize": 16,
+                      "fontWeight": "800"
+                    }
+                  ]
+                },
+                {
+                  "id": "js3",
+                  "type": "frame",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "js3-k",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "속도",
+                      "fill": "$color.muted",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "id": "js3-v",
+                      "type": "text",
+                      "fontFamily": "Noto Sans KR",
+                      "textGrowth": "auto",
+                      "content": "62 RPM",
+                      "fill": "$color.ink",
+                      "fontSize": 16,
+                      "fontWeight": "800"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j-bt",
+          "type": "ref",
+          "ref": "cmp-btn-primary",
+          "descendants": {
+            "cmp-btn-primary-label": {
+              "content": "Micro:bit 연결"
+            }
+          }
+        },
+        {
+          "id": "j-sim",
+          "type": "ref",
+          "ref": "cmp-btn-ghost",
+          "descendants": {
+            "cmp-btn-ghost-label": {
+              "content": "시뮬레이션 시작"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,187 @@
+export type FitnessCategory = "health" | "sport";
+
+export type HealthComponentId =
+  | "cardio"
+  | "strength"
+  | "endurance"
+  | "flexibility"
+  | "body-composition";
+
+export type SportComponentId =
+  | "power"
+  | "agility"
+  | "balance"
+  | "coordination"
+  | "reaction";
+
+export type FitnessComponentId = HealthComponentId | SportComponentId;
+
+export type WorkoutSource =
+  | "manual"
+  | "microbit"
+  | "camera"
+  | "game"
+  | "simulation";
+
+export type EmotionKey =
+  | "calm"
+  | "happy"
+  | "excited"
+  | "tired"
+  | "worried"
+  | "proud";
+
+export type PapsGrade = 1 | 2 | 3 | 4 | 5;
+
+export interface User {
+  id: string;
+  displayName: string;
+  grade: number;
+  className: string;
+  createdAt: string;
+}
+
+export interface FitnessProfile {
+  userId: string;
+  updatedAt: string;
+  components: Record<FitnessComponentId, PapsGrade>;
+  notes?: string;
+}
+
+export interface PapsRecord {
+  id: string;
+  userId: string;
+  measuredAt: string;
+  eventId: string;
+  value: number;
+  unit: string;
+  grade: PapsGrade;
+}
+
+export interface FitnessComponent {
+  id: FitnessComponentId;
+  category: FitnessCategory;
+  name: string;
+  emoji: string;
+  color: string;
+  kidDescription: string;
+  papsNote?: string;
+}
+
+export interface PapsEvent {
+  id: string;
+  name: string;
+  fitnessFactor: string;
+  fitnessComponentIds: FitnessComponentId[];
+  purpose: string;
+  method: string[];
+  posture: string[];
+  cautions: string[];
+  place?: string;
+  tools?: string[];
+  applicable: string;
+  unit: string;
+  practiceExerciseId?: string;
+  sources: { title: string; note: string }[];
+}
+
+export interface ExerciseVideo {
+  id: string;
+  exerciseId: string;
+  title: string;
+  fitnessComponent: FitnessComponentId;
+  difficulty: "easy" | "normal" | "challenge";
+  recommendedMinutes: number;
+  youtubeId: string | null;
+  description: string;
+  cautions: string[];
+}
+
+export interface Exercise {
+  id: string;
+  name: string;
+  emoji: string;
+  componentIds: FitnessComponentId[];
+  difficulty: "easy" | "normal" | "challenge";
+  recommendedMinutes: number;
+  howTo: string[];
+  cautions: string[];
+  videoId?: string;
+  gameHref?: string;
+}
+
+export interface ExerciseRecommendation {
+  id: string;
+  exerciseId: string;
+  reasonKid: string;
+  targetComponentId: FitnessComponentId;
+  mission?: string;
+}
+
+export interface EmotionCheckIn {
+  id: string;
+  userId: string;
+  sessionId?: string;
+  phase: "before" | "after" | "brain-break";
+  localMood?: EmotionKey;
+  localNote?: string;
+  reflectOpened: boolean;
+  reflectConfirmed: boolean;
+  createdAt: string;
+}
+
+export interface WorkoutSession {
+  id: string;
+  userId: string;
+  exerciseId: string;
+  exerciseName: string;
+  exerciseType: string;
+  startTime: string;
+  endTime: string;
+  durationSec: number;
+  count: number;
+  score: number;
+  accuracy: number;
+  beforeEmotion?: EmotionKey;
+  afterEmotion?: EmotionKey;
+  beforeNote?: string;
+  afterNote?: string;
+  source: WorkoutSource;
+  extra?: Record<string, number | string | boolean>;
+}
+
+export interface BadgeDefinition {
+  id: string;
+  name: string;
+  emoji: string;
+  description: string;
+}
+
+export interface Achievement {
+  id: string;
+  userId: string;
+  badgeId: string;
+  unlockedAt: string;
+}
+
+export interface AppSettings {
+  beforeReflectUrl: string;
+  afterReflectUrl: string;
+  studentName: string;
+}
+
+export interface JumpRopeSnapshot {
+  count: number;
+  durationMs: number;
+  maxStreak: number;
+  rpm: number;
+  running: boolean;
+}
+
+export interface TrackedPerson {
+  id: string;
+  label: string;
+  box: { x: number; y: number; w: number; h: number };
+  jumps: number;
+  color: string;
+}

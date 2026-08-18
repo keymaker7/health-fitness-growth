@@ -1,0 +1,88 @@
+[
+  {
+    "id": "cardio",
+    "category": "health",
+    "name": "심폐지구력",
+    "emoji": "❤️",
+    "color": "#0f6cbd",
+    "kidDescription": "오랫동안 운동할 수 있는 힘이에요.",
+    "papsNote": "PAPS 필수평가 요인. 왕복오래달리기, 오래달리기걷기, 스텝검사 중 학교에서 선택한 종목으로 측정합니다."
+  },
+  {
+    "id": "strength",
+    "category": "health",
+    "name": "근력",
+    "emoji": "💪",
+    "color": "#2c3c85",
+    "kidDescription": "한 번에 큰 힘을 내는 힘이에요.",
+    "papsNote": "PAPS에서는 근력과 근지구력을 한 요인으로 묶어 평가합니다."
+  },
+  {
+    "id": "endurance",
+    "category": "health",
+    "name": "근지구력",
+    "emoji": "🧱",
+    "color": "#038387",
+    "kidDescription": "같은 힘을 오래, 여러 번 반복하는 힘이에요.",
+    "papsNote": "윗몸말아올리기, (무릎대고)팔굽혀펴기 등이 해당합니다."
+  },
+  {
+    "id": "flexibility",
+    "category": "health",
+    "name": "유연성",
+    "emoji": "🧘",
+    "color": "#7160e8",
+    "kidDescription": "관절이 앞뒤·좌우로 잘 움직이는 힘이에요.",
+    "papsNote": "앉아윗몸앞으로굽히기 또는 종합유연성검사로 측정합니다."
+  },
+  {
+    "id": "body-composition",
+    "category": "health",
+    "name": "신체조성",
+    "emoji": "⚖️",
+    "color": "#005b70",
+    "kidDescription": "키와 몸무게, 몸의 구성이 건강한지 살펴보는 영역이에요.",
+    "papsNote": "PAPS에서는 체질량지수(BMI) 또는 체지방률로 평가합니다. 점수가 높을수록 좋다는 뜻이 아니라, 건강한 범위를 확인하는 지표입니다."
+  },
+  {
+    "id": "power",
+    "category": "sport",
+    "name": "순발력",
+    "emoji": "⚡",
+    "color": "#0f6cbd",
+    "kidDescription": "짧은 순간에 빠르게 힘을 내는 힘이에요.",
+    "papsNote": "건강체력 분류와 별도로, PAPS 필수평가에도 순발력 종목이 포함됩니다(50m달리기, 제자리멀리뛰기)."
+  },
+  {
+    "id": "agility",
+    "category": "sport",
+    "name": "민첩성",
+    "emoji": "🎯",
+    "color": "#4f6bed",
+    "kidDescription": "방향을 빠르고 정확하게 바꾸는 힘이에요."
+  },
+  {
+    "id": "balance",
+    "category": "sport",
+    "name": "평형성",
+    "emoji": "🦢",
+    "color": "#7160e8",
+    "kidDescription": "몸이 흔들려도 중심을 지키는 힘이에요."
+  },
+  {
+    "id": "coordination",
+    "category": "sport",
+    "name": "협응성",
+    "emoji": "🥎",
+    "color": "#038387",
+    "kidDescription": "눈과 손, 여러 몸의 움직임이 잘 맞춰지는 힘이에요."
+  },
+  {
+    "id": "reaction",
+    "category": "sport",
+    "name": "반응속도",
+    "emoji": "👁️",
+    "color": "#2c3c85",
+    "kidDescription": "신호가 보이면 바로 움직이는 힘이에요."
+  }
+]

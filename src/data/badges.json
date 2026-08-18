@@ -1,0 +1,62 @@
+[
+  {
+    "id": "first-workout",
+    "name": "첫 운동",
+    "emoji": "🏅",
+    "description": "건강체력 일지에 첫 운동을 기록했어요."
+  },
+  {
+    "id": "streak-3",
+    "name": "3일 연속 운동",
+    "emoji": "🔥",
+    "description": "3일 동안 쉬지 않고 몸을 움직였어요."
+  },
+  {
+    "id": "streak-7",
+    "name": "7일 연속 운동",
+    "emoji": "🔥",
+    "description": "일주일 동안 꾸준히 성장했어요."
+  },
+  {
+    "id": "rope-100",
+    "name": "줄넘기 100회",
+    "emoji": "🪢",
+    "description": "한 세션에서 줄넘기 100회를 해냈어요."
+  },
+  {
+    "id": "rope-500",
+    "name": "줄넘기 500회",
+    "emoji": "🪢",
+    "description": "줄넘기를 모두 합쳐 500회를 넘겼어요."
+  },
+  {
+    "id": "squat-master",
+    "name": "스쿼트 마스터",
+    "emoji": "💪",
+    "description": "한 세션에서 스쿼트 30회를 성공했어요."
+  },
+  {
+    "id": "cardio-growth",
+    "name": "심폐지구력 성장",
+    "emoji": "❤️",
+    "description": "심폐지구력 관련 운동을 5회 기록했어요."
+  },
+  {
+    "id": "flex-growth",
+    "name": "유연성 성장",
+    "emoji": "🧘",
+    "description": "유연성 운동을 5회 기록했어요."
+  },
+  {
+    "id": "steady-growth",
+    "name": "꾸준한 성장",
+    "emoji": "🌱",
+    "description": "운동 세션을 10번 완료했어요."
+  },
+  {
+    "id": "personal-best",
+    "name": "개인 최고기록 갱신",
+    "emoji": "🏆",
+    "description": "과거의 나를 넘어 최고기록을 세웠어요."
+  }
+]

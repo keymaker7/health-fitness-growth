@@ -1,0 +1,211 @@
+[
+  {
+    "id": "vid-jump-rope",
+    "exerciseId": "jump-rope",
+    "title": "줄넘기 기본 리듬",
+    "fitnessComponent": "cardio",
+    "difficulty": "easy",
+    "recommendedMinutes": 3,
+    "youtubeId": null,
+    "description": "손목으로 줄을 돌리고 가볍게 뛰어 심폐지구력을 키웁니다.",
+    "cautions": ["무릎을 높이 올리지 않습니다."]
+  },
+  {
+    "id": "vid-interval-run",
+    "exerciseId": "interval-run",
+    "title": "인터벌 달리기 안내",
+    "fitnessComponent": "cardio",
+    "difficulty": "normal",
+    "recommendedMinutes": 6,
+    "youtubeId": null,
+    "description": "짧게 달리고 걷는 리듬으로 오래 움직이는 힘을 키웁니다.",
+    "cautions": ["처음부터 전력 질주하지 않습니다."]
+  },
+  {
+    "id": "vid-jogging",
+    "exerciseId": "jogging",
+    "title": "조깅 자세",
+    "fitnessComponent": "cardio",
+    "difficulty": "easy",
+    "recommendedMinutes": 8,
+    "youtubeId": null,
+    "description": "대화할 수 있는 속도로 달리는 방법입니다.",
+    "cautions": ["준비·정리운동을 함께 합니다."]
+  },
+  {
+    "id": "vid-shuttle",
+    "exerciseId": "shuttle-practice",
+    "title": "왕복 방향 전환",
+    "fitnessComponent": "cardio",
+    "difficulty": "normal",
+    "recommendedMinutes": 5,
+    "youtubeId": null,
+    "description": "선을 완전히 밟고 방향을 바꾸는 연습을 합니다.",
+    "cautions": ["미끄러운 바닥을 피합니다."]
+  },
+  {
+    "id": "vid-step",
+    "exerciseId": "step-practice",
+    "title": "스텝 오르내리기",
+    "fitnessComponent": "cardio",
+    "difficulty": "easy",
+    "recommendedMinutes": 3,
+    "youtubeId": null,
+    "description": "낮은 단차를 일정한 박자로 오르내립니다.",
+    "cautions": ["높은 상자에서 뛰어내리지 않습니다."]
+  },
+  {
+    "id": "vid-squat",
+    "exerciseId": "squat",
+    "title": "스쿼트 바른 자세",
+    "fitnessComponent": "strength",
+    "difficulty": "easy",
+    "recommendedMinutes": 4,
+    "youtubeId": null,
+    "description": "엉덩이를 뒤로 빼며 앉고 일어나는 동작입니다.",
+    "cautions": ["무릎이 안으로 모이지 않게 합니다."]
+  },
+  {
+    "id": "vid-pushup",
+    "exerciseId": "pushup-practice",
+    "title": "무릎 대고 팔굽혀펴기",
+    "fitnessComponent": "strength",
+    "difficulty": "easy",
+    "recommendedMinutes": 3,
+    "youtubeId": null,
+    "description": "무릎을 지지하고 팔꿈치를 굽혔다 펴는 연습입니다.",
+    "cautions": ["허리가 꺾이지 않게 합니다."]
+  },
+  {
+    "id": "vid-curlup",
+    "exerciseId": "curlup-practice",
+    "title": "윗몸말아올리기 리듬",
+    "fitnessComponent": "endurance",
+    "difficulty": "easy",
+    "recommendedMinutes": 3,
+    "youtubeId": null,
+    "description": "3초 리듬에 맞춰 천천히 말아 올립니다.",
+    "cautions": ["목을 세게 당기지 않습니다."]
+  },
+  {
+    "id": "vid-grip",
+    "exerciseId": "grip-practice",
+    "title": "손 쥐기",
+    "fitnessComponent": "strength",
+    "difficulty": "easy",
+    "recommendedMinutes": 2,
+    "youtubeId": null,
+    "description": "손을 쥐고 푸는 근력을 가볍게 연습합니다.",
+    "cautions": ["손목이 아프면 중단합니다."]
+  },
+  {
+    "id": "vid-stretch",
+    "exerciseId": "full-stretch",
+    "title": "전신 스트레칭",
+    "fitnessComponent": "flexibility",
+    "difficulty": "easy",
+    "recommendedMinutes": 5,
+    "youtubeId": null,
+    "description": "반동 없이 천천히 몸을 늘입니다.",
+    "cautions": ["통증이 있으면 각도를 줄입니다."]
+  },
+  {
+    "id": "vid-sit-reach",
+    "exerciseId": "sit-reach-practice",
+    "title": "앉아 윗몸 앞으로 굽히기",
+    "fitnessComponent": "flexibility",
+    "difficulty": "easy",
+    "recommendedMinutes": 4,
+    "youtubeId": null,
+    "description": "무릎을 펴고 상체를 천천히 숙입니다.",
+    "cautions": ["반동을 주지 않습니다."]
+  },
+  {
+    "id": "vid-lower-stretch",
+    "exerciseId": "lower-stretch",
+    "title": "하체 스트레칭",
+    "fitnessComponent": "flexibility",
+    "difficulty": "easy",
+    "recommendedMinutes": 4,
+    "youtubeId": null,
+    "description": "허벅지 뒤와 종아리를 천천히 늘입니다.",
+    "cautions": ["억지로 늘이지 않습니다."]
+  },
+  {
+    "id": "vid-sprint",
+    "exerciseId": "sprint-practice",
+    "title": "짧은 질주",
+    "fitnessComponent": "power",
+    "difficulty": "normal",
+    "recommendedMinutes": 4,
+    "youtubeId": null,
+    "description": "짧은 거리를 빠르게 달린 뒤 회복합니다.",
+    "cautions": ["준비운동 후에만 실시합니다."]
+  },
+  {
+    "id": "vid-jump",
+    "exerciseId": "jump-practice",
+    "title": "제자리 점프",
+    "fitnessComponent": "power",
+    "difficulty": "easy",
+    "recommendedMinutes": 3,
+    "youtubeId": null,
+    "description": "두 발로 점프하고 부드럽게 착지합니다.",
+    "cautions": ["착지 충격을 무릎으로 흡수합니다."]
+  },
+  {
+    "id": "vid-side-step",
+    "exerciseId": "side-step",
+    "title": "사이드스텝",
+    "fitnessComponent": "agility",
+    "difficulty": "easy",
+    "recommendedMinutes": 3,
+    "youtubeId": null,
+    "description": "옆으로 빠르게 이동하는 민첩성 연습입니다.",
+    "cautions": ["발이 교차되지 않게 합니다."]
+  },
+  {
+    "id": "vid-balance",
+    "exerciseId": "balance-stand",
+    "title": "한발서기",
+    "fitnessComponent": "balance",
+    "difficulty": "easy",
+    "recommendedMinutes": 2,
+    "youtubeId": null,
+    "description": "한 발로 서서 중심을 유지합니다.",
+    "cautions": ["높은 곳에서는 하지 않습니다."]
+  },
+  {
+    "id": "vid-ball",
+    "exerciseId": "ball-catch",
+    "title": "공 반응",
+    "fitnessComponent": "coordination",
+    "difficulty": "easy",
+    "recommendedMinutes": 3,
+    "youtubeId": null,
+    "description": "눈과 손이 함께 움직이는 협응 연습입니다.",
+    "cautions": ["공간을 확보합니다."]
+  },
+  {
+    "id": "vid-reaction",
+    "exerciseId": "reaction-tap",
+    "title": "신호 터치",
+    "fitnessComponent": "reaction",
+    "difficulty": "easy",
+    "recommendedMinutes": 2,
+    "youtubeId": null,
+    "description": "신호가 보이면 바로 터치합니다.",
+    "cautions": ["미리 누르지 않습니다."]
+  },
+  {
+    "id": "vid-walk",
+    "exerciseId": "body-awareness",
+    "title": "바른 걷기",
+    "fitnessComponent": "body-composition",
+    "difficulty": "easy",
+    "recommendedMinutes": 8,
+    "youtubeId": null,
+    "description": "바른 자세로 일정 시간 걷습니다.",
+    "cautions": ["기록 숫자는 친구와 비교하지 않습니다."]
+  }
+]
