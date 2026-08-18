@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Open20Regular } from "@fluentui/react-icons";
 import { Card, PageTitle, Pivot, Tag } from "@/components/ui";
+import { MeasureRecordForm } from "@/components/MeasureRecordForm";
 import { MEASURE_TOOLS, getMeasureTool } from "@/features/measure/registry";
 
 export default function MeasurePage() {
@@ -25,7 +26,7 @@ function MeasureInner() {
       <PageTitle
         kicker="측정 도구"
         title="교실에서 바로 재는 도구"
-        sub="종목마다 만든 측정 도구를 탭으로 열어요. 측정값은 각 도구에서 보이고, 이 앱에는 자동으로 저장되지 않아요."
+        sub="종목마다 만든 측정 도구를 탭으로 열어요. 도구에서 나온 값을 아래에 적으면 나의 기록이 되고, 운동처방이 그 값에 맞게 바뀝니다."
       />
       <Pivot
         value={current}
@@ -58,6 +59,7 @@ function MeasureInner() {
           allow="camera; microphone; fullscreen; autoplay; accelerometer; gyroscope"
         />
       </div>
+      <MeasureRecordForm key={tool.id} tool={tool} />
       <p className="text-[var(--font-size-200)] text-[var(--muted)]">
         카메라를 쓰는 도구는 브라우저가 권한을 물어봐요. 화면이 비어 있으면 새 탭에서 열어 주세요.
       </p>

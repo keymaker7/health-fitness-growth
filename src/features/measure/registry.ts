@@ -8,6 +8,8 @@ export interface MeasureTool {
   camera: boolean;
   papsEventIds: string[];
   exerciseIds: string[];
+  /** 측정 결과를 앱 기록으로 남길 때 쓰는 종목과 단위 */
+  record: { exerciseId: string; exerciseName: string; exerciseType: string; unit: string };
 }
 
 export const MEASURE_TOOLS: MeasureTool[] = [
@@ -21,6 +23,7 @@ export const MEASURE_TOOLS: MeasureTool[] = [
     camera: false,
     papsEventIds: ["pacer"],
     exerciseIds: ["shuttle-practice"],
+    record: { exerciseId: "shuttle-practice", exerciseName: "왕복오래달리기", exerciseType: "cardio", unit: "회" },
   },
   {
     id: "long-jump",
@@ -32,6 +35,7 @@ export const MEASURE_TOOLS: MeasureTool[] = [
     camera: true,
     papsEventIds: ["standing-long-jump"],
     exerciseIds: ["jump-practice"],
+    record: { exerciseId: "jump-practice", exerciseName: "제자리멀리뛰기", exerciseType: "power", unit: "cm" },
   },
   {
     id: "jump-rope",
@@ -43,6 +47,7 @@ export const MEASURE_TOOLS: MeasureTool[] = [
     camera: true,
     papsEventIds: [],
     exerciseIds: ["jump-rope"],
+    record: { exerciseId: "jump-rope", exerciseName: "줄넘기", exerciseType: "cardio", unit: "회" },
   },
 ];
 

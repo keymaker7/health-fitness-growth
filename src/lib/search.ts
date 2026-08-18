@@ -6,6 +6,7 @@ const DESTINATIONS: { href: string; keys: string[] }[] = [
   { href: "/health-fitness", keys: ["건강체력", "심폐", "근력", "유연성", "체지방"] },
   { href: "/sport-fitness", keys: ["운동체력", "순발력", "민첩", "평형", "협응"] },
   { href: "/recommend", keys: ["추천", "운동 추천", "미션"] },
+  { href: "/prescription", keys: ["처방", "운동처방", "맞춤", "4주 계획"] },
   { href: "/games/multi-jump", keys: ["줄넘기", "jump", "다인원"] },
   { href: "/games/squat-race", keys: ["스쿼트", "squat"] },
   { href: "/games/jump-rope", keys: ["마이크로비트", "microbit", "micro:bit"] },

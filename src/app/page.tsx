@@ -6,6 +6,7 @@ import {
   ArrowRepeatAll20Regular,
   BookOpen20Regular,
   CalendarLtr20Regular,
+  ClipboardPulse20Regular,
   DocumentOnePage20Regular,
   HeartPulse20Regular,
   PersonRunning20Regular,
@@ -52,11 +53,11 @@ export default function HomePage() {
             {summary.subtitle} 포인터를 올리면 이끼가 갈라지고, 기록이 쌓일수록 들판이 자랍니다.
           </p>
           <div className="btn-row mt-[var(--space-200)]">
-            <Link href="/recommend">
-              <Button>추천 운동 시작</Button>
+            <Link href="/prescription">
+              <Button>나의 운동처방 보기</Button>
             </Link>
-            <Link href="/portfolio">
-              <Button variant="soft">성장 포트폴리오</Button>
+            <Link href="/recommend">
+              <Button variant="soft">추천 운동</Button>
             </Link>
             <Link href="/paps">
               <Button variant="ghost">PAPS 알아보기</Button>
@@ -145,6 +146,15 @@ export default function HomePage() {
       </div>
 
       <div className="mt-[var(--space-200)] grid gap-[var(--space-200)] md:grid-cols-2 xl:grid-cols-4">
+        <Link href="/prescription" className="block">
+          <Card className="h-full transition hover:border-[var(--line-strong)]">
+            <IconTile>
+              <ClipboardPulse20Regular />
+            </IconTile>
+            <h2 className="mt-[var(--space-150)] font-semibold">맞춤 운동처방</h2>
+            <p className="mt-[var(--space-50)] text-[var(--font-size-200)] text-[var(--muted)]">내 기록으로 만든 4주 계획</p>
+          </Card>
+        </Link>
         <Link href="/portfolio" className="block">
           <Card className="h-full transition hover:border-[var(--line-strong)]">
             <IconTile>

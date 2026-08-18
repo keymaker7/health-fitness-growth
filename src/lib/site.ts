@@ -27,6 +27,7 @@ export const PUBLIC_PATHS = [
   "/health-fitness",
   "/sport-fitness",
   "/recommend",
+  "/prescription",
   "/measure",
   "/journal",
   "/portfolio",
