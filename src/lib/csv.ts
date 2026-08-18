@@ -99,6 +99,56 @@ export function papsCsv(user: User, records: PapsRecord[]) {
   return toCsv(["날짜", "학생", "학년", "반", "종목", "체력요인", "측정값", "단위", "등급"], rows);
 }
 
+/**
+ * Power Automate가 그대로 먹을 수 있는 평평한 구조입니다.
+ * 백업 JSON과 달리 체력요인을 미리 붙이고 중복 방지 키를 만들어 둡니다.
+ * 키 이름은 흐름에서 식을 쓰기 쉽도록 영문으로 둡니다.
+ */
+export function uploadPayload(user: User, sessions: WorkoutSession[], records: PapsRecord[]) {
+  const no = user.displayName;
+  return {
+    app: "health-fitness-growth",
+    kind: "upload",
+    exportedAt: new Date().toISOString(),
+    student: { no, grade: user.grade, className: user.className },
+    workouts: [...sessions]
+      .sort((a, b) => a.startTime.localeCompare(b.startTime))
+      .map((s) => {
+        const { date, time } = dateParts(s.startTime);
+        const ex = getExercise(s.exerciseId);
+        return {
+          key: `${no}_${date}_${time}_${s.exerciseName}`,
+          no,
+          date,
+          time,
+          exercise: s.exerciseName,
+          factor: (ex?.componentIds ?? []).map((c) => getComponent(c)?.name ?? c).join(" "),
+          count: s.count,
+          minutes: Math.round(s.durationSec / 60),
+          accuracy: s.accuracy,
+          mood: s.afterEmotion ? EMOTION_LABEL[s.afterEmotion] : "",
+          method: SOURCE_KO[s.source] ?? s.source,
+        };
+      }),
+    paps: [...records]
+      .sort((a, b) => a.measuredAt.localeCompare(b.measuredAt))
+      .map((r) => {
+        const { date } = dateParts(r.measuredAt);
+        const event = getPapsEvent(r.eventId);
+        return {
+          key: `${no}_${date}_${event?.name ?? r.eventId}`,
+          no,
+          date,
+          event: event?.name ?? r.eventId,
+          factor: event?.fitnessFactor ?? "",
+          value: r.value,
+          unit: r.unit,
+          grade: r.grade,
+        };
+      }),
+  };
+}
+
 export function downloadFile(name: string, content: string, type: string) {
   const blob = new Blob([content], { type });
   const url = URL.createObjectURL(blob);

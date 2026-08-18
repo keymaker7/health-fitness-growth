@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { BtnRow, Button, Card, Tag } from "@/components/ui";
 import { useApp } from "@/features/dashboard/AppProvider";
-import { downloadFile, papsCsv, sessionsCsv, stampedName } from "@/lib/csv";
+import { downloadFile, papsCsv, sessionsCsv, stampedName, uploadPayload } from "@/lib/csv";
 import { exportSnapshot, importSnapshot, isSnapshot } from "@/lib/storage";
 
 type Status = { tone: "ok" | "bad"; text: string } | null;
@@ -27,6 +27,16 @@ export function DataTransfer() {
     if (!user) return;
     downloadFile(stampedName("PAPS측정", user.displayName, "csv"), papsCsv(user, paps), "text/csv;charset=utf-8");
     setStatus({ tone: "ok", text: `PAPS 측정 ${paps.length}줄을 내려받았어요.` });
+  }
+
+  function saveUpload() {
+    if (!user) return;
+    downloadFile(
+      stampedName("업로드", user.displayName, "json"),
+      JSON.stringify(uploadPayload(user, sessions, paps), null, 2),
+      "application/json",
+    );
+    setStatus({ tone: "ok", text: "업로드용 JSON을 내려받았어요. SharePoint 기록업로드 폴더에 올리세요." });
   }
 
   async function saveBackup() {
@@ -87,7 +97,7 @@ export function DataTransfer() {
         만들어 두세요. CSV는 Excel과 Power Automate에서 쓰는 용도입니다.
       </p>
 
-      <p className="mt-[var(--space-200)] text-[var(--font-size-300)] font-semibold">Excel로 내보내기</p>
+      <p className="mt-[var(--space-200)] text-[var(--font-size-300)] font-semibold">Excel로 열어 보기</p>
       <BtnRow className="mt-[var(--space-100)]">
         <Button variant="soft" onClick={saveSessions} disabled={locked || sessions.length === 0}>
           운동 기록 CSV
@@ -96,6 +106,16 @@ export function DataTransfer() {
           PAPS 측정 CSV
         </Button>
       </BtnRow>
+
+      <p className="mt-[var(--space-250)] text-[var(--font-size-300)] font-semibold">SharePoint로 올리기</p>
+      <BtnRow className="mt-[var(--space-100)]">
+        <Button variant="soft" onClick={saveUpload} disabled={locked || sessions.length + paps.length === 0}>
+          업로드용 JSON
+        </Button>
+      </BtnRow>
+      <p className="mt-[var(--space-100)] text-[var(--font-size-200)] text-[var(--muted)]">
+        체력요인과 중복 방지 키가 붙어 있어 Power Automate가 바로 읽습니다.
+      </p>
 
       <p className="mt-[var(--space-250)] text-[var(--font-size-300)] font-semibold">다른 컴퓨터로 옮기기</p>
       <BtnRow className="mt-[var(--space-100)]">

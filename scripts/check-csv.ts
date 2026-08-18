@@ -1,5 +1,5 @@
 import type { PapsRecord, User, WorkoutSession } from "../src/types/models";
-import { papsCsv, sessionsCsv } from "../src/lib/csv";
+import { papsCsv, sessionsCsv, uploadPayload } from "../src/lib/csv";
 
 const user: User = {
   id: "u",
@@ -65,3 +65,5 @@ console.log("\n--- 운동기록 ---");
 console.log(a.replace(/\uFEFF/, ""));
 console.log("--- PAPS ---");
 console.log(b.replace(/\uFEFF/, ""));
+console.log("--- 업로드용 JSON (Parse JSON 샘플) ---");
+console.log(JSON.stringify(uploadPayload(user, sessions, paps), null, 2));
