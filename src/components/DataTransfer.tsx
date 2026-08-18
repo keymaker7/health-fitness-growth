@@ -9,12 +9,13 @@ import { exportSnapshot, importSnapshot, isSnapshot } from "@/lib/storage";
 type Status = { tone: "ok" | "bad"; text: string } | null;
 
 export function DataTransfer() {
-  const { user, sessions, paps, refresh } = useApp();
+  const { ready, user, sessions, paps, refresh } = useApp();
   const fileRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<Status>(null);
   const [busy, setBusy] = useState(false);
 
-  if (!user) return null;
+  // 카드가 통째로 사라지면 기능이 없는 것처럼 보입니다. 준비 중에도 자리를 지킵니다.
+  const locked = !ready || !user || busy;
 
   function saveSessions() {
     if (!user) return;
@@ -72,8 +73,14 @@ export function DataTransfer() {
     <Card>
       <div className="flex flex-wrap items-center gap-[var(--space-50)]">
         <p className="font-semibold">데이터 옮기기</p>
-        <Tag>기록 {sessions.length}개</Tag>
-        <Tag>측정 {paps.length}개</Tag>
+        {ready ? (
+          <>
+            <Tag>기록 {sessions.length}개</Tag>
+            <Tag>측정 {paps.length}개</Tag>
+          </>
+        ) : (
+          <Tag>불러오는 중</Tag>
+        )}
       </div>
       <p className="mt-[var(--space-100)] text-[var(--font-size-300)] leading-[var(--line-400)] text-[var(--muted)]">
         기록은 이 기기 브라우저에만 있습니다. 컴퓨터를 바꾸거나 브라우저를 지우면 사라지므로, 옮기기 전에 백업 파일을
@@ -82,20 +89,20 @@ export function DataTransfer() {
 
       <p className="mt-[var(--space-200)] text-[var(--font-size-300)] font-semibold">Excel로 내보내기</p>
       <BtnRow className="mt-[var(--space-100)]">
-        <Button variant="soft" onClick={saveSessions} disabled={sessions.length === 0}>
+        <Button variant="soft" onClick={saveSessions} disabled={locked || sessions.length === 0}>
           운동 기록 CSV
         </Button>
-        <Button variant="soft" onClick={savePaps} disabled={paps.length === 0}>
+        <Button variant="soft" onClick={savePaps} disabled={locked || paps.length === 0}>
           PAPS 측정 CSV
         </Button>
       </BtnRow>
 
       <p className="mt-[var(--space-250)] text-[var(--font-size-300)] font-semibold">다른 컴퓨터로 옮기기</p>
       <BtnRow className="mt-[var(--space-100)]">
-        <Button onClick={saveBackup} disabled={busy}>
+        <Button onClick={saveBackup} disabled={locked}>
           전체 백업 저장
         </Button>
-        <Button variant="ghost" onClick={() => fileRef.current?.click()} disabled={busy}>
+        <Button variant="ghost" onClick={() => fileRef.current?.click()} disabled={locked}>
           백업 파일로 복원
         </Button>
       </BtnRow>
