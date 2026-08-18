@@ -127,4 +127,55 @@ export async function countStore(store: StoreName) {
   return tx<number>(store, "readonly", (s) => s.count());
 }
 
+const ALL_STORES: StoreName[] = [
+  "users",
+  "profiles",
+  "paps",
+  "sessions",
+  "emotions",
+  "achievements",
+  "settings",
+];
+
+export interface Snapshot {
+  app: "health-fitness-growth";
+  version: number;
+  exportedAt: string;
+  stores: Record<StoreName, unknown[]>;
+}
+
+export async function exportSnapshot(): Promise<Snapshot> {
+  const stores = {} as Record<StoreName, unknown[]>;
+  for (const name of ALL_STORES) stores[name] = await txAll(name);
+  return {
+    app: "health-fitness-growth",
+    version: DB_VERSION,
+    exportedAt: new Date().toISOString(),
+    stores,
+  };
+}
+
+export function isSnapshot(value: unknown): value is Snapshot {
+  if (!value || typeof value !== "object") return false;
+  const v = value as Partial<Snapshot>;
+  return v.app === "health-fitness-growth" && typeof v.stores === "object" && v.stores !== null;
+}
+
+/** 백업 파일로 이 기기의 데이터를 대체합니다. 복원 전 기존 내용은 지웁니다. */
+export async function importSnapshot(snapshot: Snapshot) {
+  const db = await openDb();
+  const present = ALL_STORES.filter((name) => name in snapshot.stores);
+  await new Promise<void>((resolve, reject) => {
+    const t = db.transaction(present, "readwrite");
+    t.oncomplete = () => resolve();
+    t.onerror = () => reject(t.error);
+    t.onabort = () => reject(t.error);
+    for (const name of present) {
+      const store = t.objectStore(name);
+      store.clear();
+      for (const row of snapshot.stores[name] ?? []) store.put(row);
+    }
+  });
+}
+
 export { uid };

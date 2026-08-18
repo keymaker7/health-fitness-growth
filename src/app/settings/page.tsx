@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button, Card, PageTitle } from "@/components/ui";
+import { DataTransfer } from "@/components/DataTransfer";
 import { useApp } from "@/features/dashboard/AppProvider";
 import { REFLECT_OFFICIAL } from "@/features/reflect/adapter";
 
@@ -13,7 +14,11 @@ export default function SettingsPage() {
 
   return (
     <div className="stack">
-      <PageTitle kicker="설정" title="나와 Reflect 연결" sub="학생 이름과 교사가 공유한 Reflect 체크인 링크만 저장합니다." />
+      <PageTitle
+        kicker="설정"
+        title="나와 데이터 관리"
+        sub="학생 이름과 Reflect 링크를 저장하고, 기록을 내보내거나 다른 컴퓨터로 옮깁니다."
+      />
       <Card>
         <label className="text-[var(--font-size-300)] font-semibold">이름</label>
         <input className="field mt-[var(--space-100)]" value={name} onChange={(e) => setName(e.target.value)} />
@@ -39,6 +44,7 @@ export default function SettingsPage() {
           저장
         </Button>
       </Card>
+      <DataTransfer />
       <Card>
         <p className="font-semibold">개인정보</p>
         <p className="mt-[var(--space-100)] text-[var(--font-size-300)] leading-[var(--line-400)] text-[var(--muted)]">
