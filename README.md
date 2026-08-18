@@ -72,6 +72,47 @@ vercel link          # 기존 health-fitness-growth 프로젝트 선택
 Reflect UI를 복제하지 않습니다. 공식 웹앱 [reflect.microsoft.com](https://reflect.microsoft.com/) 으로 이동합니다.  
 교사가 만든 체크인 공유 링크는 **설정**에 붙여 넣을 수 있습니다. 임의의 iframe 삽입은 공식 지원 범위가 아닙니다.
 
+## Microsoft 에이전트 & 워크플로 구축
+
+Copilot Studio 에이전트 4개와 Power Automate 워크플로 2개를 하루에 세웁니다. 자세한 지침은 `docs/agents/collect-flow.md`에 있습니다.
+
+### 하루 시간표
+
+| 시간 | 할 일 | 결과 |
+| --- | --- | --- |
+| 09:00 | 권한 점검, SharePoint에 문서 업로드 | 지식 원본 준비 |
+| 09:30 | `기록` 목록 만들기 | 데이터 그릇 |
+| 10:00 | 취합 흐름 P1 | 앱 → SharePoint 연결 |
+| 11:00 | 부모 에이전트 + 측정 안내 자식 | 쓸 수 있는 에이전트 |
+| 13:00 | 학급요약조회 F1 + 학급 현황 자식 | 에이전트가 데이터를 읽음 |
+| 14:00 | 처방 해설 자식 | |
+| 15:00 | 건강체력교실 연결 에이전트 | |
+| 15:30 | 주간 카드 P2 | 예약 흐름 확보 |
+| 16:00 | 점검과 게시 | |
+
+밀리면 15:00과 15:30을 버리세요. 11시까지만 되어도 그날부터 쓸 물건은 나옵니다.
+
+### 하루를 날려먹을 수 있는 세 가지
+
+아침에 5분만 확인하세요. 여기서 막히면 나머지가 전부 멈춥니다.
+
+1. **Copilot Studio 권한** — 새 에이전트를 만들 수 있는가
+2. **Power Automate 커넥터** — SharePoint 커넥터가 붙는가
+3. **SharePoint 권한** — 팀 사이트에 문서 라이브러리를 만들 수 있는가
+
+그리고 **문서는 반드시 아침 제일 먼저 업로드하세요.** SharePoint 색인이 도는 데 시간이 걸려서, 점심때 올리면 오후에 에이전트가 문서를 못 찾습니다.
+
+### 미리 준비된 것
+
+- `docs/agents/collect-flow.md` — 시간표와 복붙용 지침 문구
+- `docs/agents/prescription-rules.md` — 처방 해설 에이전트가 읽을 지식 문서 (SharePoint에 그대로 업로드)
+- `docs/agents/paps-guide.md` — 측정 안내 에이전트 설계서
+- `docs/agents/README.md` — 전체 구조 설명
+
+### 기록 업로드
+
+앱 **설정 → 업로드용 JSON**으로 받은 파일을 SharePoint `기록업로드` 라이브러리에 올리면 Power Automate가 자동으로 `기록` 목록에 넣습니다. 중복은 고유 값 제약으로 걸러집니다.
+
 ## 라이선스 안내
 
 - MediaPipe Pose Landmarker: Apache 2.0 (Google)
