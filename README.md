@@ -14,6 +14,38 @@ npm run dev
 
 브라우저에서 `http://localhost:3000` 을 엽니다. 태블릿·크롬북·PC에서 반응형으로 동작합니다.
 
+## 다른 컴퓨터에서 이어서 작업하기
+
+코드는 전부 GitHub에 있습니다. 폴더를 통째로 복사하지 말고 새로 내려받는 편이 깨끗합니다.
+
+```bash
+git clone https://github.com/keymaker7/health-fitness-growth.git
+cd health-fitness-growth
+npm install
+npm run dev
+```
+
+필요한 것은 Node.js 20 이상과 git뿐입니다. `node_modules`, `.next`, `.vercel`은 `npm install`과 첫 빌드로 다시 만들어지므로 옮기지 않습니다.
+`.env` 파일은 이 프로젝트에 없습니다. 배포용 `NEXT_PUBLIC_SITE_URL`은 Vercel 프로젝트 설정에만 있고 로컬 개발에는 필요하지 않습니다.
+
+배포까지 새 컴퓨터에서 하려면 한 번만 연결해 둡니다.
+
+```bash
+npm i -g vercel
+vercel login
+vercel link          # 기존 health-fitness-growth 프로젝트 선택
+```
+
+이후에는 `git push`만 하면 Vercel이 자동으로 배포합니다.
+
+### 옮겨지지 않는 것
+
+학생 기록은 브라우저 IndexedDB에 저장되므로 **컴퓨터를 바꾸면 따라오지 않습니다.** 코드와 무관한, 그 기기 안의 데이터입니다.
+지금은 내보내기 기능이 없어서 옮기려면 다음 중 하나가 필요합니다.
+
+- 새 컴퓨터에서 처음부터 기록을 다시 쌓는다 (초기 시드 데이터는 자동으로 들어갑니다)
+- CSV 내보내기·가져오기를 먼저 만든다 ([진행 계획](docs/plan.md) 3단계)
+
 ## 디자인 (pen.dev)
 
 프론트 UI는 [pen.dev](https://docs.pencil.dev/) `.pen` 파일을 소스로 맞춰 두었습니다.
