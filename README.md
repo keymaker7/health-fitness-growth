@@ -104,6 +104,8 @@ Copilot Studio 에이전트 4개와 Power Automate 워크플로 2개를 하루�
 
 ### 미리 준비된 것
 
+- `docs/agents/paste.md` — Copilot Studio에 그대로 붙여넣는 이름·지침·확인 질문
+- `docs/agents/knowledge-class.md` — 측정 웹 주소, 성취기준, 초등 15m. 지식으로 업로드
 - `docs/lesson/grade6.md` — 6학년 수업지도안 (성취기준 [6체01-01][6체01-02][6체01-05], 본시 80분, 시연 대본)
 - `docs/lesson/agent-demo.md` — 심사 자리 에이전트 질문
 - `docs/agents/collect-flow.md` — 시간표와 복붙용 지침 문구
