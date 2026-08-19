@@ -104,6 +104,8 @@ Copilot Studio 에이전트 4개와 Power Automate 워크플로 2개를 하루�
 
 ### 미리 준비된 것
 
+- `docs/lesson/grade6.md` — 6학년 수업지도안 (성취기준 [6체01-01][6체01-02][6체01-05], 본시 80분, 시연 대본)
+- `docs/lesson/agent-demo.md` — 심사 자리 에이전트 질문
 - `docs/agents/collect-flow.md` — 시간표와 복붙용 지침 문구
 - `docs/agents/prescription-rules.md` — 처방 해설 에이전트가 읽을 지식 문서 (SharePoint에 그대로 업로드)
 - `docs/agents/paps-guide.md` — 측정 안내 에이전트 설계서
