@@ -6,6 +6,7 @@ import { StandardNote } from "@/components/StandardNote";
 import { AskAgentButton } from "@/components/AskAgentButton";
 import { useApp } from "@/features/dashboard/AppProvider";
 import { DAILY_TARGET_MIN, buildPrescription } from "@/lib/prescription";
+import { buildAdherence } from "@/lib/adherence";
 
 export default function PrescriptionPage() {
   const { ready, profile, sessions, user } = useApp();
@@ -13,6 +14,7 @@ export default function PrescriptionPage() {
 
   const p = buildPrescription(profile, sessions);
   const maxNeed = Math.max(1, ...p.loads.map((l) => Math.max(0, l.need)));
+  const a = buildAdherence(p, sessions);
 
   return (
     <div className="stack">
@@ -48,6 +50,38 @@ export default function PrescriptionPage() {
           hint="주당 횟수와 목표가 왜 그렇게 정해졌는지 Teams 도우미에게 물어볼 수 있어요."
         />
       </div>
+
+      <section>
+        <SectionTitle>이번 주 실천</SectionTitle>
+        <Card>
+          <div className="flex flex-wrap items-center justify-between gap-[var(--space-150)]">
+            <div>
+              <p className="text-[var(--font-size-500)] font-semibold text-[var(--brand-ink)]">
+                {a.goalTotal > 0 ? `주 ${a.goalTotal}회 중 ${a.doneTotal}회 완료` : "이번 주 계획 없음"}
+              </p>
+              <p className="mt-[var(--space-50)] text-[var(--font-size-300)] text-[var(--muted)]">{a.message}</p>
+            </div>
+            <Tag tone={a.rate >= 100 ? "success" : a.rate >= 50 ? "brand" : "warning"}>이행률 {a.rate}%</Tag>
+          </div>
+
+          <div className="mt-[var(--space-200)] space-y-[var(--space-200)]">
+            {a.items.map((it) => (
+              <Meter
+                key={it.item.exerciseId}
+                label={`${it.item.exerciseName}${it.item.kind === "유지" ? " (유지)" : ""}`}
+                hint={`${it.done}/${it.goal}회${it.met ? " ✓" : ""}`}
+                value={Math.min(100, (it.done / Math.max(1, it.goal)) * 100)}
+                color={it.item.color}
+              />
+            ))}
+          </div>
+
+          <p className="mt-[var(--space-150)] text-[var(--font-size-200)] text-[var(--muted)]">
+            월요일부터 오늘까지 센 것이에요. 처방에 있는 종목으로 운동하면 여기가 올라가요.
+            이행률은 <b>성장</b> 종목만 셉니다 — 잘하고 있던 «유지» 종목을 하루 쉰 것으로 낮아지지 않게요.
+          </p>
+        </Card>
+      </section>
 
       <div className="grid gap-[var(--space-200)] sm:grid-cols-2 xl:grid-cols-4">
         <Card>
