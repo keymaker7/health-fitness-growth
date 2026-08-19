@@ -10,12 +10,14 @@ import { AskAgentButton } from "@/components/AskAgentButton";
 import { CameraCounter } from "@/features/jump-rope/CameraCounter";
 import { SquatCamera } from "@/features/squat/SquatCamera";
 import { ShuttleRun } from "@/features/shuttle-run/ShuttleRun";
+import { LongJumpCamera } from "@/features/long-jump/LongJumpCamera";
 import { MEASURE_TOOLS, getMeasureTool } from "@/features/measure/registry";
 
 /** 앱 안에서 재는 도구를 종목에 맞게 고른다. */
 function NativeTool({ id, onCount }: { id: string; onCount: (total: number) => void }) {
   if (id === "squat-cam") return <SquatCamera onCount={onCount} />;
   if (id === "shuttle-run") return <ShuttleRun onCount={onCount} />;
+  if (id === "long-jump") return <LongJumpCamera onCount={onCount} />;
   return <CameraCounter onCount={onCount} />;
 }
 
