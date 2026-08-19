@@ -3,7 +3,7 @@ import { papsCsv, sessionsCsv, uploadPayload } from "../src/lib/csv";
 
 const user: User = {
   id: "u",
-  displayName: "김하준",
+  displayName: "5-3-12",
   grade: 5,
   className: "3반",
   createdAt: "2026-03-02T00:00:00.000Z",

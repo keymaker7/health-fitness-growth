@@ -110,7 +110,7 @@ export async function seedIfNeeded() {
   await putSettings({
     beforeReflectUrl: "",
     afterReflectUrl: "",
-    studentName: "김하준",
+    studentName: "5-3-12",
   });
 
   await putAchievement({

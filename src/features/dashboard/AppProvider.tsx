@@ -67,7 +67,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<AppSettings>({
     beforeReflectUrl: "",
     afterReflectUrl: "",
-    studentName: "김하준",
+    studentName: "5-3-12",
   });
 
   const refresh = useCallback(async () => {

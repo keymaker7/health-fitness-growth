@@ -114,7 +114,7 @@ export async function getSettings(): Promise<AppSettings> {
     row ?? {
       beforeReflectUrl: "",
       afterReflectUrl: "",
-      studentName: "김하준",
+      studentName: "5-3-12",
     }
   );
 }

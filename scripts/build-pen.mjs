@@ -224,7 +224,7 @@ const document = {
                       height: 22,
                       fill: "$color.brand",
                     },
-                    T("student-name", { content: "김하준 · 5학년 3반", fill: "$color.brandInk", fontSize: 12, fontWeight: "700" }),
+                    T("student-name", { content: "5-3-12 · 5학년 3반", fill: "$color.brandInk", fontSize: 12, fontWeight: "700" }),
                   ],
                 },
               ],
@@ -262,7 +262,7 @@ const document = {
               children: [
                 T("hero-kicker", { content: "측정하는 체육에서 성장하는 체육으로", fill: "#99F6E4", fontSize: 13, fontWeight: "700" }),
                 T("hero-title", { content: "오늘도 내 몸을 성장시켜 볼까요?", fill: "#FFFFFF", fontSize: 32, fontWeight: "800" }),
-                T("hero-sub", { content: "김하준 · 체력의 변화뿐 아니라, 운동으로 달라지는 마음까지 기록해요.", fill: "#CCFBF1", fontSize: 15 }),
+                T("hero-sub", { content: "5-3-12 · 체력의 변화뿐 아니라, 운동으로 달라지는 마음까지 기록해요.", fill: "#CCFBF1", fontSize: 15 }),
               ],
             },
             {
@@ -398,7 +398,7 @@ const document = {
               children: [
                 T("m-hero-k", { content: "GROWTH PE", fill: "#99F6E4", fontSize: 11, fontWeight: "800" }),
                 T("m-hero-t", { content: "오늘 뭐 해볼까?", fill: "#FFFFFF", fontSize: 24, fontWeight: "800" }),
-                T("m-hero-s", { content: "김하준, 유연성을 키워볼까요?", fill: "#CCFBF1", fontSize: 13 }),
+                T("m-hero-s", { content: "5-3-12, 유연성을 키워볼까요?", fill: "#CCFBF1", fontSize: 13 }),
               ],
             },
             {
@@ -511,7 +511,7 @@ const document = {
       clip: true,
       children: [
         T("j-k", { content: "개인 줄넘기", fill: "$color.brand", fontSize: 13, fontWeight: "800" }),
-        T("j-name", { content: "🪢  김하준", fill: "$color.ink", fontSize: 22, fontWeight: "800" }),
+        T("j-name", { content: "🪢  5-3-12", fill: "$color.ink", fontSize: 22, fontWeight: "800" }),
         {
           id: "j-count",
           type: "frame",
