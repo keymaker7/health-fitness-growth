@@ -19,7 +19,9 @@ export function MeasureRecordForm({ tool }: { tool: MeasureTool }) {
   // 저장은 여전히 사람이 누른다 — 연습으로 뛴 값이 기록에 섞이면 처방이 틀어지기 때문이다.
   useEffect(() => {
     function onMessage(e: MessageEvent) {
-      if (e.origin !== new URL(tool.url).origin) return;
+      // 바깥 도구는 그 도구의 주소에서, 앱 안에서 재는 도구는 앱 자신에게서 온다.
+      const allowed = tool.native ? window.location.origin : new URL(tool.url).origin;
+      if (e.origin !== allowed) return;
       const d = e.data;
       if (!d || d.source !== "measure-tool" || d.tool !== tool.id) return;
       const n = Number(d.value);

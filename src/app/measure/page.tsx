@@ -7,6 +7,7 @@ import { Card, PageTitle, Pivot, Tag } from "@/components/ui";
 import { MeasureRecordForm } from "@/components/MeasureRecordForm";
 import { StandardNote } from "@/components/StandardNote";
 import { AskAgentButton } from "@/components/AskAgentButton";
+import { CameraCounter } from "@/features/jump-rope/CameraCounter";
 import { MEASURE_TOOLS, getMeasureTool } from "@/features/measure/registry";
 
 export default function MeasurePage() {
@@ -40,28 +41,45 @@ function MeasureInner() {
         <div className="flex flex-wrap items-center gap-[var(--space-50)]">
           <Tag tone="brand">{tool.factor}</Tag>
           {tool.camera ? <Tag>카메라 사용</Tag> : null}
-          <Tag>{tool.host}</Tag>
+          {tool.native ? <Tag tone="success">앱 안에서 측정</Tag> : null}
         </div>
         <p className="mt-[var(--space-150)] text-[var(--font-size-300)] text-[var(--muted)]">{tool.description}</p>
-        <a
-          href={tool.url}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-[var(--space-100)] inline-flex items-center gap-[var(--space-50)] text-[var(--font-size-300)] font-semibold text-[var(--brand)] hover:underline"
-        >
-          <Open20Regular />
-          새 탭에서 열기
-        </a>
+        {tool.native ? null : (
+          <a
+            href={tool.url}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-[var(--space-100)] inline-flex items-center gap-[var(--space-50)] text-[var(--font-size-300)] font-semibold text-[var(--brand)] hover:underline"
+          >
+            <Open20Regular />
+            새 탭에서 열기
+          </a>
+        )}
       </Card>
-      <div className="measure-frame">
-        <iframe
+
+      {tool.native ? (
+        <CameraCounter
           key={tool.id}
-          src={tool.url}
-          title={tool.name}
-          className="h-full w-full"
-          allow="camera; microphone; fullscreen; autoplay; accelerometer; gyroscope"
+          onCount={(total) =>
+            // 값 전달은 바깥 도구와 같은 길을 쓴다. 받는 쪽을 두 벌 만들지 않기 위해서다.
+            window.postMessage(
+              { source: "measure-tool", tool: tool.id, value: total, unit: tool.record.unit },
+              window.location.origin,
+            )
+          }
         />
-      </div>
+      ) : (
+        <div className="measure-frame">
+          <iframe
+            key={tool.id}
+            src={tool.url}
+            title={tool.name}
+            className="h-full w-full"
+            allow="camera; microphone; fullscreen; autoplay; accelerometer; gyroscope"
+          />
+        </div>
+      )}
+
       <MeasureRecordForm key={tool.id} tool={tool} />
       <AskAgentButton
         title="측정 방법이 헷갈리나요?"
