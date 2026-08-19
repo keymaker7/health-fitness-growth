@@ -5,7 +5,17 @@
  * 학교 방화벽이 막으면 그날 수업이 멈추기 때문이다.
  */
 
-const MODEL = "/models/pose_landmarker_lite.task";
+/**
+ * 원본 측정 앱들은 모두 full 을 기본으로 쓴다. lite 는 «저사양 기기» 선택지였다.
+ * 정확도가 기록의 신뢰도라서 기본은 full 이어야 한다.
+ */
+export const MODELS = {
+  full: "/models/pose_landmarker_full.task",
+  lite: "/models/pose_landmarker_lite.task",
+} as const;
+
+export type ModelQuality = keyof typeof MODELS;
+
 const WASM = "/vendor/tasks-vision/wasm";
 const BUNDLE = "/vendor/tasks-vision/vision_bundle.mjs";
 
@@ -24,11 +34,11 @@ type VisionModule = {
 /** 번들러가 정적 분석으로 건드리지 못하게 감싼다. public/ 의 파일을 그대로 읽어야 한다. */
 const dynamicImport = new Function("u", "return import(u)") as (u: string) => Promise<VisionModule>;
 
-export async function createLandmarker(numPoses: number): Promise<Landmarker> {
+export async function createLandmarker(numPoses: number, quality: ModelQuality = "full"): Promise<Landmarker> {
   const mod = await dynamicImport(BUNDLE);
   const fileset = await mod.FilesetResolver.forVisionTasks(WASM);
   const opts = (delegate: string) => ({
-    baseOptions: { modelAssetPath: MODEL, delegate },
+    baseOptions: { modelAssetPath: MODELS[quality] ?? MODELS.full, delegate },
     runningMode: "VIDEO",
     numPoses,
     minPoseDetectionConfidence: 0.5,
