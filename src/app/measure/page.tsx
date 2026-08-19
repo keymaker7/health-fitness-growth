@@ -8,7 +8,14 @@ import { MeasureRecordForm } from "@/components/MeasureRecordForm";
 import { StandardNote } from "@/components/StandardNote";
 import { AskAgentButton } from "@/components/AskAgentButton";
 import { CameraCounter } from "@/features/jump-rope/CameraCounter";
+import { SquatCamera } from "@/features/squat/SquatCamera";
 import { MEASURE_TOOLS, getMeasureTool } from "@/features/measure/registry";
+
+/** 앱 안에서 재는 도구를 종목에 맞게 고른다. */
+function NativeTool({ id, onCount }: { id: string; onCount: (total: number) => void }) {
+  if (id === "squat-cam") return <SquatCamera onCount={onCount} />;
+  return <CameraCounter onCount={onCount} />;
+}
 
 export default function MeasurePage() {
   return (
@@ -58,8 +65,9 @@ function MeasureInner() {
       </Card>
 
       {tool.native ? (
-        <CameraCounter
+        <NativeTool
           key={tool.id}
+          id={tool.id}
           onCount={(total) =>
             // 값 전달은 바깥 도구와 같은 길을 쓴다. 받는 쪽을 두 벌 만들지 않기 위해서다.
             window.postMessage(

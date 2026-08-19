@@ -2,25 +2,24 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BtnRow, Button, Card, Tag } from "@/components/ui";
-import { CONFIG, SKELETON, Session, extractSignals } from "@/features/jump-rope/counter.js";
-import type { Observation, Point, Snapshot } from "@/features/jump-rope/counter";
+import { SQUAT_CONFIG, SquatSession, extractSquat } from "@/features/squat/squat.js";
+import type { SquatObservation, SquatUpdate } from "@/features/squat/squat";
 import { createLandmarker, openCamera, toPixels, type Landmarker } from "@/features/pose/localPose";
 
 /**
- * 앱 안에서 카메라로 줄넘기를 세는 화면.
+ * 앱 안에서 카메라로 스쿼트를 세는 화면.
  *
- * 판정은 줄넘기 카운터 앱의 counter.js 를 그대로 쓴다. 교실에서 검증된 로직이라
- * 옮기면서 고치지 않았다. 여기서는 카메라와 그리기만 맡는다.
- *
- * 모델과 wasm 은 앱 안(public/)에 넣어 두었다. 학교 방화벽이 CDN 을 막아도 돌아야 한다.
+ * 판정은 스쿼트 카메라 앱의 squat.js 를 그대로 쓴다.
+ * 얕은 까딱임을 안 세는 것, 앉아 쉬는 것을 걸러내는 것, 다리가 화면에서 잘려도
+ * 엉덩이 높이로 세는 것, 겹쳤을 때 남의 횟수가 넘어가지 않게 막는 것이 전부 거기 들어 있다.
  */
 
 const COLORS = ["#00c8ff", "#22d3a5", "#ff9d5c", "#c07bff"];
 
-export function CameraCounter({ onCount }: { onCount?: (total: number) => void }) {
+export function SquatCamera({ onCount }: { onCount?: (total: number) => void }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const sessionRef = useRef<InstanceType<typeof Session> | null>(null);
+  const sessionRef = useRef<InstanceType<typeof SquatSession> | null>(null);
   const landmarkerRef = useRef<Landmarker | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const rafRef = useRef(0);
@@ -28,8 +27,8 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
 
   const [status, setStatus] = useState("«카메라 켜기»를 누르면 시작해요.");
   const [running, setRunning] = useState(false);
-  const [snap, setSnap] = useState<Snapshot | null>(null);
-  const [maxPeople, setMaxPeople] = useState(2);
+  const [snap, setSnap] = useState<SquatUpdate | null>(null);
+  const [maxPeople, setMaxPeople] = useState(1);
 
   const stop = useCallback(() => {
     cancelAnimationFrame(rafRef.current);
@@ -46,7 +45,6 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
     const video = videoRef.current;
     const canvas = canvasRef.current;
     if (!video || !canvas) return;
-
     try {
       setStatus("카메라를 여는 중…");
       streamRef.current = await openCamera(video);
@@ -54,9 +52,9 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
       setStatus("자세 인식 모델을 불러오는 중… (처음 한 번만, 약 6MB)");
       landmarkerRef.current = await createLandmarker(maxPeople);
 
-      sessionRef.current = new Session(CONFIG);
+      sessionRef.current = new SquatSession({ ...SQUAT_CONFIG, maxPeople });
       setRunning(true);
-      setStatus("온몸이 화면에 들어오게 서고, 손을 들면 시작해요.");
+      setStatus("온몸이 화면에 들어오게 서고, 오른손을 들면 시작해요.");
 
       const ctx = canvas.getContext("2d");
       const loop = () => {
@@ -74,14 +72,14 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
             const result = lm.detectForVideo(video, nowMs);
             const now = nowMs / 1000;
 
-            const observations: Observation[] = (result.landmarks ?? []).map((marks) => {
-              const pts: Point[] = toPixels(marks, canvas.width, canvas.height);
-              return { sig: extractSignals(pts, CONFIG), pts };
+            const obs: SquatObservation[] = (result.landmarks ?? []).map((marks) => {
+              const pts = toPixels(marks, canvas.width, canvas.height);
+              return { pts, sig: extractSquat(pts, SQUAT_CONFIG) };
             });
 
-            s.update(observations, now);
-            draw(ctx, canvas, video, observations);
-            setSnap(s.snapshot(now));
+            const r = s.update(obs, now);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            setSnap(r);
           }
         }
         rafRef.current = requestAnimationFrame(loop);
@@ -93,22 +91,28 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
     }
   }, [maxPeople, stop]);
 
-  const total = snap?.totalCount ?? 0;
+  const people = snap?.people.filter((p) => p.established) ?? [];
+  const total = people.reduce((n, p) => n + p.count, 0);
+  const readyCount = people.filter((p) => p.ready).length;
 
   return (
     <Card>
       <div className="flex flex-wrap items-center gap-[var(--space-50)]">
-        <Tag tone="brand">카메라 줄넘기</Tag>
+        <Tag tone="brand">카메라 스쿼트</Tag>
         <Tag>앱 안에서 바로</Tag>
-        {snap ? <Tag tone={snap.session === "RUNNING" ? "success" : "neutral"}>{koState(snap)}</Tag> : null}
+        {snap ? (
+          <Tag tone={snap.state === "RUNNING" ? "success" : "neutral"}>
+            {snap.state === "RUNNING" ? "세는 중" : snap.state === "COUNTDOWN" ? "곧 시작" : `준비 ${readyCount}/${people.length}명`}
+          </Tag>
+        ) : null}
       </div>
 
       <div className="relative mt-[var(--space-150)] overflow-hidden rounded-[var(--radius-medium)] bg-black">
         <video ref={videoRef} playsInline muted className="hidden" />
         <canvas ref={canvasRef} className="w-full -scale-x-100" />
-        {snap && snap.countdown ? (
+        {snap?.countdownLeft ? (
           <div className="pointer-events-none absolute inset-0 grid place-items-center">
-            <span className="text-[6rem] font-bold text-white drop-shadow">{snap.countdown}</span>
+            <span className="text-[6rem] font-bold text-white drop-shadow">{Math.ceil(snap.countdownLeft)}</span>
           </div>
         ) : null}
       </div>
@@ -135,12 +139,16 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
         </label>
       </div>
 
-      {snap && snap.people.length > 1 ? (
+      {people.length > 1 ? (
         <div className="mt-[var(--space-150)] grid gap-[var(--space-100)] sm:grid-cols-2">
-          {snap.people.map((p, i) => (
-            <div key={p.id} className="flex items-center justify-between rounded-[var(--radius-small)] bg-[var(--brand-soft)] px-[var(--space-150)] py-[var(--space-100)]">
+          {people.map((p, i) => (
+            <div
+              key={p.id}
+              className="flex items-center justify-between rounded-[var(--radius-small)] bg-[var(--brand-soft)] px-[var(--space-150)] py-[var(--space-100)]"
+            >
               <span className="font-semibold" style={{ color: COLORS[i % COLORS.length] }}>
                 {p.id}번 {p.ready ? "✋ 준비" : ""}
+                {!p.legsVisible ? " · 다리 잘림" : ""}
               </span>
               <span className="font-bold">{p.count}회</span>
             </div>
@@ -157,8 +165,8 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
           <Button onClick={start}>카메라 켜기</Button>
         )}
         {running ? (
-          <Button variant="ghost" onClick={() => sessionRef.current?.reset(performance.now() / 1000)}>
-            다시 세기
+          <Button variant="ghost" onClick={() => sessionRef.current?.reset()}>
+            다시 준비
           </Button>
         ) : null}
         {total > 0 && onCount ? (
@@ -169,37 +177,8 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
       </BtnRow>
 
       <p className="mt-[var(--space-150)] text-[var(--font-size-200)] text-[var(--muted)]">
-        모델이 앱 안에 들어 있어 인터넷이 끊겨도 돌아요. 여러 명이면 좌우로 벌려 서세요.
+        모델이 앱 안에 있어 인터넷이 끊겨도 돌아요. 얕게 까딱이는 건 세지 않고, 다리가 화면에서 잘려도 엉덩이 높이로 셉니다.
       </p>
     </Card>
   );
-}
-
-function koState(s: Snapshot) {
-  if (s.session === "RUNNING") return "세는 중";
-  if (s.session === "COUNTDOWN") return "곧 시작";
-  return `준비 ${s.readyCount}/${s.presentCount}명`;
-}
-
-function draw(
-  ctx: CanvasRenderingContext2D,
-  canvas: HTMLCanvasElement,
-  video: HTMLVideoElement,
-  observations: Observation[],
-) {
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  observations.forEach((o, i) => {
-    const color = COLORS[i % COLORS.length];
-    ctx.strokeStyle = color;
-    ctx.lineWidth = Math.max(2, canvas.width / 320);
-    ctx.beginPath();
-    for (const [a, b] of SKELETON) {
-      const p = o.pts[a];
-      const q = o.pts[b];
-      if (!p || !q || p.v < 0.4 || q.v < 0.4) continue;
-      ctx.moveTo(p.x, p.y);
-      ctx.lineTo(q.x, q.y);
-    }
-    ctx.stroke();
-  });
 }
