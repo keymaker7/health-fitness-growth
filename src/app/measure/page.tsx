@@ -6,6 +6,7 @@ import { Open20Regular } from "@fluentui/react-icons";
 import { Card, PageTitle, Pivot, Tag } from "@/components/ui";
 import { MeasureRecordForm } from "@/components/MeasureRecordForm";
 import { StandardNote } from "@/components/StandardNote";
+import { AskAgentButton } from "@/components/AskAgentButton";
 import { MEASURE_TOOLS, getMeasureTool } from "@/features/measure/registry";
 
 export default function MeasurePage() {
@@ -62,6 +63,10 @@ function MeasureInner() {
         />
       </div>
       <MeasureRecordForm key={tool.id} tool={tool} />
+      <AskAgentButton
+        title="측정 방법이 헷갈리나요?"
+        hint="파울, 신호음, 준비물, 안전 수칙을 Teams 도우미가 매뉴얼 근거로 알려줘요."
+      />
       <p className="text-[var(--font-size-200)] text-[var(--muted)]">
         카메라를 쓰는 도구는 브라우저가 권한을 물어봐요. 화면이 비어 있으면 새 탭에서 열어 주세요.
       </p>

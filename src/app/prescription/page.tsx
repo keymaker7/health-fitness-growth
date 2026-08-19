@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { BtnRow, Button, Card, Meter, PageTitle, SectionTitle, Stat, Tag } from "@/components/ui";
 import { StandardNote } from "@/components/StandardNote";
+import { AskAgentButton } from "@/components/AskAgentButton";
 import { useApp } from "@/features/dashboard/AppProvider";
 import { DAILY_TARGET_MIN, buildPrescription } from "@/lib/prescription";
 
@@ -40,6 +41,13 @@ export default function PrescriptionPage() {
           </p>
         ) : null}
       </Card>
+
+      <div className="print-hidden">
+        <AskAgentButton
+          title="왜 이 숫자인가요?"
+          hint="주당 횟수와 목표가 왜 그렇게 정해졌는지 Teams 도우미에게 물어볼 수 있어요."
+        />
+      </div>
 
       <div className="grid gap-[var(--space-200)] sm:grid-cols-2 xl:grid-cols-4">
         <Card>
