@@ -20,7 +20,9 @@ export async function seedIfNeeded() {
 
   const user: User = {
     id: DEMO_USER_ID,
-    displayName: "김하준",
+    // 실명을 기본값으로 두지 않는다. 화면과 내보내기에 그대로 나가는 값이라
+    // 처음 켰을 때부터 학년-반-번호여야 한다.
+    displayName: "5-3-12",
     grade: 5,
     className: "3반",
     createdAt: nowIso(),
