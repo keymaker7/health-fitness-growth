@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Card, Meter, PageTitle, Pivot, Stat, Tag } from "@/components/ui";
+import { StandardNote } from "@/components/StandardNote";
 import { useApp } from "@/features/dashboard/AppProvider";
 import { formatDateKo, formatTime, startOfDay } from "@/lib/utils";
 import { EMOTION_LABEL } from "@/lib/emotions";
@@ -23,6 +24,7 @@ export default function JournalPage() {
   return (
     <div className="stack">
       <PageTitle kicker="나의 기록" title="오늘의 움직임과 성장" sub="운동 횟수, 주간 목표, 배지와 마음 변화를 한곳에서 봐요." />
+      <StandardNote screen="journal" />
       <div className="grid gap-[var(--space-200)] sm:grid-cols-3">
         <Card>
           <Stat label="성장 레벨" value={`Lv.${summary.level} ${summary.title}`} hint={`${summary.xp.toLocaleString("ko-KR")} XP`} />

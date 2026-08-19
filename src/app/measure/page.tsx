@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Open20Regular } from "@fluentui/react-icons";
 import { Card, PageTitle, Pivot, Tag } from "@/components/ui";
 import { MeasureRecordForm } from "@/components/MeasureRecordForm";
+import { StandardNote } from "@/components/StandardNote";
 import { MEASURE_TOOLS, getMeasureTool } from "@/features/measure/registry";
 
 export default function MeasurePage() {
@@ -28,6 +29,7 @@ function MeasureInner() {
         title="교실에서 바로 재는 도구"
         sub="종목마다 만든 측정 도구를 탭으로 열어요. 도구에서 나온 값을 아래에 적으면 나의 기록이 되고, 운동처방이 그 값에 맞게 바뀝니다."
       />
+      <StandardNote screen="measure" />
       <Pivot
         value={current}
         onChange={setCurrent}

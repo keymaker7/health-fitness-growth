@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Card, PageTitle, Tag } from "@/components/ui";
+import { StandardNote } from "@/components/StandardNote";
 import { sportComponents } from "@/lib/catalog";
 
 export default function SportFitnessPage() {
@@ -13,6 +14,7 @@ export default function SportFitnessPage() {
         title="스포츠를 더 잘하게 하는 힘"
         sub="순발력·민첩성·평형성·협응성은 건강체력과 구분해요. 각 요인을 고르면 맞는 운동 종목을 추천해요."
       />
+      <StandardNote screen="sport-fitness" />
       <div className="grid gap-[var(--space-200)] sm:grid-cols-2">
         {items.map((c) => (
           <Link key={c.id} href={`/sport-fitness/${c.id}`}>

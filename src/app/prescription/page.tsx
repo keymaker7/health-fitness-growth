@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { BtnRow, Button, Card, Meter, PageTitle, SectionTitle, Stat, Tag } from "@/components/ui";
+import { StandardNote } from "@/components/StandardNote";
 import { useApp } from "@/features/dashboard/AppProvider";
 import { DAILY_TARGET_MIN, buildPrescription } from "@/lib/prescription";
 
@@ -20,6 +21,7 @@ export default function PrescriptionPage() {
           title={`${user.displayName}의 4주 계획`}
           sub="지난 4주 동안 실제로 한 운동 기록에서 만들어졌어요. 기록이 바뀌면 처방도 바뀝니다."
         />
+        <StandardNote screen="prescription" />
       </div>
 
       <Card>

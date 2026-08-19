@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Card, PageTitle, Tag } from "@/components/ui";
+import { StandardNote } from "@/components/StandardNote";
 import { healthComponents } from "@/lib/catalog";
 
 const GROUPS = [
@@ -20,6 +21,7 @@ export default function HealthFitnessPage() {
         title="매일의 삶을 지키는 힘"
         sub="건강체력은 오래 움직이고, 힘을 내고, 몸을 부드럽게 쓰고, 몸의 구성을 돌보는 능력이에요. 각 요인을 고르면 맞는 운동 종목을 추천해요."
       />
+      <StandardNote screen="health-fitness" />
       <div className="grid gap-[var(--space-200)] sm:grid-cols-2">
         {GROUPS.map((g) => {
           const comps = items.filter((c) => g.ids.includes(c.id));
