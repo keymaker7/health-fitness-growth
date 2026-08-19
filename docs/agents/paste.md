@@ -11,8 +11,23 @@
      오른쪽 Connected agents 에 1, 2를 연결
 ```
 
-올릴 지식 파일: `knowledge-class.md`, `prescription-rules.md`, `grade6.md`  
-md가 안 받아지면 Word `.docx`로 저장해서 올립니다.
+올릴 지식 파일은 **md가 아니라 Word**입니다. Copilot Studio는 `.md`를 자주 거부합니다.
+
+폴더: `docs/agents/upload`
+
+측정 안내(1번)에 올릴 것:
+
+- `01-class-knowledge.docx`
+- `02-lesson-grade6.docx`
+- `03-paps-events.docx`  ← 교육청 매뉴얼 대신 이 파일. 원본 매뉴얼은 **없어도 됩니다.**
+
+처방 해설(2번)에 올릴 것:
+
+- `04-prescription-rules.docx`
+- `02-lesson-grade6.docx`
+- `01-class-knowledge.docx`
+
+교육청 PAPS 매뉴얼 PDF가 손에 있으면 나중에 추가하면 됩니다. 지금 막히면 건너뛰세요.
 
 ---
 
@@ -63,9 +78,11 @@ PAPS와 수업용 측정 도구의 방법, 준비물, 파울, 안전을 매뉴�
 ### Knowledge
 `Search all websites` 삭제 후 업로드:
 
-- `knowledge-class.md`
-- `grade6.md`
-- 교육청 PAPS 매뉴얼 (있으면)
+- `docs/agents/upload/01-class-knowledge.docx`
+- `docs/agents/upload/02-lesson-grade6.docx`
+- `docs/agents/upload/03-paps-events.docx`
+
+교육청 매뉴얼은 넣지 않습니다.
 
 ### Instructions (가운데 큰 칸 전부 지우 고 붙여넣기)
 
@@ -136,9 +153,9 @@ PAPS와 수업용 측정 도구의 방법, 준비물, 파울, 안전을 매뉴�
 ### Knowledge
 `Search all websites` 삭제 후:
 
-- `prescription-rules.md`
-- `grade6.md`
-- `knowledge-class.md`
+- `docs/agents/upload/04-prescription-rules.docx`
+- `docs/agents/upload/02-lesson-grade6.docx`
+- `docs/agents/upload/01-class-knowledge.docx`
 
 ### Instructions
 
