@@ -1,16 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Card, PageTitle } from "@/components/ui";
 import { DataTransfer } from "@/components/DataTransfer";
 import { useApp } from "@/features/dashboard/AppProvider";
 import { REFLECT_OFFICIAL } from "@/features/reflect/adapter";
 
 export default function SettingsPage() {
-  const { settings, updateSettings, user } = useApp();
-  const [name, setName] = useState(settings.studentName || user?.displayName || "");
-  const [before, setBefore] = useState(settings.beforeReflectUrl);
-  const [after, setAfter] = useState(settings.afterReflectUrl);
+  const { ready, settings, updateSettings, user } = useApp();
+  const [name, setName] = useState("");
+  const [before, setBefore] = useState("");
+  const [after, setAfter] = useState("");
+  const [filled, setFilled] = useState(false);
+
+  // 저장된 값은 나중에 불러와지므로 화면이 처음 그려질 때는 아직 비어 있다.
+  // 불러온 뒤 한 번만 칸을 채운다 — 그러지 않으면 번호가 안 보이고,
+  // 그 상태로 저장을 누르면 번호가 지워진다.
+  useEffect(() => {
+    if (!ready || filled) return;
+    setName(settings.studentName || user?.displayName || "");
+    setBefore(settings.beforeReflectUrl);
+    setAfter(settings.afterReflectUrl);
+    setFilled(true);
+  }, [ready, filled, settings, user]);
 
   return (
     <div className="stack">
