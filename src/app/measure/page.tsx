@@ -73,15 +73,26 @@ function MeasureInner() {
           </a>
         )}
         {tool.alsoAt ? (
-          <a
-            href={tool.alsoAt.url}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-[var(--space-100)] inline-flex items-center gap-[var(--space-50)] text-[var(--font-size-300)] font-semibold text-[var(--brand)] hover:underline"
-          >
-            <Open20Regular />
-            {tool.alsoAt.label}
-          </a>
+          tool.alsoAt.url ? (
+            <a
+              href={tool.alsoAt.url}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-[var(--space-100)] inline-flex items-center gap-[var(--space-50)] text-[var(--font-size-300)] font-semibold text-[var(--brand)] hover:underline"
+            >
+              <Open20Regular />
+              {tool.alsoAt.label}
+            </a>
+          ) : (
+            // 아직 링크가 없는 갈래 — 자리만 보여준다. url 이 채워지면 위의 진짜 링크로 바뀐다.
+            <span
+              aria-disabled
+              className="mt-[var(--space-100)] inline-flex cursor-default items-center gap-[var(--space-50)] text-[var(--font-size-300)] font-semibold text-[var(--muted)]"
+            >
+              <Open20Regular />
+              {tool.alsoAt.label}
+            </span>
+          )
         ) : null}
       </Card>
 

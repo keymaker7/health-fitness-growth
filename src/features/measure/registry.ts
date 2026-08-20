@@ -12,7 +12,8 @@ export interface MeasureTool {
   exerciseIds: string[];
   /** 측정 결과를 앱 기록으로 남길 때 쓰는 종목과 단위 */
   record: { exerciseId: string; exerciseName: string; exerciseType: string; unit: string };
-  /** 같은 종목의 다른 갈래(기기가 필요한 것 등). 탭을 늘리지 않고 링크로만 안내한다. */
+  /** 같은 종목의 다른 갈래(기기가 필요한 것 등). 탭을 늘리지 않고 링크로만 안내한다.
+   *  url 이 빈 문자열이면 «제작 중» — 자리만 보여주고 누르지 못하게 그린다. */
   alsoAt?: { label: string; url: string };
   /** 화면 아래에 붙는 종목별 사용 방법. 탭을 고르면 그 종목 것만 보인다. */
   guide: { ready: string[]; steps: string[]; tips: string[] };
@@ -31,6 +32,8 @@ export const MEASURE_TOOLS: MeasureTool[] = [
     papsEventIds: [],
     exerciseIds: ["jump-rope"],
     record: { exerciseId: "jump-rope", exerciseName: "줄넘기", exerciseType: "cardio", unit: "회" },
+    // keymaker님이 만드는 중 — 링크가 오면 url 만 채우면 된다 (2026-08-21)
+    alsoAt: { label: "줄넘기 대결하기 (제작 중 — 곧 열려요)", url: "" },
     guide: {
       ready: [
         "발끝까지 온몸이 화면에 들어오게 서요. 여러 명이면 좌우로 벌려 서요.",
