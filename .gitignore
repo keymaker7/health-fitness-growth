@@ -41,3 +41,6 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# exFAT 가 만드는 AppleDouble 잡파일
+._*
