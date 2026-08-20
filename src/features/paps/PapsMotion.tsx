@@ -1,6 +1,32 @@
 "use client";
 
+/**
+ * 종목 안내 그림. keymaker님이 만든 측정 안내 포스터(8종)가 있는 종목은
+ * 그 그림을 보여주고, 아직 그림이 없는 종목은 예전 막대 사람 애니메이션을 그대로 쓴다.
+ * 그림은 public/paps/<eventId>.jpg — 글자가 많은 인포그래픽이라 잘라내지 않고 원래 비율로 보여준다.
+ */
+
+const EVENT_IMAGES: Record<string, string> = {
+  pacer: "/paps/pacer.jpg",
+  "sit-and-reach": "/paps/sit-and-reach.jpg",
+  "push-up": "/paps/push-up.jpg",
+  "curl-up": "/paps/curl-up.jpg",
+  grip: "/paps/grip.jpg",
+  "standing-long-jump": "/paps/standing-long-jump.jpg",
+  bmi: "/paps/bmi.jpg",
+  "body-fat": "/paps/body-fat.jpg",
+};
+
 export function PapsMotion({ eventId }: { eventId: string }) {
+  const img = EVENT_IMAGES[eventId];
+  if (img) {
+    return (
+      <div className="card overflow-hidden bg-[var(--colorNeutralBackground2)] p-0">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={img} alt="측정 방법 안내 그림" className="block h-auto w-full" loading="lazy" />
+      </div>
+    );
+  }
   return (
     <div className="card flex h-40 items-end justify-center overflow-hidden bg-[var(--colorNeutralBackground2)]">
       <div className={`relative h-28 w-28 ${anim(eventId)}`}>
