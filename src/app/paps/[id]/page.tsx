@@ -6,6 +6,7 @@ import { Button, Card, PageTitle } from "@/components/ui";
 import { getPapsEvent } from "@/lib/catalog";
 import { PapsMotion } from "@/features/paps/PapsMotion";
 import { measureToolsForPaps } from "@/features/measure/registry";
+import { Emph } from "@/components/Emph";
 
 export default function PapsDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -34,7 +35,7 @@ export default function PapsDetailPage() {
         <p className="font-semibold">측정 방법</p>
         <ol className="mt-[var(--space-100)] list-decimal space-y-[var(--space-100)] pl-5">
           {ev.method.map((m) => (
-            <li key={m}>{m}</li>
+            <li key={m}><Emph text={m} /></li>
           ))}
         </ol>
       </Card>
@@ -42,7 +43,7 @@ export default function PapsDetailPage() {
         <p className="font-semibold">올바른 자세</p>
         <ul className="mt-[var(--space-100)] list-disc space-y-[var(--space-100)] pl-5">
           {ev.posture.map((m) => (
-            <li key={m}>{m}</li>
+            <li key={m}><Emph text={m} /></li>
           ))}
         </ul>
       </Card>
@@ -50,7 +51,7 @@ export default function PapsDetailPage() {
         <p className="font-semibold">주의사항</p>
         <ul className="mt-[var(--space-100)] list-disc space-y-[var(--space-100)] pl-5">
           {ev.cautions.map((m) => (
-            <li key={m}>{m}</li>
+            <li key={m}><Emph text={m} /></li>
           ))}
         </ul>
       </Card>

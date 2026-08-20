@@ -200,7 +200,7 @@ export function SquatCamera({ onCount }: { onCount?: (total: number) => void }) 
       </BtnRow>
 
       <p className="mt-[var(--space-150)] text-[var(--font-size-200)] text-[var(--muted)]">
-        모델이 앱 안에 있어 인터넷이 끊겨도 돌아요. 얕게 까딱이는 건 세지 않고, 다리가 화면에서 잘려도 엉덩이 높이로 셉니다.
+        모델이 앱 안에 있어 <b className="font-semibold text-[var(--brand-ink)]">인터넷이 끊겨도</b> 돌아요. <b className="font-semibold">얕게 까딱이는 건 세지 않고</b>, 다리가 화면에서 잘려도 <b className="font-semibold">엉덩이 높이</b>로 셉니다.
       </p>
     </Card>
   );

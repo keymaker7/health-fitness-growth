@@ -237,8 +237,8 @@ export function LongJumpCamera({ onCount }: { onCount?: (total: number) => void 
       </BtnRow>
 
       <p className="mt-[var(--space-150)] text-[var(--font-size-200)] text-[var(--muted)]">
-        바닥에 직사각형을 그리고 네 귀퉁이를 눌러 실제 길이를 넣으면, 화면 좌표가 실제 cm로 바뀝니다.
-        카메라는 옆에서 바닥이 잘 보이게 두세요. 모델이 앱 안에 있어 인터넷이 끊겨도 돕니다.
+        바닥에 직사각형을 그리고 <b className="font-semibold text-[var(--brand-ink)]">네 귀퉁이</b>를 눌러 <b className="font-semibold">실제 길이</b>를 넣으면, 화면 좌표가 실제 cm로 바뀝니다.
+        카메라는 <b className="font-semibold">옆에서 바닥이 잘 보이게</b> 두세요. 모델이 앱 안에 있어 인터넷이 끊겨도 돕니다.
       </p>
     </Card>
   );

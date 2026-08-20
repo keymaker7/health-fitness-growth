@@ -217,7 +217,7 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
       </BtnRow>
 
       <p className="mt-[var(--space-150)] text-[var(--font-size-200)] text-[var(--muted)]">
-        모델이 앱 안에 들어 있어 인터넷이 끊겨도 돌아요. 여러 명이면 좌우로 벌려 서세요.
+        모델이 앱 안에 들어 있어 <b className="font-semibold text-[var(--brand-ink)]">인터넷이 끊겨도</b> 돌아요. 여러 명이면 <b className="font-semibold">좌우로 벌려</b> 서세요.
       </p>
     </Card>
   );

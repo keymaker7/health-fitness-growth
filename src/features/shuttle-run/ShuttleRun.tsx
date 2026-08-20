@@ -607,10 +607,13 @@ export function ShuttleRun({ onCount }: { onCount?: (total: number) => void }) {
       </div>
       {camOn ? (
         <p className="mt-[var(--space-100)] text-[var(--font-size-200)] text-[var(--muted)]">
-          파란 세로선 = 양쪽 콘(선) · 노란 가로선 = 레인 위·아래 경계 — 손가락으로 끌어 실제 위치에 맞추세요.
-          초록 점이 아이 위치예요. 카메라는 옆(측면)에 두고, 아무도 없을 때 «배경 다시 잡기»를 누르세요.
-          횟수는 <b>신호음마다 1회</b>씩만 올라가요 — 신호음이 울리는 순간 목표 선을 넘어 있으면 인정되고,
-          신호음 전에 여러 번 왕복해도 더 올라가지 않아요 (PAPS 규정 그대로).
+          <b className="font-semibold text-[#3b6fe0]">파란 세로선</b> = 양쪽 콘(선) ·{" "}
+          <b className="font-semibold text-[#b57f00]">노란 가로선</b> = 레인 위·아래 경계 — 손가락으로 끌어 실제 위치에
+          맞추세요. <b className="font-semibold text-[#1e9e5a]">초록 점</b>이 아이 위치예요. 카메라는{" "}
+          <b className="font-semibold">옆(측면)</b>에 두고, 아무도 없을 때{" "}
+          <b className="font-semibold text-[var(--brand-ink)]">«배경 다시 잡기»</b>를 누르세요. 횟수는{" "}
+          <b className="font-semibold text-[var(--brand-ink)]">신호음마다 1회</b>씩만 올라가요 — 신호음이 울리는 순간
+          목표 선을 넘어 있으면 인정되고, 신호음 전에 여러 번 왕복해도 더 올라가지 않아요 (PAPS 규정 그대로).
         </p>
       ) : null}
 
@@ -748,9 +751,11 @@ export function ShuttleRun({ onCount }: { onCount?: (total: number) => void }) {
       ) : null}
 
       <p className="mt-[var(--space-150)] text-[var(--font-size-200)] text-[var(--muted)]">
-        신호음 일정은 교육부 매뉴얼 그대로예요 (최대 {maxLaps(distance)}회). 신호음이 울리기 전에 반대편 선을 완전히 통과해야 인정됩니다.
-        처음 한 번 놓치면 그 자리에서 돌아 뛰고, 두 번째로 놓치면 그 학생의 측정이 끝나요.
-        카메라 없이도 잴 수 있어요 — 그때는 레인 카드를 눌러 «미도달»만 표시해 주면 됩니다.
+        신호음 일정은 교육부 매뉴얼 그대로예요 (최대 <b className="font-semibold">{maxLaps(distance)}회</b>).{" "}
+        <b className="font-semibold text-[var(--brand-ink)]">신호음이 울리기 전에</b> 반대편 선을 완전히 통과해야
+        인정됩니다. 처음 한 번 놓치면 <b className="font-semibold">그 자리에서 돌아</b> 뛰고,{" "}
+        <b className="font-semibold">두 번째로 놓치면</b> 그 학생의 측정이 끝나요. 카메라 없이도 잴 수 있어요 —
+        그때는 레인 카드를 눌러 <b className="font-semibold text-[var(--brand-ink)]">«미도달»</b>만 표시해 주면 됩니다.
       </p>
     </Card>
   );

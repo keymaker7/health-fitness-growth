@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Open20Regular } from "@fluentui/react-icons";
 import { Card, PageTitle, Pivot, Tag } from "@/components/ui";
 import { MeasureRecordForm } from "@/components/MeasureRecordForm";
+import { Emph } from "@/components/Emph";
 import { StandardNote } from "@/components/StandardNote";
 import { AskAgentButton } from "@/components/AskAgentButton";
 import { CameraCounter } from "@/features/jump-rope/CameraCounter";
@@ -109,19 +110,19 @@ function MeasureInner() {
         <p className="mt-[var(--space-150)] text-[var(--font-size-300)] font-semibold">준비</p>
         <ul className="mt-[var(--space-50)] list-disc space-y-[var(--space-50)] pl-[var(--space-300)] text-[var(--font-size-300)]">
           {tool.guide.ready.map((s, i) => (
-            <li key={i}>{s}</li>
+            <li key={i}><Emph text={s} /></li>
           ))}
         </ul>
         <p className="mt-[var(--space-150)] text-[var(--font-size-300)] font-semibold">순서</p>
         <ol className="mt-[var(--space-50)] list-decimal space-y-[var(--space-50)] pl-[var(--space-300)] text-[var(--font-size-300)]">
           {tool.guide.steps.map((s, i) => (
-            <li key={i}>{s}</li>
+            <li key={i}><Emph text={s} /></li>
           ))}
         </ol>
         <p className="mt-[var(--space-150)] text-[var(--font-size-300)] font-semibold">알아두면 좋아요</p>
         <ul className="mt-[var(--space-50)] list-disc space-y-[var(--space-50)] pl-[var(--space-300)] text-[var(--font-size-300)] text-[var(--muted)]">
           {tool.guide.tips.map((s, i) => (
-            <li key={i}>{s}</li>
+            <li key={i}><Emph text={s} /></li>
           ))}
         </ul>
       </Card>
