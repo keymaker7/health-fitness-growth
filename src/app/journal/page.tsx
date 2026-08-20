@@ -40,7 +40,7 @@ export default function JournalPage() {
           <div className="mt-[var(--space-150)]">
             <Meter
               label={summary.maxed ? "최고 단계" : "다음 레벨"}
-              hint={summary.maxed ? "레전드이" : `${summary.xpInto.toLocaleString("ko-KR")} / ${summary.xpSpan.toLocaleString("ko-KR")}`}
+              hint={summary.maxed ? summary.title : `${summary.xpInto.toLocaleString("ko-KR")} / ${summary.xpSpan.toLocaleString("ko-KR")}`}
               value={summary.progress * 100}
             />
           </div>

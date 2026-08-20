@@ -13,7 +13,7 @@ const DESTINATIONS: { href: string; keys: string[] }[] = [
   { href: "/measure", keys: ["측정", "측정 도구", "카운터", "왕복오래달리기 측정", "제자리멀리뛰기 측정"] },
   { href: "/journal", keys: ["기록", "일지", "배지"] },
   { href: "/portfolio", keys: ["포트폴리오", "성장 포트폴리오", "인쇄", "pdf"] },
-  { href: "/growth", keys: ["성장", "그래프", "차트", "레벨", "새싹이", "챌린저", "레전드이"] },
+  { href: "/growth", keys: ["성장", "그래프", "차트", "레벨", "새싹", "루틴 마스터", "최고의 나"] },
   { href: "/brain-break", keys: ["호흡", "스트레칭", "brain break", "reflect"] },
 ];
 

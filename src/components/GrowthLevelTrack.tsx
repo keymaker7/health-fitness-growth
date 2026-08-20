@@ -46,7 +46,7 @@ export function GrowthLevelTrack({
       <div className="mt-[var(--space-150)]">
         <Meter
           label={maxed ? "최고 단계" : "다음 레벨"}
-          hint={maxed ? "레전드이" : `${xpInto.toLocaleString("ko-KR")} / ${xpSpan.toLocaleString("ko-KR")} · 남은 ${xpToNext?.toLocaleString("ko-KR")} XP`}
+          hint={maxed ? title : `${xpInto.toLocaleString("ko-KR")} / ${xpSpan.toLocaleString("ko-KR")} · 남은 ${xpToNext?.toLocaleString("ko-KR")} XP`}
           value={progress * 100}
         />
       </div>
