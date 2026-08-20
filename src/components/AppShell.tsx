@@ -6,6 +6,8 @@ import { useEffect, useRef, useState, type ComponentType } from "react";
 import {
   Alert20Filled,
   Alert20Regular,
+  ArrowBidirectionalLeftRight20Filled,
+  ArrowBidirectionalLeftRight20Regular,
   ArrowRepeatAll20Filled,
   ArrowRepeatAll20Regular,
   BookOpen20Filled,
@@ -50,6 +52,9 @@ const NAV: { href: string; label: string; Regular: IconCmp; Filled: IconCmp; ali
   { href: "/sport-fitness", label: "운동체력", Regular: Sport20Regular, Filled: Sport20Filled },
   { href: "/prescription", label: "맞춤 운동처방", Regular: ClipboardPulse20Regular, Filled: ClipboardPulse20Filled },
   { href: "/measure", label: "측정 도구", Regular: Timer20Regular, Filled: Timer20Filled },
+  // 제자리멀리뛰기는 «측정 도구» 안의 네 탭 중 하나라 메뉴에서 안 보인다는 말을 들었다.
+  // 링크에 물음표가 붙어 있어 isActive 는 이 줄을 절대 켜지 않는다 — «측정 도구» 하나만 켜진다(의도).
+  { href: "/measure?tool=long-jump", label: "제자리멀리뛰기", Regular: ArrowBidirectionalLeftRight20Regular, Filled: ArrowBidirectionalLeftRight20Filled },
   { href: "/games/multi-jump", label: "AI 줄넘기", Regular: ArrowRepeatAll20Regular, Filled: ArrowRepeatAll20Filled },
   { href: "/games/squat-race", label: "스쿼트 게임", Regular: PersonRunning20Regular, Filled: PersonRunning20Filled },
   { href: "/portfolio", label: "성장 포트폴리오", Regular: DocumentOnePage20Regular, Filled: DocumentOnePage20Filled },
