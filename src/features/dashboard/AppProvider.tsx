@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -71,6 +72,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [sessions, setSessions] = useState<WorkoutSession[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
+  // 일지는 **연달아 두 번 저장**되는 경우가 있다 (글을 저장하고, 곧바로 도우미 답을 저장).
+  // useState 값만 보면 두 번째 저장이 «저장 직전» 목록을 보게 되어 방금 쓴 글을 지운다.
+  // 그래서 최신 목록을 ref 로 함께 들고 있는다.
+  const entriesRef = useRef<JournalEntry[]>([]);
+  const applyEntries = useCallback((list: JournalEntry[]) => {
+    entriesRef.current = list;
+    setEntries(list);
+  }, []);
   const [settings, setSettings] = useState<AppSettings>({
     beforeReflectUrl: "",
     afterReflectUrl: "",
@@ -91,10 +100,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setPaps(recs);
     setSessions(sess);
     setAchievements(ach);
-    setEntries(ent);
+    applyEntries(ent);
     setSettings(st);
     setReady(true);
-  }, []);
+  }, [applyEntries]);
 
   useEffect(() => {
     // IndexedDB에서 학생 데이터를 한 번 불러옵니다.
@@ -134,7 +143,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     async (date: string, patch: Partial<Pick<JournalEntry, "text" | "mood" | "feedback">>) => {
       const id = `${DEMO_USER_ID}:${date}`;
       const now = new Date().toISOString();
-      const prev = entries.find((e) => e.id === id);
+      const prev = entriesRef.current.find((e) => e.id === id);
       const next: JournalEntry = {
         id,
         userId: DEMO_USER_ID,
@@ -148,10 +157,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
         updatedAt: now,
       };
       await putEntry(next);
-      setEntries((list) => [next, ...list.filter((e) => e.id !== id)].sort((a, b) => (a.date < b.date ? 1 : -1)));
+      applyEntries(
+        [next, ...entriesRef.current.filter((e) => e.id !== id)].sort((a, b) => (a.date < b.date ? 1 : -1)),
+      );
       return next;
     },
-    [entries],
+    [applyEntries],
   );
 
   const updateSettings = useCallback(async (s: AppSettings) => {

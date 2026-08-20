@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Card, Tag } from "@/components/ui";
 import { useApp } from "@/features/dashboard/AppProvider";
 import { EMOTION_LABEL } from "@/lib/emotions";
@@ -28,6 +28,19 @@ export function JournalEntryCard({ date = dayKey() }: { date?: string }) {
   const [text, setText] = useState(entry?.text ?? "");
   const [mood, setMood] = useState<EmotionKey | undefined>(entry?.mood);
   const [saved, setSaved] = useState<"idle" | "saving" | "done">("idle");
+  const [agentOn, setAgentOn] = useState(false);
+  const [asking, setAsking] = useState(false);
+  const [askError, setAskError] = useState("");
+
+  // 도우미가 연결돼 있을 때만 버튼을 보여준다 (연결 전에도 앱은 그대로 쓴다)
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/journal-feedback")
+      .then((r) => r.json())
+      .then((d) => { if (alive) setAgentOn(Boolean(d?.enabled)); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
 
   const todaySessions = sessions.filter((s) => dayOf(s.startTime) === date);
   const isToday = date === dayKey();
@@ -36,6 +49,35 @@ export function JournalEntryCard({ date = dayKey() }: { date?: string }) {
     setSaved("saving");
     await saveEntry(date, { text: text.trim(), mood });
     setSaved("done");
+  }
+
+  /** 일지를 도우미에게 보내고 답을 그날 일지에 남긴다 */
+  async function ask() {
+    setAsking(true);
+    setAskError("");
+    try {
+      // 묻기 전에 먼저 저장한다 — 답만 받고 글이 안 남으면 아이가 쓴 것이 사라진다
+      await saveEntry(date, { text: text.trim(), mood });
+      const res = await fetch("/api/journal-feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          date,
+          mood: mood ? EMOTION_LABEL[mood] : undefined,
+          text: text.trim(),
+          workouts: todaySessions.map((s) => ({
+            name: s.exerciseName, count: s.count, durationSec: s.durationSec,
+          })),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error ?? "답을 받지 못했어요.");
+      await saveEntry(date, { feedback: String(data.feedback ?? "") });
+      setSaved("done");
+    } catch (e) {
+      setAskError(e instanceof Error ? e.message : "답을 받지 못했어요.");
+    }
+    setAsking(false);
   }
 
   return (
@@ -101,12 +143,20 @@ export function JournalEntryCard({ date = dayKey() }: { date?: string }) {
         <Button onClick={save} disabled={saved === "saving" || (!text.trim() && !mood)}>
           {saved === "saving" ? "저장 중…" : "일지 저장"}
         </Button>
-        {saved === "done" ? (
+        {agentOn ? (
+          <Button variant="soft" onClick={ask} disabled={asking || (!text.trim() && !todaySessions.length)}>
+            {asking ? "도우미가 읽는 중…" : "도우미에게 보여주기"}
+          </Button>
+        ) : null}
+        {saved === "done" && !asking ? (
           <span className="text-[var(--font-size-300)] font-semibold text-[var(--status-success,var(--brand))]">
             저장했어요
           </span>
         ) : null}
       </div>
+      {askError ? (
+        <p className="mt-[var(--space-100)] text-[var(--font-size-300)] text-[var(--status-danger,#c00)]">{askError}</p>
+      ) : null}
 
       {entry?.feedback ? (
         <div className="mt-[var(--space-200)] rounded-[var(--radius-medium)] border border-[var(--line)] bg-[var(--brand-soft)] p-[var(--space-150)]">
