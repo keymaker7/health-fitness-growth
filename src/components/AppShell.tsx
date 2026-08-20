@@ -47,14 +47,15 @@ const NAV: { href: string; label: string; Regular: IconCmp; Filled: IconCmp; ali
   { href: "/", label: "홈", Regular: Home20Regular, Filled: Home20Filled },
   // «나의 기록» 을 홈 바로 밑에 둔다 — 아이가 매일 여는 곳이라 맨 위에 있어야 한다
   { href: "/journal", label: "나의 기록", Regular: CalendarLtr20Regular, Filled: CalendarLtr20Filled, aliases: ["/growth", "/my-fitness"] },
-  { href: "/paps", label: "PAPS", Regular: BookOpen20Regular, Filled: BookOpen20Filled },
-  { href: "/health-fitness", label: "건강체력", Regular: HeartPulse20Regular, Filled: HeartPulse20Filled },
-  { href: "/sport-fitness", label: "운동체력", Regular: Sport20Regular, Filled: Sport20Filled },
-  { href: "/prescription", label: "맞춤 운동처방", Regular: ClipboardPulse20Regular, Filled: ClipboardPulse20Filled },
+  // «측정 도구» 는 나의 기록 바로 아래 — 재고 바로 기록하는 흐름이 이어지도록
   { href: "/measure", label: "측정 도구", Regular: Timer20Regular, Filled: Timer20Filled },
   // 제자리멀리뛰기는 «측정 도구» 안의 네 탭 중 하나라 메뉴에서 안 보인다는 말을 들었다.
   // 링크에 물음표가 붙어 있어 isActive 는 이 줄을 절대 켜지 않는다 — «측정 도구» 하나만 켜진다(의도).
   { href: "/measure?tool=long-jump", label: "제자리멀리뛰기", Regular: ArrowBidirectionalLeftRight20Regular, Filled: ArrowBidirectionalLeftRight20Filled },
+  { href: "/paps", label: "PAPS", Regular: BookOpen20Regular, Filled: BookOpen20Filled },
+  { href: "/health-fitness", label: "건강체력", Regular: HeartPulse20Regular, Filled: HeartPulse20Filled },
+  { href: "/sport-fitness", label: "운동체력", Regular: Sport20Regular, Filled: Sport20Filled },
+  { href: "/prescription", label: "맞춤 운동처방", Regular: ClipboardPulse20Regular, Filled: ClipboardPulse20Filled },
   { href: "/games/multi-jump", label: "AI 줄넘기", Regular: ArrowRepeatAll20Regular, Filled: ArrowRepeatAll20Filled },
   { href: "/games/squat-race", label: "스쿼트 게임", Regular: PersonRunning20Regular, Filled: PersonRunning20Filled },
   { href: "/portfolio", label: "성장 포트폴리오", Regular: DocumentOnePage20Regular, Filled: DocumentOnePage20Filled },
