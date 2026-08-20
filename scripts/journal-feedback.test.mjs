@@ -83,6 +83,9 @@ try {
     ok('일지·마음·운동이 함께 전달된다',
       seenPrompt.includes('일지:') && seenPrompt.includes('뿌듯') && seenPrompt.includes('오늘 한 운동'),
       seenPrompt.replace(/\n/g, ' / '));
+    // SharePoint 에 «누구의 일지인가» 를 남기려면 번호가 함께 가야 한다
+    ok('학생 번호 칸이 함께 간다', seenPrompt.includes('학생 번호:'),
+      seenPrompt.split('\n')[0]);
 
     await page.reload({ waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(1500);

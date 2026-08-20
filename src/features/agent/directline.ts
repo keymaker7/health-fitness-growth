@@ -109,14 +109,21 @@ export async function askAgent(text: string, { timeoutMs = 25_000 } = {}) {
   throw new Error("도우미가 시간 안에 답하지 않았습니다.");
 }
 
-/** 일지·운동·마음을 도우미가 읽을 한 덩어리로 만든다 */
+/**
+ * 일지·운동·마음을 도우미가 읽을 한 덩어리로 만든다.
+ *
+ * **학생 번호를 함께 싣는다.** 도우미가 답을 SharePoint 에 기록할 때 «누구의 일지인가» 가
+ * 있어야 하기 때문이다. 번호만 보낸다 — 이름은 앱이 애초에 받지 않는다.
+ */
 export function buildPrompt(input: {
   date: string;
+  student?: string;
   mood?: string;
   text: string;
   workouts: { name: string; count: number; durationSec: number }[];
 }) {
   const lines = [
+    input.student ? `학생 번호: ${input.student}` : "학생 번호: (명단 없음)",
     `날짜: ${input.date}`,
     input.mood ? `오늘의 마음: ${input.mood}` : "오늘의 마음: 고르지 않음",
     input.workouts.length

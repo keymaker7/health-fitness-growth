@@ -23,7 +23,7 @@ const MOOD_EMOJI: Record<EmotionKey, string> = {
  * 내용을 갈아 끼웠는데, 저장하면 그 effect 가 다시 돌아 «저장했어요» 를 즉시 지워 버렸다.
  */
 export function JournalEntryCard({ date = dayKey() }: { date?: string }) {
-  const { entries, sessions, saveEntry } = useApp();
+  const { entries, sessions, saveEntry, activeStudent } = useApp();
   const entry = entries.find((e) => e.date === date);
   const [text, setText] = useState(entry?.text ?? "");
   const [mood, setMood] = useState<EmotionKey | undefined>(entry?.mood);
@@ -63,6 +63,7 @@ export function JournalEntryCard({ date = dayKey() }: { date?: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           date,
+          student: activeStudent ?? undefined,
           mood: mood ? EMOTION_LABEL[mood] : undefined,
           text: text.trim(),
           workouts: todaySessions.map((s) => ({
