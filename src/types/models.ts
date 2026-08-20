@@ -149,6 +149,11 @@ export interface JournalEntry {
   /** 이 일지에 대한 도우미의 답. 받은 것만 남는다 */
   feedback?: string;
   feedbackAt?: string;
+  /**
+   * 그날 Microsoft Reflect 체크인을 마쳤다고 아이가 표시했는지.
+   * 공식 체크인은 Reflect 안에 남고, 여기에는 «했다»는 표시만 둔다.
+   */
+  reflectConfirmed?: boolean;
   createdAt: string;
   updatedAt: string;
 }

@@ -72,7 +72,7 @@ export default function BrainBreakPage() {
       </Card>
       <Card>
         <p className="font-semibold">감정 체크하기</p>
-        <p className="mt-[var(--space-100)] text-[var(--font-size-300)] text-[var(--muted)]">공식 체크인은 Reflect, 수업 연결 기록은 운동 전후 화면에서 남깁니다.</p>
+        <p className="mt-[var(--space-100)] text-[var(--font-size-300)] text-[var(--muted)]">공식 체크인은 Reflect에서, 수업 연결 기록은 운동 전후 화면에서, 하루를 가볍게 돌아보는 「오늘의 마음」은 일지에서 남깁니다.</p>
       </Card>
     </div>
   );

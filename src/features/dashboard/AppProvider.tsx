@@ -67,7 +67,10 @@ interface AppState {
   }>;
   saveEmotion: (row: Omit<EmotionCheckIn, "id" | "userId" | "createdAt">) => Promise<void>;
   /** 하루치 일지를 쓰거나 고친다. 같은 날짜면 덮어쓴다 (하루에 한 장) */
-  saveEntry: (date: string, patch: Partial<Pick<JournalEntry, "text" | "mood" | "feedback">>) => Promise<JournalEntry>;
+  saveEntry: (
+    date: string,
+    patch: Partial<Pick<JournalEntry, "text" | "mood" | "feedback" | "reflectConfirmed">>,
+  ) => Promise<JournalEntry>;
   updateSettings: (s: AppSettings) => Promise<void>;
   rename: (name: string) => Promise<void>;
 }
@@ -162,7 +165,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const saveEntry = useCallback(
-    async (date: string, patch: Partial<Pick<JournalEntry, "text" | "mood" | "feedback">>) => {
+    async (
+      date: string,
+      patch: Partial<Pick<JournalEntry, "text" | "mood" | "feedback" | "reflectConfirmed">>,
+    ) => {
       const id = `${userIdRef.current}:${date}`;
       const now = new Date().toISOString();
       const prev = entriesRef.current.find((e) => e.id === id);
@@ -175,6 +181,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         feedback: patch.feedback ?? prev?.feedback,
         // 도우미 답이 이번에 새로 온 경우에만 시각을 갱신한다
         feedbackAt: patch.feedback && patch.feedback !== prev?.feedback ? now : prev?.feedbackAt,
+        reflectConfirmed: patch.reflectConfirmed ?? prev?.reflectConfirmed,
         createdAt: prev?.createdAt ?? now,
         updatedAt: now,
       };

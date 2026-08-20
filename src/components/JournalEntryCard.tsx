@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button, Card, Tag } from "@/components/ui";
 import { useApp } from "@/features/dashboard/AppProvider";
+import { getReflectAdapter } from "@/features/reflect/adapter";
 import { EMOTION_LABEL } from "@/lib/emotions";
 import { dayKey, dayOf, labelKo } from "@/lib/day";
 import { formatTime } from "@/lib/utils";
@@ -23,10 +24,12 @@ const MOOD_EMOJI: Record<EmotionKey, string> = {
  * 내용을 갈아 끼웠는데, 저장하면 그 effect 가 다시 돌아 «저장했어요» 를 즉시 지워 버렸다.
  */
 export function JournalEntryCard({ date = dayKey() }: { date?: string }) {
-  const { entries, sessions, saveEntry, activeStudent } = useApp();
+  const { entries, sessions, saveEntry, activeStudent, settings } = useApp();
   const entry = entries.find((e) => e.date === date);
   const [text, setText] = useState(entry?.text ?? "");
   const [mood, setMood] = useState<EmotionKey | undefined>(entry?.mood);
+  // Reflect 체크인은 Reflect 안에 남는다. 여기 두는 건 «마쳤다»는 표시뿐이다.
+  const [reflectDone, setReflectDone] = useState(Boolean(entry?.reflectConfirmed));
   const [saved, setSaved] = useState<"idle" | "saving" | "done">("idle");
   const [agentOn, setAgentOn] = useState(false);
   const [asking, setAsking] = useState(false);
@@ -47,7 +50,7 @@ export function JournalEntryCard({ date = dayKey() }: { date?: string }) {
 
   async function save() {
     setSaved("saving");
-    await saveEntry(date, { text: text.trim(), mood });
+    await saveEntry(date, { text: text.trim(), mood, reflectConfirmed: reflectDone });
     setSaved("done");
   }
 
@@ -57,7 +60,7 @@ export function JournalEntryCard({ date = dayKey() }: { date?: string }) {
     setAskError("");
     try {
       // 묻기 전에 먼저 저장한다 — 답만 받고 글이 안 남으면 아이가 쓴 것이 사라진다
-      await saveEntry(date, { text: text.trim(), mood });
+      await saveEntry(date, { text: text.trim(), mood, reflectConfirmed: reflectDone });
       const res = await fetch("/api/journal-feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -109,6 +112,11 @@ export function JournalEntryCard({ date = dayKey() }: { date?: string }) {
       )}
 
       <p className="mt-[var(--space-200)] text-[var(--font-size-300)] font-semibold">오늘의 마음</p>
+      {/* 두 곳에서 마음을 묻기 때문에 **무엇이 무엇인지** 한 줄로 갈라 준다.
+          이 줄이 없으면 «아까 Reflect에서 했는데 또 하네?» 가 된다. */}
+      <p className="mt-[var(--space-50)] text-[var(--font-size-200)] text-[var(--muted)]">
+        수업 중 공식 감정 체크인은 Microsoft Reflect에서 하고, 여기 「오늘의 마음」은 하루를 가볍게 돌아보는 칸이에요.
+      </p>
       <div className="mt-[var(--space-100)] flex flex-wrap gap-[var(--space-100)]">
         {MOODS.map((m) => (
           <button
@@ -128,6 +136,28 @@ export function JournalEntryCard({ date = dayKey() }: { date?: string }) {
         ))}
       </div>
 
+      <div className="mt-[var(--space-150)] flex flex-wrap items-center gap-[var(--space-150)]">
+        <Button
+          variant="soft"
+          onClick={() => {
+            // 공식 체크인은 Reflect 웹앱에서만 가능하다 (iframe 삽입은 공식 미지원).
+            // 교사가 설정에 넣어 둔 링크가 있으면 그 체크인으로, 없으면 Reflect 홈으로 연다.
+            getReflectAdapter().openOfficial("after", settings.afterReflectUrl);
+            setSaved("idle");
+          }}
+        >
+          Microsoft Reflect에서 체크하기
+        </Button>
+        <label className="flex items-center gap-[var(--space-100)] text-[var(--font-size-300)]">
+          <input
+            type="checkbox"
+            checked={reflectDone}
+            onChange={(e) => { setReflectDone(e.target.checked); setSaved("idle"); }}
+          />
+          Reflect 체크인을 마쳤어요
+        </label>
+      </div>
+
       <label className="mt-[var(--space-200)] block text-[var(--font-size-300)] font-semibold" htmlFor="journal-text">
         오늘 어땠나요?
       </label>
@@ -141,7 +171,7 @@ export function JournalEntryCard({ date = dayKey() }: { date?: string }) {
       />
 
       <div className="btn-row mt-[var(--space-150)] items-center">
-        <Button onClick={save} disabled={saved === "saving" || (!text.trim() && !mood)}>
+        <Button onClick={save} disabled={saved === "saving" || (!text.trim() && !mood && !reflectDone)}>
           {saved === "saving" ? "저장 중…" : "일지 저장"}
         </Button>
         {agentOn ? (
