@@ -130,6 +130,29 @@ export interface EmotionCheckIn {
   createdAt: string;
 }
 
+/**
+ * 하루치 일지. **날짜 하나에 하나**다 (id 가 곧 날짜라 덮어쓰면 그날 것이 갱신된다).
+ *
+ * 운동 기록(WorkoutSession)과 나눠 둔 이유: 운동은 «몸이 한 일»이고 일지는 «아이가 쓴 말»이다.
+ * 운동을 안 한 날에도 일지는 쓸 수 있어야 하고, 하루에 운동을 세 번 해도 일지는 한 장이다.
+ */
+export interface JournalEntry {
+  /** userId + 날짜(YYYY-MM-DD) */
+  id: string;
+  userId: string;
+  /** YYYY-MM-DD (그 기기의 날짜) */
+  date: string;
+  /** 오늘 어땠는지 — 아이가 쓴 말 */
+  text: string;
+  /** 오늘의 마음 (운동 전후와 별개로, 하루를 통틀어) */
+  mood?: EmotionKey;
+  /** 이 일지에 대한 도우미의 답. 받은 것만 남는다 */
+  feedback?: string;
+  feedbackAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface WorkoutSession {
   id: string;
   userId: string;

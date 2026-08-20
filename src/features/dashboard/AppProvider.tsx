@@ -14,6 +14,7 @@ import type {
   AppSettings,
   EmotionCheckIn,
   FitnessProfile,
+  JournalEntry,
   PapsRecord,
   User,
   WorkoutSession,
@@ -24,10 +25,12 @@ import {
   getSettings,
   getUser,
   listAchievements,
+  listEntries,
   listPaps,
   listSessions,
   putAchievement,
   putEmotion,
+  putEntry,
   putSession,
   putSettings,
   putUser,
@@ -43,6 +46,7 @@ interface AppState {
   paps: PapsRecord[];
   sessions: WorkoutSession[];
   achievements: Achievement[];
+  entries: JournalEntry[];
   settings: AppSettings;
   refresh: () => Promise<void>;
   saveSession: (session: Omit<WorkoutSession, "id" | "userId">) => Promise<{
@@ -51,6 +55,8 @@ interface AppState {
     isPersonalBest: boolean;
   }>;
   saveEmotion: (row: Omit<EmotionCheckIn, "id" | "userId" | "createdAt">) => Promise<void>;
+  /** 하루치 일지를 쓰거나 고친다. 같은 날짜면 덮어쓴다 (하루에 한 장) */
+  saveEntry: (date: string, patch: Partial<Pick<JournalEntry, "text" | "mood" | "feedback">>) => Promise<JournalEntry>;
   updateSettings: (s: AppSettings) => Promise<void>;
   rename: (name: string) => Promise<void>;
 }
@@ -64,6 +70,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [paps, setPaps] = useState<PapsRecord[]>([]);
   const [sessions, setSessions] = useState<WorkoutSession[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [settings, setSettings] = useState<AppSettings>({
     beforeReflectUrl: "",
     afterReflectUrl: "",
@@ -77,12 +84,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const recs = await listPaps(DEMO_USER_ID);
     const sess = await listSessions(DEMO_USER_ID);
     const ach = await listAchievements(DEMO_USER_ID);
+    const ent = await listEntries(DEMO_USER_ID);
     const st = await getSettings();
     setUser(u);
     setProfile(p);
     setPaps(recs);
     setSessions(sess);
     setAchievements(ach);
+    setEntries(ent);
     setSettings(st);
     setReady(true);
   }, []);
@@ -121,6 +130,30 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const saveEntry = useCallback(
+    async (date: string, patch: Partial<Pick<JournalEntry, "text" | "mood" | "feedback">>) => {
+      const id = `${DEMO_USER_ID}:${date}`;
+      const now = new Date().toISOString();
+      const prev = entries.find((e) => e.id === id);
+      const next: JournalEntry = {
+        id,
+        userId: DEMO_USER_ID,
+        date,
+        text: patch.text ?? prev?.text ?? "",
+        mood: patch.mood ?? prev?.mood,
+        feedback: patch.feedback ?? prev?.feedback,
+        // 도우미 답이 이번에 새로 온 경우에만 시각을 갱신한다
+        feedbackAt: patch.feedback && patch.feedback !== prev?.feedback ? now : prev?.feedbackAt,
+        createdAt: prev?.createdAt ?? now,
+        updatedAt: now,
+      };
+      await putEntry(next);
+      setEntries((list) => [next, ...list.filter((e) => e.id !== id)].sort((a, b) => (a.date < b.date ? 1 : -1)));
+      return next;
+    },
+    [entries],
+  );
+
   const updateSettings = useCallback(async (s: AppSettings) => {
     await putSettings(s);
     setSettings(s);
@@ -149,14 +182,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
       paps,
       sessions,
       achievements,
+      entries,
       settings,
       refresh,
       saveSession,
       saveEmotion,
+      saveEntry,
       updateSettings,
       rename,
     }),
-    [ready, user, profile, paps, sessions, achievements, settings, refresh, saveSession, saveEmotion, updateSettings, rename],
+    [ready, user, profile, paps, sessions, achievements, entries, settings, refresh, saveSession, saveEmotion, saveEntry, updateSettings, rename],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

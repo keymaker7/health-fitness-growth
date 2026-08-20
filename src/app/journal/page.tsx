@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Card, Meter, PageTitle, Pivot, Stat, Tag } from "@/components/ui";
 import { StandardNote } from "@/components/StandardNote";
+import { JournalCalendar } from "@/components/JournalCalendar";
+import { JournalEntryCard } from "@/components/JournalEntryCard";
 import { useApp } from "@/features/dashboard/AppProvider";
 import { formatDateKo, formatTime, startOfDay } from "@/lib/utils";
 import { EMOTION_LABEL } from "@/lib/emotions";
@@ -11,19 +13,26 @@ import type { WorkoutSession } from "@/types/models";
 import { activitySummary, WEEKLY_GOAL } from "@/lib/progress";
 import { currentStreak } from "@/features/badges/engine";
 import { BADGES } from "@/lib/catalog";
+import { dayKey } from "@/lib/day";
 
-type View = "day" | "week" | "month";
+type View = "calendar" | "day" | "week" | "month";
 
 export default function JournalPage() {
   const { ready, sessions, achievements } = useApp();
-  const [view, setView] = useState<View>("day");
-  const groups = useMemo(() => group(sessions, view), [sessions, view]);
+  // 달력을 먼저 보여준다 — «오늘 쓸 칸» 과 «지난 날들» 이 한 화면에 있어야 일지가 이어진다
+  const [view, setView] = useState<View>("calendar");
+  const [picked, setPicked] = useState(dayKey());
+  const groups = useMemo(() => group(sessions, view === "calendar" ? "day" : view), [sessions, view]);
   if (!ready) return <p className="text-[var(--muted)]">불러오는 중...</p>;
   const summary = activitySummary(sessions);
 
   return (
     <div className="stack">
-      <PageTitle kicker="나의 기록" title="오늘의 움직임과 성장" sub="운동 횟수, 주간 목표, 배지와 마음 변화를 한곳에서 봐요." />
+      <PageTitle
+        kicker="나의 기록"
+        title="오늘의 움직임과 성장"
+        sub="오늘 일지를 쓰고, 달력에서 지난 날을 돌아봐요. 운동 횟수와 배지도 여기 모입니다."
+      />
       <StandardNote screen="journal" />
       <div className="grid gap-[var(--space-200)] sm:grid-cols-3">
         <Card>
@@ -54,12 +63,19 @@ export default function JournalPage() {
         value={view}
         onChange={(v) => setView(v as View)}
         options={[
+          { value: "calendar", label: "달력" },
           { value: "day", label: "일간" },
           { value: "week", label: "주간" },
           { value: "month", label: "월간" },
         ]}
       />
-      {groups.map((g) => (
+      {view === "calendar" ? (
+        <>
+          <JournalCalendar value={picked} onSelect={setPicked} />
+          <JournalEntryCard key={picked} date={picked} />
+        </>
+      ) : null}
+      {view === "calendar" ? null : groups.map((g) => (
         <Card key={g.key}>
           <p className="font-semibold">{g.label}</p>
           <ul className="mt-[var(--space-150)]">
@@ -92,7 +108,7 @@ export default function JournalPage() {
   );
 }
 
-function group(sessions: WorkoutSession[], view: View) {
+function group(sessions: WorkoutSession[], view: Exclude<View, "calendar">) {
   const map = new Map<string, WorkoutSession[]>();
   for (const s of sessions) {
     const d = new Date(s.startTime);

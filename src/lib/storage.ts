@@ -4,13 +4,14 @@ import type {
   EmotionCheckIn,
   FitnessProfile,
   PapsRecord,
+  JournalEntry,
   User,
   WorkoutSession,
 } from "@/types/models";
 import { uid } from "@/lib/utils";
 
 const DB_NAME = "health-fitness-growth";
-const DB_VERSION = 1;
+const DB_VERSION = 2;   // 2: 일지(journal) 추가
 
 export const DEMO_USER_ID = "student-demo";
 
@@ -21,6 +22,7 @@ type StoreName =
   | "sessions"
   | "emotions"
   | "achievements"
+  | "journal"
   | "settings";
 
 function openDb(): Promise<IDBDatabase> {
@@ -38,6 +40,11 @@ function openDb(): Promise<IDBDatabase> {
       if (!db.objectStoreNames.contains("emotions")) db.createObjectStore("emotions", { keyPath: "id" });
       if (!db.objectStoreNames.contains("achievements")) db.createObjectStore("achievements", { keyPath: "id" });
       if (!db.objectStoreNames.contains("settings")) db.createObjectStore("settings", { keyPath: "id" });
+      // v2 — 이미 쓰던 브라우저에도 이 줄만 새로 실행된다 (기존 기록은 그대로 남는다)
+      if (!db.objectStoreNames.contains("journal")) {
+        const j = db.createObjectStore("journal", { keyPath: "id" });
+        j.createIndex("byUser", "userId");
+      }
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
@@ -98,6 +105,15 @@ export async function putEmotion(row: EmotionCheckIn) {
 export async function listEmotions(userId: string) {
   const all = await txAll<EmotionCheckIn>("emotions");
   return all.filter((e) => e.userId === userId);
+}
+
+export async function putEntry(row: JournalEntry) {
+  return tx("journal", "readwrite", (s) => s.put(row));
+}
+
+export async function listEntries(userId: string) {
+  const all = await txAll<JournalEntry>("journal");
+  return all.filter((e) => e.userId === userId).sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
 export async function putAchievement(row: Achievement) {
