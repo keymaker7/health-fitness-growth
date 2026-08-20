@@ -51,13 +51,13 @@ const NAV: { href: string; label: string; Regular: IconCmp; Filled: IconCmp; ali
   // 제자리멀리뛰기·AI 줄넘기·스쿼트 게임은 메뉴에서 뺐다 (2026-08-21, keymaker님 검토 요청).
   // 멀리뛰기는 측정 도구 탭 안에 있고, 게임 둘은 홈 카드·/games 목록·모바일 하단바로 들어간다.
   { href: "/measure", label: "측정 도구", Regular: Timer20Regular, Filled: Timer20Filled },
+  // 교사용 — 체육 수업 도우미에게 앱 안에서 바로 묻는다 (K-Weather 라우팅·등급 거절 시연)
+  { href: "/teacher", label: "교사용 도우미", Regular: Person20Regular, Filled: Person20Filled },
   { href: "/paps", label: "PAPS", Regular: BookOpen20Regular, Filled: BookOpen20Filled },
   { href: "/health-fitness", label: "건강체력", Regular: HeartPulse20Regular, Filled: HeartPulse20Filled },
   { href: "/sport-fitness", label: "운동체력", Regular: Sport20Regular, Filled: Sport20Filled },
   { href: "/prescription", label: "맞춤 운동처방", Regular: ClipboardPulse20Regular, Filled: ClipboardPulse20Filled },
   { href: "/portfolio", label: "성장 포트폴리오", Regular: DocumentOnePage20Regular, Filled: DocumentOnePage20Filled },
-  // 교사용 — 체육 수업 도우미에게 앱 안에서 바로 묻는다 (K-Weather 라우팅·등급 거절 시연)
-  { href: "/teacher", label: "교사용 도우미", Regular: Person20Regular, Filled: Person20Filled },
   // 심사·참관용 — 사이트가 어떻게 짜였는지 그림 한 장씩으로 설명한다
   { href: "/system/composition", label: "시스템 구성도", Regular: Organization20Regular, Filled: Organization20Filled },
   { href: "/system/architecture", label: "시스템 구조도", Regular: Flowchart20Regular, Filled: Flowchart20Filled },
