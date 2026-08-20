@@ -41,6 +41,17 @@ export default function MultiJumpPage() {
   const [running, setRunning] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [mode, setMode] = useState<"sim" | "camera" | "idle">("idle");
+  /**
+   * 그리는 함수는 자세 인식 어댑터에 **한 번** 넘겨진 뒤 계속 불린다.
+   * 그래서 `mode` 를 그대로 읽으면 «카메라를 켜기 전»의 값에 갇혀 영상이 영영 안 그려진다
+   * (실제로 화면이 까맣고 관절 점만 보이는 증상이 났다). 최신 값은 ref 로 따로 들고 본다.
+   */
+  const modeRef = useRef<"sim" | "camera" | "idle">("idle");
+
+  function changeMode(next: "sim" | "camera" | "idle") {
+    modeRef.current = next;
+    setMode(next);
+  }
   const [status, setStatus] = useState("카메라 또는 시뮬레이션을 선택하세요. 영상은 기기를 떠나지 않습니다.");
   const [step, setStep] = useState<"work" | "after" | "done">("work");
   const [result, setResult] = useState<{ badges: Achievement[]; pb: boolean; total: number } | null>(null);
@@ -93,7 +104,9 @@ export default function MultiJumpPage() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     ctx.clearRect(0, 0, w, h);
-    if (video && mode === "camera") ctx.drawImage(video, 0, 0, w, h);
+    const liveVideo =
+      !!video && modeRef.current === "camera" && video.readyState >= 2 && video.videoWidth > 0;
+    if (video && liveVideo) ctx.drawImage(video, 0, 0, w, h);
     else {
       ctx.fillStyle = "#201f1e";
       ctx.fillRect(0, 0, w, h);
@@ -122,7 +135,7 @@ export default function MultiJumpPage() {
     const a = createSimulationPoseAdapter(4, "jump");
     adapterRef.current = a;
     await a.start(videoRef.current!, onFrame);
-    setMode("sim");
+    changeMode("sim");
     setRunning(true);
     setStatus("시뮬레이션: 4명의 ID가 교차되어도 최대한 유지됩니다.");
   }
@@ -135,7 +148,7 @@ export default function MultiJumpPage() {
       const a = createMediaPipePoseAdapter(6);
       adapterRef.current = a;
       await a.start(videoRef.current!, onFrame);
-      setMode("camera");
+      changeMode("camera");
       setRunning(true);
       setStatus("카메라 로컬 처리 중. 원본 영상은 서버에 저장되지 않습니다.");
     } catch (e) {
