@@ -375,7 +375,20 @@ export function ShuttleRun({ onCount }: { onCount?: (total: number) => void }) {
   const start = useCallback(async () => {
     const roster = rosterRef.current;
     const vision = visionRef.current;
+    // 명단이 비어 있으면 레인 번호(1번~N번)로 채운다 — 명단 없이도, 혼자서도 바로 잰다.
+    if (roster.count === 0) {
+      roster.setStudents(
+        Array.from({ length: roster.lanes }, (_, i) => ({ name: `${i + 1}번`, sex: null })),
+        roster.gradeKey,
+        roster.lanes,
+      );
+      syncLanes();
+    }
     if (!roster.heat.length || roster.heat.every((v) => v === null || v === undefined)) roster.nextHeat();
+    if (roster.heat.every((v) => v === null || v === undefined)) {
+      setStatus("모두 측정을 마쳤어요. 다시 재려면 «기록 지우기»를 누르세요.");
+      return;
+    }
     pendingMissRef.current = Array(roster.lanes).fill(false);
     lastVerdictsRef.current = [];
 
@@ -412,7 +425,7 @@ export function ShuttleRun({ onCount }: { onCount?: (total: number) => void }) {
     setRunning(true);
     save();
     bump();
-  }, [preflight, handleBeep, finishAll, save, bump]);
+  }, [preflight, handleBeep, finishAll, save, bump, syncLanes]);
 
   // ── 선·경계 드래그 (아이패드에서 손가락으로 맞춘다) ─────────
   const dragPos = (e: React.PointerEvent<HTMLCanvasElement>) => {
@@ -462,8 +475,12 @@ export function ShuttleRun({ onCount }: { onCount?: (total: number) => void }) {
   const roster = rosterRef.current;
   const runners = roster.heatRunners();
   const rows = roster.rows();
-  const occupied = roster.heat.filter((v) => v !== null && v !== undefined).length;
-  const soloRecord = occupied === 1 && runners.find(Boolean)?.done ? runners.find(Boolean)!.record : null;
+  // 혼자(또는 손 판정으로 다 같이) 잰 경우 — 기록이 전부 같으면 그 값을 «기록에 담기»로 내민다.
+  const doneRunners = runners.filter((r): r is NonNullable<typeof r> => !!r && r.done);
+  const soloRecord =
+    !running && doneRunners.length > 0 && doneRunners.every((r) => r.record === doneRunners[0].record) && doneRunners[0].record > 0
+      ? doneRunners[0].record
+      : null;
   const dirSide = stage?.running ? targetSideOf((stage.lap || 0) + 1, startSideRef.current) : null;
 
   return (
@@ -515,6 +532,19 @@ export function ShuttleRun({ onCount }: { onCount?: (total: number) => void }) {
               }}
             >
               다음 조 세우기
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                if (!window.confirm("기록을 모두 지웁니다. 계속할까요?")) return;
+                roster.clearRecords();
+                roster.nextHeat();
+                save();
+                bump();
+                setStatus("기록을 지웠어요. 다시 잴 수 있습니다.");
+              }}
+            >
+              기록 지우기
             </Button>
           </BtnRow>
         </div>
