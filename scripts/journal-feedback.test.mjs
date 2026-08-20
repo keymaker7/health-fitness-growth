@@ -26,6 +26,12 @@ let seenPrompt = '';
 const fake = createServer((req, res) => {
   const send = (o) => { res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(o)); };
   if (req.url === '/token') return send({ token: 'test-token' });
+  if (req.url === '/dl/tokens/generate' && req.method === 'POST') {
+    // 비밀키로 토큰을 발급받는 길
+    return req.headers.authorization === 'Bearer test-secret'
+      ? send({ token: 'test-token' })
+      : ((res.statusCode = 401), res.end());
+  }
   if (req.url === '/dl/conversations' && req.method === 'POST') return send({ conversationId: 'c1' });
   if (req.url?.includes('/activities') && req.method === 'POST') {
     let b = ''; req.on('data', (c) => (b += c));
@@ -60,9 +66,9 @@ try {
     ok('오류 없음', errors.length === 0, errors[0]);
   });
 
-  console.log('\n[도우미가 연결됐을 때]');
+  console.log('\n[도우미가 연결됐을 때 — 비밀키 방식]');
   await run({
-    COPILOT_DIRECTLINE_TOKEN_URL: `http://localhost:${FAKE}/token`,
+    COPILOT_DIRECTLINE_SECRET: 'test-secret',
     COPILOT_DIRECTLINE_BASE: `http://localhost:${FAKE}/dl`,
   }, async (page, errors) => {
     await page.goto(`${BASE}/journal`, { waitUntil: 'domcontentloaded' });

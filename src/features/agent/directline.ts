@@ -6,8 +6,14 @@
  *
  * 이 파일은 **서버에서만** 돈다. 토큰 주소가 학생 화면에 나가면 누구나 에이전트를 부를 수 있다.
  *
- * 준비물(환경변수) — 없으면 기능이 조용히 꺼진다. 앱은 그대로 돌아간다.
- *   COPILOT_DIRECTLINE_TOKEN_URL   Copilot Studio → 채널 → 모바일 앱 → 토큰 엔드포인트
+ * 준비물(환경변수) — **둘 중 하나만** 있으면 된다. 없으면 기능이 조용히 꺼지고 앱은 그대로 돈다.
+ *   COPILOT_DIRECTLINE_SECRET      Copilot Studio → Agent settings → Safety & access
+ *                                  → Web channel security → 비밀키
+ *   COPILOT_DIRECTLINE_TOKEN_URL   (예전 방식) 채널 → 모바일 앱 → 토큰 엔드포인트
+ *
+ * 새로 나온 종류의 에이전트에는 «모바일 앱» 채널이 아직 없다. 대신 위의 비밀키가 있고,
+ * 그 키로 **토큰을 대신 발급받아** 쓴다. 비밀키는 비밀번호와 같아서 서버 밖으로 나가면 안 된다 —
+ * 그래서 토큰(수명이 짧고 이 대화에만 쓰이는 것)으로 바꿔서 쓴다.
  */
 
 /** 기본은 공개 Direct Line. 시험이나 다른 지역 엔드포인트를 쓸 때만 환경변수로 바꾼다. */
@@ -15,10 +21,24 @@ const DL = process.env.COPILOT_DIRECTLINE_BASE ?? "https://directline.botframewo
 const USER_ID = "student";
 
 export function feedbackEnabled() {
-  return Boolean(process.env.COPILOT_DIRECTLINE_TOKEN_URL);
+  return Boolean(process.env.COPILOT_DIRECTLINE_SECRET || process.env.COPILOT_DIRECTLINE_TOKEN_URL);
 }
 
 async function getToken() {
+  const secret = process.env.COPILOT_DIRECTLINE_SECRET;
+  if (secret) {
+    // 비밀키 → 토큰. 학생 쪽으로 나가는 것은 이 토큰뿐이고, 그나마 서버 안에서만 쓴다.
+    const res = await fetch(`${DL}/tokens/generate`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${secret}` },
+      cache: "no-store",
+    });
+    if (!res.ok) throw new Error(`토큰을 만들지 못했습니다 (${res.status})`);
+    const data = (await res.json()) as { token?: string };
+    if (!data.token) throw new Error("토큰이 비어 있습니다.");
+    return data.token;
+  }
+
   const url = process.env.COPILOT_DIRECTLINE_TOKEN_URL;
   if (!url) throw new Error("도우미가 연결되지 않았습니다.");
   const res = await fetch(url, { method: "GET", cache: "no-store" });
