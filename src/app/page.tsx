@@ -13,6 +13,7 @@ import {
   Sparkle20Regular,
 } from "@fluentui/react-icons";
 import { GrowthLevelTrack } from "@/components/GrowthLevelTrack";
+import { OutdoorCard } from "@/components/OutdoorCard";
 import { Button, Card, IconTile, Meter } from "@/components/ui";
 import { WhyButton } from "@/components/WhyButton";
 import { useApp } from "@/features/dashboard/AppProvider";
@@ -62,6 +63,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <OutdoorCard />
 
       <div className="mb-[var(--space-200)]">
         <GrowthLevelTrack
