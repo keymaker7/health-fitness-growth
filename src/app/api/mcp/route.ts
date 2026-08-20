@@ -1,6 +1,6 @@
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
-import { envConfig, fetchAir, fetchWeather, judge, pm10GradeOf, pm25GradeOf } from "@/features/outdoor/outdoor";
+import { envConfig, fetchAir, fetchOutdoor, fetchWeather, fetchWeatherKma, pm10GradeOf, pm25GradeOf } from "@/features/outdoor/outdoor";
 
 /**
  * 이 앱이 직접 제공하는 MCP 서버.
@@ -21,7 +21,7 @@ function noKeyText() {
     content: [
       {
         type: "text" as const,
-        text: "아직 공공데이터포털 인증키(OUTDOOR_API_KEY)가 서버에 설정되지 않았어요. 키를 설정하면 실시간 자료로 답합니다.",
+        text: "아직 인증키가 서버에 설정되지 않았어요 (기상청 API허브 KMA_AUTH_KEY 또는 공공데이터포털 OUTDOOR_API_KEY). 키를 설정하면 실시간 자료로 답합니다.",
       },
     ],
   };
@@ -40,13 +40,9 @@ const handler = createMcpHandler(
         }),
       },
       async ({ sido }) => {
-        const cfg = envConfig();
-        if (!cfg.key) return noKeyText();
-        const [air, weather] = await Promise.all([
-          fetchAir(cfg.key, sido?.trim() || cfg.sido, cfg.station),
-          fetchWeather(cfg.key, cfg.nx, cfg.ny),
-        ]);
-        const v = judge(air, weather);
+        const out = await fetchOutdoor(sido);
+        if (!out) return noKeyText();
+        const { air, weather, verdict: v } = out;
         const lines = [
           `판단: ${v.headline}`,
           ...v.reasons.map((r) => `- ${r}`),
@@ -86,8 +82,8 @@ const handler = createMcpHandler(
       },
       async () => {
         const cfg = envConfig();
-        if (!cfg.key) return noKeyText();
-        const w = await fetchWeather(cfg.key, cfg.nx, cfg.ny);
+        if (!cfg.key && !cfg.kmaKey) return noKeyText();
+        const w = cfg.kmaKey ? await fetchWeatherKma(cfg.kmaKey, cfg.stn) : await fetchWeather(cfg.key!, cfg.nx, cfg.ny);
         if (!w) return { content: [{ type: "text" as const, text: "기상 자료를 가져오지 못했어요." }] };
         const text = `기온 ${w.tempC ?? "?"}℃ · 강수형태 ${RAIN_LABEL[w.rainType] ?? "?"} · 1시간 강수 ${w.rainMm ?? 0}mm. 출처: 기상청 초단기실황.`;
         return { content: [{ type: "text" as const, text }] };

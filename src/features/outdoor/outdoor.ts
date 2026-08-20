@@ -36,13 +36,19 @@ export type OutdoorVerdict = {
 
 export function envConfig() {
   const key = process.env.OUTDOOR_API_KEY;
+  const kmaKey = process.env.KMA_AUTH_KEY;
   return {
+    /** 공공데이터포털(data.go.kr) 인증키 — 에어코리아 미세먼지에 필요 */
     key: key && key.trim() ? key.trim() : null,
-    // keymaker님 학교가 경기라 기본값을 경기(격자는 수원)로 둔다. 환경변수로 바꿀 수 있다.
+    /** 기상청 API허브(apihub.kma.go.kr) 인증키 — keymaker님이 이미 갖고 있는 그 키 */
+    kmaKey: kmaKey && kmaKey.trim() ? kmaKey.trim() : null,
+    // keymaker님 학교가 경기라 기본값을 경기(격자·지점은 수원)로 둔다. 환경변수로 바꿀 수 있다.
     sido: process.env.OUTDOOR_SIDO?.trim() || "경기",
     station: process.env.OUTDOOR_STATION?.trim() || null,
     nx: Number(process.env.OUTDOOR_NX) || 60,
     ny: Number(process.env.OUTDOOR_NY) || 121,
+    /** 기상청 지상관측 지점번호 (수원 119) */
+    stn: Number(process.env.OUTDOOR_STN) || 119,
   };
 }
 
@@ -110,6 +116,32 @@ function baseDateTimeKst() {
   return { base_date: `${y}${m}${d}`, base_time: `${h}00` };
 }
 
+/**
+ * 기상청 API허브(apihub.kma.go.kr) 지상관측 시간자료 — keymaker님이 「기상청-관측-api」
+ * 흐름에서 이미 쓰던 그 API 다. 응답이 고정폭 텍스트라 줄을 갈라 TA(기온)·RN(강수량)만 뽑는다.
+ */
+export async function fetchWeatherKma(authKey: string, stn: number): Promise<OutdoorWeather | null> {
+  // 정시 관측이 몇 분 뒤에 풀리므로 15분 여유를 두고 정시로 내림 (KST)
+  const kst = new Date(Date.now() + 9 * 3600 * 1000 - 15 * 60 * 1000);
+  const tm =
+    `${kst.getUTCFullYear()}${String(kst.getUTCMonth() + 1).padStart(2, "0")}${String(kst.getUTCDate()).padStart(2, "0")}` +
+    `${String(kst.getUTCHours()).padStart(2, "0")}00`;
+  const url = `https://apihub.kma.go.kr/api/typ01/url/kma_sfctm2.php?tm=${tm}&stn=${stn}&help=0&authKey=${encodeURIComponent(authKey)}`;
+  const res = await fetch(url, { next: { revalidate: 600 } });
+  if (!res.ok) return null;
+  const text = await res.text();
+  // #으로 시작하는 도움말·헤더 줄을 걷어내고 첫 자료 줄을 쓴다
+  const line = text.split("\n").find((l) => l.trim() && !l.trim().startsWith("#"));
+  if (!line) return null;
+  const cols = line.trim().split(/\s+/);
+  // 열 순서: TM STN WD WS GST_WD GST_WS GST_TM PA PS PT PR TA TD HM PV RN …  (help=1 문서 기준)
+  const ta = num(cols[11]);
+  const rn = num(cols[15]);
+  const tempC = ta !== null && ta > -90 ? ta : null; // 결측은 -9 계열
+  const rainMm = rn !== null && rn >= 0 ? rn : null;
+  return { tempC, rainMm, rainType: rainMm !== null && rainMm > 0 ? 1 : 0 };
+}
+
 export async function fetchWeather(key: string, nx: number, ny: number): Promise<OutdoorWeather | null> {
   const { base_date, base_time } = baseDateTimeKst();
   const qs = new URLSearchParams({
@@ -135,6 +167,22 @@ export async function fetchWeather(key: string, nx: number, ny: number): Promise
     rainMm: num(of("RN1")),
     rainType: num(of("PTY")) ?? 0,
   };
+}
+
+/** 키가 있는 것만 모아서 한 번에 — 미세먼지는 data.go.kr 키, 날씨는 기상청 API허브 키 우선 */
+export async function fetchOutdoor(sidoOverride?: string) {
+  const cfg = envConfig();
+  if (!cfg.key && !cfg.kmaKey) return null;
+  const [air, weather] = await Promise.all([
+    cfg.key ? fetchAir(cfg.key, sidoOverride?.trim() || cfg.sido, cfg.station) : Promise.resolve(null),
+    cfg.kmaKey
+      ? fetchWeatherKma(cfg.kmaKey, cfg.stn)
+      : cfg.key
+        ? fetchWeather(cfg.key, cfg.nx, cfg.ny)
+        : Promise.resolve(null),
+  ]);
+  if (!air && !weather) return null;
+  return { air, weather, verdict: judge(air, weather) };
 }
 
 /**
