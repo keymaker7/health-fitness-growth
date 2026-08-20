@@ -43,6 +43,8 @@ type IconCmp = ComponentType<{ className?: string }>;
 
 const NAV: { href: string; label: string; Regular: IconCmp; Filled: IconCmp; aliases?: string[] }[] = [
   { href: "/", label: "홈", Regular: Home20Regular, Filled: Home20Filled },
+  // «나의 기록» 을 홈 바로 밑에 둔다 — 아이가 매일 여는 곳이라 맨 위에 있어야 한다
+  { href: "/journal", label: "나의 기록", Regular: CalendarLtr20Regular, Filled: CalendarLtr20Filled, aliases: ["/growth", "/my-fitness"] },
   { href: "/paps", label: "PAPS", Regular: BookOpen20Regular, Filled: BookOpen20Filled },
   { href: "/health-fitness", label: "건강체력", Regular: HeartPulse20Regular, Filled: HeartPulse20Filled },
   { href: "/sport-fitness", label: "운동체력", Regular: Sport20Regular, Filled: Sport20Filled },
@@ -50,7 +52,6 @@ const NAV: { href: string; label: string; Regular: IconCmp; Filled: IconCmp; ali
   { href: "/measure", label: "측정 도구", Regular: Timer20Regular, Filled: Timer20Filled },
   { href: "/games/multi-jump", label: "AI 줄넘기", Regular: ArrowRepeatAll20Regular, Filled: ArrowRepeatAll20Filled },
   { href: "/games/squat-race", label: "스쿼트 게임", Regular: PersonRunning20Regular, Filled: PersonRunning20Filled },
-  { href: "/journal", label: "나의 기록", Regular: CalendarLtr20Regular, Filled: CalendarLtr20Filled, aliases: ["/growth", "/my-fitness"] },
   { href: "/portfolio", label: "성장 포트폴리오", Regular: DocumentOnePage20Regular, Filled: DocumentOnePage20Filled },
 ];
 
