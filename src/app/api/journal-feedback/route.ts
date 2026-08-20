@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { askAgent, buildPrompt, feedbackEnabled } from "@/features/agent/directline";
+import { logJournal } from "@/features/agent/journalLog";
 
 /**
  * 일지 한 장을 도우미에게 보내고 답을 받아 온다.
@@ -55,6 +56,16 @@ export async function POST(req: Request) {
 
   try {
     const feedback = await askAgent(buildPrompt({ date, student, mood, text, workouts }));
+    // 교사용 장부에 남긴다. **답을 만든 다음**이라 여기서 무슨 일이 나도 아이는 답을 받는다.
+    // (logJournal 은 예외를 던지지 않는다 — 실패해도 조용히 지나간다)
+    await logJournal({
+      student,
+      date,
+      mood,
+      workout: workouts.map((w) => `${w.name} ${w.count}회`).join(", "),
+      journal: text,
+      feedback,
+    });
     return NextResponse.json({ feedback });
   } catch (e) {
     // 에이전트 쪽 사정은 아이에게 그대로 보여주지 않는다 — 다시 해보라고만 알린다
