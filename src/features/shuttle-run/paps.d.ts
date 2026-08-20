@@ -43,4 +43,6 @@ export class Runner {
   onBeep(lap: number, reached: boolean): "ok" | "warn" | "end" | "ignored";
   stop(): boolean;
   undo(): boolean;
+  toJSON(): unknown;
+  static fromJSON(o: unknown): Runner;
 }
