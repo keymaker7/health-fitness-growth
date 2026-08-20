@@ -191,6 +191,13 @@ export interface AppSettings {
   beforeReflectUrl: string;
   afterReflectUrl: string;
   studentName: string;
+  /**
+   * 학급 명단. **번호만 담는다** — 실명을 넣지 않는 것이 이 앱의 원칙이다.
+   * 비어 있으면 예전처럼 «이 기기 = 학생 한 명» 으로 동작한다.
+   */
+  roster?: string[];
+  /** 지금 이 기기에서 기록 중인 학생 (roster 의 한 항목) */
+  activeStudent?: string;
 }
 
 export interface JumpRopeSnapshot {

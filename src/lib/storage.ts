@@ -107,6 +107,51 @@ export async function listEmotions(userId: string) {
   return all.filter((e) => e.userId === userId);
 }
 
+/**
+ * 학생 한 명이 쓸 자리를 만든다 (이미 있으면 그대로 둔다).
+ *
+ * 명단에서 새 학생을 고른 순간 기록이 없어서 화면이 «불러오는 중» 에서 멈추면 안 된다.
+ * 그래서 사용자와 **빈 체력 프로필**을 함께 만들어 둔다 — 측정을 하면 그때 값이 채워진다.
+ */
+export async function ensureStudent(userId: string, label: string) {
+  const existing = await getUser(userId);
+  if (existing) return existing;
+  const user: User = {
+    id: userId,
+    displayName: label,
+    grade: 6,
+    className: "",
+    createdAt: new Date().toISOString(),
+  };
+  await putUser(user);
+  if (!(await getProfile(userId))) {
+    await putProfile({
+      userId,
+      updatedAt: new Date().toISOString(),
+      components: {} as FitnessProfile["components"],
+      notes: "아직 측정 기록이 없어요. 측정 도구로 재면 여기에 쌓입니다.",
+    });
+  }
+  return user;
+}
+
+/** 학급 명단 문자열을 번호 목록으로 가른다. 줄바꿈·쉼표·공백 아무거나 받는다 */
+export function parseRoster(text: string) {
+  return [...new Set(
+    String(text || "")
+      .split(/[\n,;\t]+|\s{2,}/)
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .map((s) => s.replace(/^\d+[.)]\s*/, "").trim())   // "1. 6-2-07" → "6-2-07"
+      .filter((s) => s.length <= 20),
+  )];
+}
+
+/** 명단의 번호 → 저장에 쓰는 아이디 */
+export function studentId(label: string) {
+  return `student:${label}`;
+}
+
 export async function putEntry(row: JournalEntry) {
   return tx("journal", "readwrite", (s) => s.put(row));
 }

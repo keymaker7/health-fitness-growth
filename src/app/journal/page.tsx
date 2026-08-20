@@ -18,7 +18,7 @@ import { dayKey } from "@/lib/day";
 type View = "calendar" | "day" | "week" | "month";
 
 export default function JournalPage() {
-  const { ready, sessions, achievements } = useApp();
+  const { ready, sessions, achievements, activeStudent } = useApp();
   // 달력을 먼저 보여준다 — «오늘 쓸 칸» 과 «지난 날들» 이 한 화면에 있어야 일지가 이어진다
   const [view, setView] = useState<View>("calendar");
   const [picked, setPicked] = useState(dayKey());
@@ -72,7 +72,9 @@ export default function JournalPage() {
       {view === "calendar" ? (
         <>
           <JournalCalendar value={picked} onSelect={setPicked} />
-          <JournalEntryCard key={picked} date={picked} />
+          {/* 날짜뿐 아니라 **학생이 바뀔 때도** 칸을 새로 만든다.
+              그러지 않으면 앞 학생이 쓰던 글이 다음 학생 칸에 남고, 그대로 저장하면 남의 기록이 섞인다. */}
+          <JournalEntryCard key={`${activeStudent ?? "solo"}:${picked}`} date={picked} />
         </>
       ) : null}
       {view === "calendar" ? null : groups.map((g) => (

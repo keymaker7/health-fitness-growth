@@ -75,7 +75,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [query, setQuery] = useState("");
   const [panel, setPanel] = useState<"none" | "help" | "bell" | "user">("none");
   const headerRef = useRef<HTMLElement>(null);
-  const { ready, user, sessions } = useApp();
+  const { ready, user, sessions, roster, activeStudent, switchStudent } = useApp();
   const summary = activitySummary(sessions);
 
   useEffect(() => {
@@ -210,8 +210,33 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 {ready ? `Lv.${summary.level} ${summary.title}` : ""}
               </p>
               <p className="text-[var(--font-size-300)] text-[var(--muted)]">{ready ? `${user?.grade}학년 ${user?.className}` : ""}</p>
+              {roster.length ? (
+                <div className="mt-[var(--space-150)]">
+                  <p className="text-[var(--font-size-300)] font-semibold">누가 기록하나요?</p>
+                  <div className="mt-[var(--space-100)] flex max-h-[40vh] flex-wrap gap-[var(--space-50)] overflow-auto">
+                    {roster.map((label) => (
+                      <button
+                        key={label}
+                        type="button"
+                        onClick={() => { void switchStudent(label); setPanel("none"); }}
+                        aria-current={label === activeStudent ? "true" : undefined}
+                        className={`rounded-[var(--radius-medium)] border px-[var(--space-100)] py-[var(--space-50)] text-[var(--font-size-300)] tabular-nums ${
+                          label === activeStudent
+                            ? "border-[var(--brand)] bg-[var(--brand-soft)] font-semibold"
+                            : "border-[var(--line)] hover:border-[var(--line-strong)]"
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="mt-[var(--space-100)] text-[var(--font-size-200)] text-[var(--muted)]">
+                    고른 학생의 기록으로 화면이 바뀝니다. 측정·일지도 그 학생에게 저장됩니다.
+                  </p>
+                </div>
+              ) : null}
               <Link href="/settings" className="mt-[var(--space-150)] inline-block text-[var(--font-size-300)] font-semibold text-[var(--brand)] hover:underline">
-                설정
+                {roster.length ? "명단 고치기" : "설정"}
               </Link>
             </div>
           ) : null}

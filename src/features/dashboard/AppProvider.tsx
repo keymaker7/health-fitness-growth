@@ -22,6 +22,8 @@ import type {
 } from "@/types/models";
 import {
   DEMO_USER_ID,
+  ensureStudent,
+  studentId,
   getProfile,
   getSettings,
   getUser,
@@ -49,6 +51,14 @@ interface AppState {
   achievements: Achievement[];
   entries: JournalEntry[];
   settings: AppSettings;
+  /** 학급 명단(번호만). 비어 있으면 «이 기기 = 학생 한 명» 으로 동작한다 */
+  roster: string[];
+  /** 지금 기록 중인 학생의 번호. 명단이 없으면 null */
+  activeStudent: string | null;
+  /** 기록할 학생을 바꾼다 — 그 학생의 기록으로 화면 전체가 갈린다 */
+  switchStudent: (label: string) => Promise<void>;
+  /** 학급 명단을 새로 넣는다 */
+  saveRoster: (labels: string[]) => Promise<void>;
   refresh: () => Promise<void>;
   saveSession: (session: Omit<WorkoutSession, "id" | "userId">) => Promise<{
     session: WorkoutSession;
@@ -85,16 +95,28 @@ export function AppProvider({ children }: { children: ReactNode }) {
     afterReflectUrl: "",
     studentName: "5-3-12",
   });
+  // 지금 기록 중인 학생의 저장소 아이디. 명단이 없으면 예전 그대로 한 명분을 쓴다.
+  // 화면 갱신은 refresh() 가 맡으므로 여기서는 ref 하나면 된다.
+  const userIdRef = useRef(DEMO_USER_ID);
+  const setActiveUser = useCallback((id: string) => { userIdRef.current = id; }, []);
 
   const refresh = useCallback(async () => {
     await seedIfNeeded();
-    const u = (await getUser(DEMO_USER_ID)) ?? null;
-    const p = (await getProfile(DEMO_USER_ID)) ?? null;
-    const recs = await listPaps(DEMO_USER_ID);
-    const sess = await listSessions(DEMO_USER_ID);
-    const ach = await listAchievements(DEMO_USER_ID);
-    const ent = await listEntries(DEMO_USER_ID);
     const st = await getSettings();
+
+    // 명단이 있으면 «고른 학생»의 기록을, 없으면 예전처럼 한 명분을 읽는다
+    const roster = st.roster ?? [];
+    const picked = roster.includes(st.activeStudent ?? "") ? st.activeStudent! : roster[0];
+    const id = picked ? studentId(picked) : DEMO_USER_ID;
+    if (picked) await ensureStudent(id, picked);
+    setActiveUser(id);
+
+    const u = (await getUser(id)) ?? null;
+    const p = (await getProfile(id)) ?? null;
+    const recs = await listPaps(id);
+    const sess = await listSessions(id);
+    const ach = await listAchievements(id);
+    const ent = await listEntries(id);
     setUser(u);
     setProfile(p);
     setPaps(recs);
@@ -103,7 +125,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     applyEntries(ent);
     setSettings(st);
     setReady(true);
-  }, [applyEntries]);
+  }, [applyEntries, setActiveUser]);
 
   useEffect(() => {
     // IndexedDB에서 학생 데이터를 한 번 불러옵니다.
@@ -116,11 +138,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const session: WorkoutSession = {
         ...input,
         id: uid("sess"),
-        userId: DEMO_USER_ID,
+        userId: userIdRef.current,
       };
       const prevBest = personalBest(sessions, session.exerciseId);
       const isPersonalBest = session.count > 0 && session.count > prevBest;
-      const newBadges = evaluateBadges(DEMO_USER_ID, sessions, achievements, session);
+      const newBadges = evaluateBadges(userIdRef.current, sessions, achievements, session);
       await putSession(session);
       for (const b of newBadges) await putAchievement(b);
       setSessions((s) => [session, ...s]);
@@ -134,19 +156,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     await putEmotion({
       ...row,
       id: uid("emo"),
-      userId: DEMO_USER_ID,
+      userId: userIdRef.current,
       createdAt: new Date().toISOString(),
     });
   }, []);
 
   const saveEntry = useCallback(
     async (date: string, patch: Partial<Pick<JournalEntry, "text" | "mood" | "feedback">>) => {
-      const id = `${DEMO_USER_ID}:${date}`;
+      const id = `${userIdRef.current}:${date}`;
       const now = new Date().toISOString();
       const prev = entriesRef.current.find((e) => e.id === id);
       const next: JournalEntry = {
         id,
-        userId: DEMO_USER_ID,
+        userId: userIdRef.current,
         date,
         text: patch.text ?? prev?.text ?? "",
         mood: patch.mood ?? prev?.mood,
@@ -164,6 +186,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     },
     [applyEntries],
   );
+
+  const switchStudent = useCallback(async (label: string) => {
+    const st = await getSettings();
+    await putSettings({ ...st, activeStudent: label });
+    await refresh();
+  }, [refresh]);
+
+  const saveRoster = useCallback(async (labels: string[]) => {
+    const st = await getSettings();
+    // 명단을 바꾸면 «지금 학생» 도 명단 안에 있어야 한다
+    const active = labels.includes(st.activeStudent ?? "") ? st.activeStudent : labels[0];
+    await putSettings({ ...st, roster: labels, activeStudent: active });
+    for (const label of labels) await ensureStudent(studentId(label), label);
+    await refresh();
+  }, [refresh]);
 
   const updateSettings = useCallback(async (s: AppSettings) => {
     await putSettings(s);
@@ -195,6 +232,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       achievements,
       entries,
       settings,
+      roster: settings.roster ?? [],
+      activeStudent: settings.roster?.length ? (settings.activeStudent ?? settings.roster[0]) : null,
+      switchStudent,
+      saveRoster,
       refresh,
       saveSession,
       saveEmotion,
@@ -202,7 +243,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       updateSettings,
       rename,
     }),
-    [ready, user, profile, paps, sessions, achievements, entries, settings, refresh, saveSession, saveEmotion, saveEntry, updateSettings, rename],
+    [ready, user, profile, paps, sessions, achievements, entries, settings, switchStudent, saveRoster, refresh, saveSession, saveEmotion, saveEntry, updateSettings, rename],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
