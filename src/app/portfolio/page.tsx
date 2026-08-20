@@ -154,9 +154,9 @@ export default function PortfolioPage() {
         ) : (
           <Card>
             <p className="font-semibold">아직 운동 기록이 없어요</p>
-            <p className="mt-[var(--space-100)] text-[var(--muted)]">추천 운동이나 줄넘기를 한 번 하면, 그 기록이 포트폴리오에 쌓여요.</p>
-            <Link href="/recommend" className="mt-[var(--space-150)] inline-block font-semibold text-[var(--brand)] hover:underline">
-              추천 운동 시작
+            <p className="mt-[var(--space-100)] text-[var(--muted)]">운동처방의 오늘 할 운동을 한 번 하면, 그 기록이 포트폴리오에 쌓여요.</p>
+            <Link href="/prescription" className="mt-[var(--space-150)] inline-block font-semibold text-[var(--brand)] hover:underline">
+              나의 운동처방 보기
             </Link>
           </Card>
         )}

@@ -66,6 +66,17 @@ function MeasureInner() {
             새 탭에서 열기
           </a>
         )}
+        {tool.alsoAt ? (
+          <a
+            href={tool.alsoAt.url}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-[var(--space-100)] inline-flex items-center gap-[var(--space-50)] text-[var(--font-size-300)] font-semibold text-[var(--brand)] hover:underline"
+          >
+            <Open20Regular />
+            {tool.alsoAt.label}
+          </a>
+        ) : null}
       </Card>
 
       {tool.native ? (

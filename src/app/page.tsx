@@ -56,9 +56,6 @@ export default function HomePage() {
             <Link href="/prescription">
               <Button>나의 운동처방 보기</Button>
             </Link>
-            <Link href="/recommend">
-              <Button variant="soft">추천 운동</Button>
-            </Link>
             <Link href="/paps">
               <Button variant="ghost">PAPS 알아보기</Button>
             </Link>

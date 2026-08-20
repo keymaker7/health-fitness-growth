@@ -15,7 +15,7 @@ export default function MyFitnessPage() {
       <PageTitle
         kicker="나의 건강체력"
         title={`${user?.displayName ?? "나"}의 지금 상태`}
-        sub="PAPS 측정 결과를 건강체력과 운동체력으로 나눠 살펴봐요. 친구와 비교하지 않고, 지금의 나를 이해해요."
+        sub="PAPS 측정 결과를 건강체력과 운동체력으로 나눠 살펴봐요. 친구와 비교하지 않고, 지금의 나를 이해해요. 각 요인이 무엇인지는 카드를 눌러 보세요."
       />
       <div className="grid gap-[var(--space-300)] lg:grid-cols-2">
         <section>
@@ -28,7 +28,7 @@ export default function MyFitnessPage() {
                     <p className="font-semibold">{c.name}</p>
                     <Stars n={gradeToStars(profile.components[c.id])} color={c.color} />
                   </div>
-                  <p className="mt-[var(--space-50)] text-[var(--font-size-300)] text-[var(--muted)]">{c.kidDescription}</p>
+
                 </Card>
               </Link>
             ))}
@@ -44,7 +44,7 @@ export default function MyFitnessPage() {
                     <p className="font-semibold">{c.name}</p>
                     <Stars n={gradeToStars(profile.components[c.id])} color={c.color} />
                   </div>
-                  <p className="mt-[var(--space-50)] text-[var(--font-size-300)] text-[var(--muted)]">{c.kidDescription}</p>
+
                 </Card>
               </Link>
             ))}

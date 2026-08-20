@@ -29,8 +29,6 @@ import {
   QuestionCircle20Filled,
   QuestionCircle20Regular,
   Search20Regular,
-  Sparkle20Filled,
-  Sparkle20Regular,
   Sport20Filled,
   Sport20Regular,
   Timer20Filled,
@@ -48,7 +46,6 @@ const NAV: { href: string; label: string; Regular: IconCmp; Filled: IconCmp; ali
   { href: "/paps", label: "PAPS", Regular: BookOpen20Regular, Filled: BookOpen20Filled },
   { href: "/health-fitness", label: "건강체력", Regular: HeartPulse20Regular, Filled: HeartPulse20Filled },
   { href: "/sport-fitness", label: "운동체력", Regular: Sport20Regular, Filled: Sport20Filled },
-  { href: "/recommend", label: "추천 운동", Regular: Sparkle20Regular, Filled: Sparkle20Filled },
   { href: "/prescription", label: "맞춤 운동처방", Regular: ClipboardPulse20Regular, Filled: ClipboardPulse20Filled },
   { href: "/measure", label: "측정 도구", Regular: Timer20Regular, Filled: Timer20Filled },
   { href: "/games/multi-jump", label: "AI 줄넘기", Regular: ArrowRepeatAll20Regular, Filled: ArrowRepeatAll20Filled },
@@ -60,7 +57,7 @@ const NAV: { href: string; label: string; Regular: IconCmp; Filled: IconCmp; ali
 const BOTTOM = [
   { href: "/", label: "홈", Regular: Home20Regular, Filled: Home20Filled },
   { href: "/paps", label: "PAPS", Regular: BookOpen20Regular, Filled: BookOpen20Filled },
-  { href: "/recommend", label: "추천", Regular: Sparkle20Regular, Filled: Sparkle20Filled },
+  { href: "/prescription", label: "운동처방", Regular: ClipboardPulse20Regular, Filled: ClipboardPulse20Filled },
   { href: "/games/multi-jump", label: "줄넘기", Regular: ArrowRepeatAll20Regular, Filled: ArrowRepeatAll20Filled },
   { href: "/journal", label: "기록", Regular: CalendarLtr20Regular, Filled: CalendarLtr20Filled, aliases: ["/growth"] },
 ];

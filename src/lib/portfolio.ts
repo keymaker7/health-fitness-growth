@@ -152,7 +152,7 @@ export function buildPortfolio(
       reason: nextComp
         ? `${user.displayName}에게 지금은 ${nextComp.name}을 조금 더 돌보면 좋아요. ${nextComp.kidDescription}`
         : "꾸준히 몸을 움직이는 것이 성장의 시작이에요.",
-      href: weakest ? `/health-fitness/${weakest.id}` : "/recommend",
+      href: weakest ? `/health-fitness/${weakest.id}` : "/prescription",
     },
   };
 }

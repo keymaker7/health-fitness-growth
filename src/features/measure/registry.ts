@@ -12,6 +12,8 @@ export interface MeasureTool {
   exerciseIds: string[];
   /** 측정 결과를 앱 기록으로 남길 때 쓰는 종목과 단위 */
   record: { exerciseId: string; exerciseName: string; exerciseType: string; unit: string };
+  /** 같은 종목의 다른 갈래(기기가 필요한 것 등). 탭을 늘리지 않고 링크로만 안내한다. */
+  alsoAt?: { label: string; url: string };
 }
 
 export const MEASURE_TOOLS: MeasureTool[] = [
@@ -56,9 +58,11 @@ export const MEASURE_TOOLS: MeasureTool[] = [
   },
   {
     id: "squat-cam",
-    name: "스쿼트 (카메라)",
+    name: "스쿼트",
     factor: "근지구력",
-    description: "카메라가 스쿼트 횟수를 세요. 앱 안에서 바로 재고, 인터넷이 끊겨도 돌아갑니다.",
+    description:
+      "카메라가 스쿼트 횟수를 세요. 앱 안에서 바로 재고, 인터넷이 끊겨도 돌아갑니다. " +
+      "micro:bit를 쓰는 스쿼트 대결은 아래 링크에 따로 있어요.",
     url: "https://squat-cam.netlify.app",
     host: "squat-cam.netlify.app",
     camera: true,
@@ -66,18 +70,8 @@ export const MEASURE_TOOLS: MeasureTool[] = [
     papsEventIds: [],
     exerciseIds: ["squat"],
     record: { exerciseId: "squat", exerciseName: "스쿼트", exerciseType: "strength", unit: "회" },
-  },
-  {
-    id: "squat-microbit",
-    name: "스쿼트 파이터 (micro:bit)",
-    factor: "근력",
-    description: "micro:bit를 몸에 지니고 하는 스쿼트 대결이에요. 두 명이 겨룰 수 있습니다.",
-    url: "https://squat-fighter.netlify.app",
-    host: "squat-fighter.netlify.app",
-    camera: false,
-    papsEventIds: [],
-    exerciseIds: ["squat"],
-    record: { exerciseId: "squat", exerciseName: "스쿼트", exerciseType: "strength", unit: "회" },
+    // 같은 종목·같은 단위라 탭을 둘로 두지 않는다. 기기가 있는 교실만 쓰는 갈래여서 링크로 남긴다.
+    alsoAt: { label: "micro:bit로 대결하기 (기기 필요)", url: "https://squat-fighter.netlify.app" },
   },
 ];
 
