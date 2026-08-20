@@ -377,11 +377,17 @@ export function ShuttleRun({ onCount }: { onCount?: (total: number) => void }) {
     const vision = visionRef.current;
     // 명단이 비어 있으면 레인 번호(1번~N번)로 채운다 — 명단 없이도, 혼자서도 바로 잰다.
     if (roster.count === 0) {
+      // 카메라 자동 판정 + 명단 없음 = 대부분 혼자 재는 경우다.
+      // 레인이 4개면 화면이 4개 띠로 갈려 한 사람 몸이 여러 띠에 걸치고,
+      // 신호음 순간 선에 없으면 미도달 두 번으로 끝나 «1회에서 멈춘 것»처럼 보인다.
+      // 그래서 이때는 화면 전체를 1레인으로 쓴다. 여럿이 재려면 명단을 넣으면 된다.
+      const laneCount = camOnRef.current && autoJudgeRef.current ? 1 : roster.lanes;
       roster.setStudents(
-        Array.from({ length: roster.lanes }, (_, i) => ({ name: `${i + 1}번`, sex: null })),
+        Array.from({ length: laneCount }, (_, i) => ({ name: `${i + 1}번`, sex: null })),
         roster.gradeKey,
-        roster.lanes,
+        laneCount,
       );
+      setLanes(laneCount);
       syncLanes();
     }
     if (!roster.heat.length || roster.heat.every((v) => v === null || v === undefined)) roster.nextHeat();
@@ -603,6 +609,8 @@ export function ShuttleRun({ onCount }: { onCount?: (total: number) => void }) {
         <p className="mt-[var(--space-100)] text-[var(--font-size-200)] text-[var(--muted)]">
           파란 세로선 = 양쪽 콘(선) · 노란 가로선 = 레인 위·아래 경계 — 손가락으로 끌어 실제 위치에 맞추세요.
           초록 점이 아이 위치예요. 카메라는 옆(측면)에 두고, 아무도 없을 때 «배경 다시 잡기»를 누르세요.
+          횟수는 <b>신호음마다 1회</b>씩만 올라가요 — 신호음이 울리는 순간 목표 선을 넘어 있으면 인정되고,
+          신호음 전에 여러 번 왕복해도 더 올라가지 않아요 (PAPS 규정 그대로).
         </p>
       ) : null}
 
