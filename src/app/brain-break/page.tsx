@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button, Card, PageTitle } from "@/components/ui";
-import { getReflectAdapter, REFLECT_OFFICIAL } from "@/features/reflect/adapter";
+import { REFLECT_OFFICIAL } from "@/features/reflect/adapter";
 import { useApp } from "@/features/dashboard/AppProvider";
 
 export default function BrainBreakPage() {
@@ -32,22 +32,31 @@ export default function BrainBreakPage() {
       <Card>
         <p className="font-semibold">Reflect Brain Break</p>
         <p className="mt-[var(--space-100)] text-[var(--font-size-300)] text-[var(--muted)]">
-          Microsoft는 Brain Break를 Reflect 웹앱·Teams 안에서 제공합니다. 제3자 사이트 iframe 삽입은 공식
-          지원 범위가 아니라, 아래 공식 링크로 이동합니다.
+          하고 싶은 휴식을 골라 누르면 Microsoft Reflect의 해당 Brain Break가 새 탭에서 열려요.
         </p>
-        <Button
-          className="mt-[var(--space-150)] w-full sm:w-auto"
-          onClick={() => {
-            getReflectAdapter().openOfficial("brainBreak");
-            void saveEmotion({
-              phase: "brain-break",
-              reflectOpened: true,
-              reflectConfirmed: false,
-            });
-          }}
-        >
-          Reflect에서 Brain Break 열기
-        </Button>
+        <div className="mt-[var(--space-150)] grid gap-[var(--space-100)] sm:grid-cols-2">
+          {[
+            { label: "명상하기", emoji: "🧘", url: "https://reflect.microsoft.com/app/brainbreaks/Meditate" },
+            { label: "활동", emoji: "🤸", url: "https://reflect.microsoft.com/app/brainbreaks/Move" },
+            { label: "게임", emoji: "🎲", url: "https://reflect.microsoft.com/app/brainbreaks/Play" },
+            { label: "음악", emoji: "🎵", url: "https://reflect.microsoft.com/app/brainbreaks/Music" },
+          ].map((b) => (
+            <Button
+              key={b.label}
+              className="w-full py-[var(--space-300)] text-[var(--font-size-400)]"
+              onClick={() => {
+                window.open(b.url, "_blank", "noreferrer");
+                void saveEmotion({
+                  phase: "brain-break",
+                  reflectOpened: true,
+                  reflectConfirmed: false,
+                });
+              }}
+            >
+              {b.emoji} {b.label}
+            </Button>
+          ))}
+        </div>
         <a className="mt-[var(--space-150)] block text-[var(--font-size-300)] font-semibold text-[var(--brand)] hover:underline" href={REFLECT_OFFICIAL.home} target="_blank" rel="noreferrer">
           reflect.microsoft.com
         </a>

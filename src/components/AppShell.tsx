@@ -31,6 +31,8 @@ import {
   QuestionCircle20Filled,
   QuestionCircle20Regular,
   Search20Regular,
+  Sparkle20Filled,
+  Sparkle20Regular,
   Sport20Filled,
   Sport20Regular,
   Timer20Filled,
@@ -58,6 +60,8 @@ const NAV: { href: string; label: string; Regular: IconCmp; Filled: IconCmp; ali
   { href: "/sport-fitness", label: "운동체력", Regular: Sport20Regular, Filled: Sport20Filled },
   { href: "/prescription", label: "맞춤 운동처방", Regular: ClipboardPulse20Regular, Filled: ClipboardPulse20Filled },
   { href: "/portfolio", label: "성장 포트폴리오", Regular: DocumentOnePage20Regular, Filled: DocumentOnePage20Filled },
+  // Reflect Brain Break 4종(명상·활동·게임·음악)으로 바로 가는 화면
+  { href: "/brain-break", label: "Reflect-뇌의 휴식", Regular: Sparkle20Regular, Filled: Sparkle20Filled },
   // 심사·참관용 — 사이트가 어떻게 짜였는지 그림 한 장씩으로 설명한다
   { href: "/system/composition", label: "시스템 구성도", Regular: Organization20Regular, Filled: Organization20Filled },
   { href: "/system/architecture", label: "시스템 구조도", Regular: Flowchart20Regular, Filled: Flowchart20Filled },
