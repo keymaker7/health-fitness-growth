@@ -10,7 +10,7 @@ export default function SystemArchitecturePage() {
       <PageTitle
         kicker="시스템 구조도"
         title="AI 에이전트가 짜인 방식"
-        sub="Microsoft Copilot Studio 위에 에이전트 4개·흐름 2개·워크플로우 1개가 역할을 나눠 맡습니다."
+        sub="Microsoft Copilot Studio 위에 에이전트 4개 + 연결 에이전트(K-Weather)·흐름 2개·워크플로우 1개가 역할을 나눠 맡고, 앱의 MCP 서버로 확장됩니다."
       />
       <div className="card overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -18,14 +18,16 @@ export default function SystemArchitecturePage() {
       </div>
       <Card>
         <div className="flex flex-wrap items-center gap-[var(--space-50)]">
-          <Tag tone="brand">에이전트 4개</Tag>
+          <Tag tone="brand">에이전트 4개 + 연결 1개</Tag>
           <Tag>흐름 2개</Tag>
           <Tag>워크플로우 1개</Tag>
+          <Tag>MCP 확장</Tag>
         </div>
         <ul className="mt-[var(--space-150)] list-disc space-y-[var(--space-100)] pl-5 text-[var(--font-size-300)]">
           <li>
             <b>체육 수업 도우미(부모)</b> — 스스로 답하지 않고 라우팅만 합니다. 질문을 「측정 안내」(PAPS 운영
-            매뉴얼·학교건강검사규칙)와 「처방 해설」(운동처방 규칙 문서)로 넘깁니다.
+            매뉴얼·학교건강검사규칙)와 「처방 해설」(운동처방 규칙 문서), 그리고 연결 에이전트
+            <b> K-Weather</b>(기상청 관측·단기예보 Skills — 실외 수업 가능 여부)로 넘깁니다.
           </li>
           <li>
             <b>일지 도우미(독립 게시)</b> — 학생 앱에서 Direct Line으로 익명 호출됩니다. 이름 없이 학번만 전달하고,
@@ -39,6 +41,11 @@ export default function SystemArchitecturePage() {
             <b>Power Automate 흐름 2개</b> — 「일지 저장」(에이전트가 호출)과 「일지 장부」(앱 서버가 HTTP로 호출).
             둘 다 SharePoint 사이트 pe-journal의 「체육 성장일지」 리스트에 제목(학번)·날짜·마음·운동·일지·피드백
             여섯 칸을 남깁니다.
+          </li>
+          <li>
+            <b>자체 MCP 서버(확장)</b> — 앱이 /api/mcp 로 「바깥 수업 판단」·「미세먼지 조회」·「지금 날씨」 도구를
+            표준 프로토콜(MCP)로 제공합니다. 공공데이터 실시간 자료를 물고 있어, 다양한 에이전트에 그대로 도구로
+            연결할 수 있습니다.
           </li>
         </ul>
       </Card>

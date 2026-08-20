@@ -10,7 +10,7 @@ export default function SystemCompositionPage() {
       <PageTitle
         kicker="시스템 구성도"
         title="건강체력 성장일지가 돌아가는 방식"
-        sub="학생 태블릿의 웹앱 하나에서 카메라 측정·일지·교사 활용 세 갈래가 갈라집니다."
+        sub="학생 태블릿의 웹앱 하나에서 카메라 측정·오늘 바깥 수업·일지·교사 활용·MCP 서버 다섯 갈래가 갈라집니다."
       />
       <div className="card overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -18,7 +18,7 @@ export default function SystemCompositionPage() {
       </div>
       <Card>
         <div className="flex flex-wrap items-center gap-[var(--space-50)]">
-          <Tag tone="brand">세 갈래</Tag>
+          <Tag tone="brand">다섯 갈래</Tag>
         </div>
         <ul className="mt-[var(--space-150)] list-disc space-y-[var(--space-100)] pl-5 text-[var(--font-size-300)]">
           <li>
@@ -26,13 +26,21 @@ export default function SystemCompositionPage() {
             막아도 측정 수업이 멈추지 않습니다.
           </li>
           <li>
+            <b>오늘 바깥 수업</b> — 앱 서버(/api/outdoor)가 공공데이터(에어코리아 미세먼지·기상청 API허브 관측)를
+            읽어, 실외 수업 가능 여부를 학교 미세먼지 대응 기준으로 알려줍니다.
+          </li>
+          <li>
             <b>일지 작성</b> — 학생 글은 앱 서버(/api/journal-feedback)를 거쳐 두 길로 갈라집니다. 답변은 Copilot
             Studio 「일지 도우미」가 만들고, 기록은 Power Automate 「일지 장부」가 SharePoint 리스트에 확정적으로
             남깁니다. 답변 경로와 기록 경로를 분리한 것이 핵심입니다.
           </li>
           <li>
-            <b>교사 활용</b> — 교사는 Teams에서 「체육 수업 도우미」에게 물어보고, 도우미가 측정 안내·처방 해설
-            에이전트로 라우팅합니다.
+            <b>교사 활용</b> — 교사는 Teams에서 「체육 수업 도우미」에게 물어보고, 도우미가 측정 안내·처방 해설과
+            K-Weather(날씨·실외 수업 판단) 에이전트로 라우팅합니다.
+          </li>
+          <li>
+            <b>MCP 서버</b> — 앱이 /api/mcp 로 바깥 수업 판단 등 도구 3개를 표준 프로토콜(MCP)로 내놓아, 외부의
+            어떤 에이전트든 도구로 연결할 수 있습니다.
           </li>
         </ul>
       </Card>
