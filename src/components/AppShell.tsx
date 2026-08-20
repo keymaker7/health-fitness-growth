@@ -204,7 +204,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           ) : null}
           {panel === "user" ? (
-            <div className="card absolute top-full right-[var(--space-150)] z-40 mt-[var(--space-50)] w-[min(18rem,calc(100vw-1.5rem))] p-[var(--space-200)]">
+            <div className="card absolute top-full right-[var(--space-150)] z-40 mt-[var(--space-50)] max-h-[80vh] w-[min(18rem,calc(100vw-1.5rem))] overflow-auto bg-[var(--surface)] p-[var(--space-200)]">
               <p className="font-semibold">{ready ? user?.displayName : "학생"}</p>
               <p className="text-[var(--font-size-300)] text-[var(--muted)]">
                 {ready ? `Lv.${summary.level} ${summary.title}` : ""}
@@ -213,7 +213,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               {roster.length ? (
                 <div className="mt-[var(--space-150)]">
                   <p className="text-[var(--font-size-300)] font-semibold">누가 기록하나요?</p>
-                  <div className="mt-[var(--space-100)] flex max-h-[40vh] flex-wrap gap-[var(--space-50)] overflow-auto">
+                  <div className="mt-[var(--space-100)] grid max-h-[46vh] grid-cols-3 gap-[var(--space-50)] overflow-auto">
                     {roster.map((label) => (
                       <button
                         key={label}
