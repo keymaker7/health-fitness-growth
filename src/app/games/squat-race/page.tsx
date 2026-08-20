@@ -5,11 +5,13 @@ import { BtnRow, Button, Card, PageTitle, Progress } from "@/components/ui";
 import { EmotionGate } from "@/components/EmotionGate";
 import { WorkoutResult } from "@/components/WorkoutResult";
 import { useApp } from "@/features/dashboard/AppProvider";
-import { SquatDetector } from "@/features/squat-game/squat-detector";
+import { SQUAT_CONFIG, SquatCounter, extractSquat } from "@/features/squat/squat.js";
+import { toPixels } from "@/features/pose/localPose";
 import {
   createMediaPipePoseAdapter,
   createSimulationPoseAdapter,
   startCamera,
+  type PoseFrame,
 } from "@/features/multi-person-tracking/pose-adapter";
 import { formatTime } from "@/lib/utils";
 import { personalBest } from "@/features/badges/engine";
@@ -17,10 +19,21 @@ import type { Achievement } from "@/types/models";
 
 const GOAL = 30;
 
+/**
+ * «자세 좋음» 으로 칠 깊이. squat.js 가 주는 깊이는 0~90 으로 환산된 값이고,
+ * 세는 문턱(키의 10%)은 약 35 다. 그보다 확실히 깊게 앉은 것만 좋은 자세로 본다.
+ * micro:bit 스쿼트 게임이 쓰던 값(65)과 같게 맞췄다 — 같은 동작에 같은 기준을 준다.
+ */
+const DEEP_ENOUGH = 65;
+
 export default function SquatRacePage() {
   const { user, saveSession, sessions } = useApp();
   const videoRef = useRef<HTMLVideoElement>(null);
-  const det = useRef(new SquatDetector());
+  // 측정 도구(/measure)와 **같은 판정**을 쓴다. 예전에는 이 화면만 무릎 각도로 따로 셌고,
+  // 그래서 같은 아이가 화면마다 다른 횟수를 받았다.
+  const det = useRef(new SquatCounter());
+  const deepReps = useRef(0);
+  const manual = useRef(0);            // 카메라 없이 손으로 더한 횟수 (판정이 센 것과 섞지 않는다)
   const adapter = useRef<ReturnType<typeof createSimulationPoseAdapter> | null>(null);
   const stopCam = useRef<null | (() => void)>(null);
   const [count, setCount] = useState(0);
@@ -43,8 +56,11 @@ export default function SquatRacePage() {
   async function start(kind: "sim" | "camera") {
     adapter.current?.stop();
     stopCam.current?.();
-    det.current = new SquatDetector();
+    det.current = new SquatCounter();
+    deepReps.current = 0;
+    manual.current = 0;
     setCount(0);
+    setAcc(100);
     setSeconds(0);
     setMode(kind);
     if (kind === "camera" && videoRef.current) {
@@ -52,23 +68,15 @@ export default function SquatRacePage() {
         stopCam.current = await startCamera(videoRef.current);
         const a = createMediaPipePoseAdapter(1);
         adapter.current = a;
-        await a.start(videoRef.current, (frame) => {
-          const p = frame.persons[0];
-          if (!p) return;
-          apply(det.current.push(p.landmarks));
-        });
+        await a.start(videoRef.current, onFrame);
       } catch {
         await start("sim");
         return;
       }
     } else {
-      const a = createSimulationPoseAdapter(1);
+      const a = createSimulationPoseAdapter(1, "squat");
       adapter.current = a;
-      await a.start(videoRef.current!, (frame) => {
-        const p = frame.persons[0];
-        if (!p) return;
-        apply(det.current.push(p.landmarks));
-      });
+      await a.start(videoRef.current!, onFrame);
     }
     setOverlay("READY");
     await new Promise((r) => setTimeout(r, 700));
@@ -82,10 +90,37 @@ export default function SquatRacePage() {
     setRunning(true);
   }
 
-  function apply(r: ReturnType<SquatDetector["push"]>) {
-    setFeedback(r.feedback);
-    setCount(det.current.count);
-    setAcc(det.current.count ? Math.round((det.current.accurateCount / det.current.count) * 100) : 100);
+  /**
+   * 한 프레임을 판정에 먹인다.
+   *
+   * squat.js 는 **픽셀 좌표**를 기대한다 — 무릎 각도를 재려면 가로·세로가 같은 자로 재져야 한다.
+   * 자세 인식이 주는 좌표는 0~1 로 눌려 있어서, 화면 크기를 곱해 되돌린 뒤에 넘긴다.
+   */
+  function onFrame(frame: PoseFrame) {
+    const p = frame.persons[0];
+    if (!p) return;
+    const pts = toPixels(p.landmarks, frame.width, frame.height);
+    apply(det.current.update(extractSquat(pts, SQUAT_CONFIG), frame.ts / 1000));
+  }
+
+  /** 화면에 보이는 횟수 = 판정이 센 것 + 손으로 더한 것 */
+  function syncCount() {
+    setCount(det.current.count + manual.current);
+  }
+
+  function apply(msg: { state: string; depth: number } | null) {
+    const d = det.current;
+    syncCount();
+    if (!msg) return;
+    if (msg.state === "DOWN") {
+      setFeedback("좋아요, 그대로 천천히 일어서 볼까요?");
+      return;
+    }
+    // 일어선 순간에 한 개가 끝난다 (측정 도구와 같은 규칙)
+    const deep = msg.depth >= DEEP_ENOUGH;
+    if (deep) deepReps.current += 1;
+    setAcc(d.count ? Math.round((deepReps.current / d.count) * 100) : 100);
+    setFeedback(deep ? "바른 깊이예요!" : "조금만 더 내려가 볼까요?");
   }
 
   if (step === "before") {
@@ -180,16 +215,12 @@ export default function SquatRacePage() {
         <Button
           variant="ghost"
           onClick={() => {
-            const r = det.current.push([
-              ...Array.from({ length: 23 }, () => ({ x: 0.5, y: 0.3 })),
-              { x: 0.46, y: 0.55 },
-              { x: 0.54, y: 0.55 },
-              { x: 0.46, y: 0.72 },
-              { x: 0.54, y: 0.72 },
-              { x: 0.46, y: 0.88 },
-              { x: 0.54, y: 0.88 },
-            ]);
-            apply(r);
+            // 카메라가 없을 때 손으로 한 개를 더한다.
+            // 예전에는 가짜 관절 한 프레임을 판정에 밀어 넣었는데, 그건 «측정»을 흉내 낸 것이라
+            // 진짜 판정과 섞이면 어느 쪽이 센 숫자인지 알 수 없게 된다. 손으로 넣은 것은 따로 센다.
+            manual.current += 1;
+            syncCount();
+            setFeedback("손으로 1회를 더했어요.");
           }}
         >
           스쿼트 1회 (버튼)

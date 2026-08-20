@@ -11,22 +11,33 @@ import {
   startCamera,
   type PoseFrame,
 } from "@/features/multi-person-tracking/pose-adapter";
-import { IoUTracker } from "@/features/multi-person-tracking/iou-tracker";
-import { HipJumpDetector, hipY } from "@/features/jump-rope/jump-detector";
+import { CONFIG, Session, extractSignals } from "@/features/jump-rope/counter.js";
+import { toPixels } from "@/features/pose/localPose";
 import { formatTime } from "@/lib/utils";
 import type { Achievement } from "@/types/models";
 
-type PersonState = { id: string; label: string; color: string; jumps: number; box: { x: number; y: number; w: number; h: number } };
+/**
+ * 세는 것도 사람을 잇는 것도 **줄넘기 카운터와 같은 코드**를 쓴다.
+ *
+ * 예전에는 이 화면만 41줄짜리 감지기(엉덩이가 조금 올라가면 점프)와 별도 추적기를 썼다.
+ * 그 감지기에는 자유낙하 검사도 양발 동시 검사도 없어서 **걷기도 점프로 세어진다.**
+ * 원본 줄넘기 앱이 교실에서 그 문제를 잡으려고 넣은 장치들이 여기엔 없었다.
+ *
+ * autoStart 를 켜서 «손 들어 준비 → 3·2·1» 은 건너뛴다 — 이 화면은 자기 시작 버튼이 있다.
+ */
+const SESSION_CONFIG = { ...CONFIG, autoStart: true };
+const COLORS = ["#00c8ff", "#22d3a5", "#ff9d5c", "#c07bff", "#ffd166", "#ff6b6b"];
+
+type PersonView = { id: number; label: string; color: string; jumps: number; box: { x: number; y: number; w: number; h: number } };
 
 export default function MultiJumpPage() {
   const { saveSession } = useApp();
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const tracker = useRef(new IoUTracker());
-  const detectors = useRef(new Map<string, HipJumpDetector>());
+  const session = useRef(new Session(SESSION_CONFIG));
   const stopCam = useRef<null | (() => void)>(null);
   const adapterRef = useRef<ReturnType<typeof createSimulationPoseAdapter> | null>(null);
-  const [people, setPeople] = useState<PersonState[]>([]);
+  const [people, setPeople] = useState<PersonView[]>([]);
   const [running, setRunning] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [mode, setMode] = useState<"sim" | "camera" | "idle">("idle");
@@ -41,25 +52,37 @@ export default function MultiJumpPage() {
   }, [running]);
 
   function onFrame(frame: PoseFrame) {
-    const dets = frame.persons.map((p) => ({ box: p.box, score: p.score }));
-    const tracks = tracker.current.update(dets);
-    const next: PersonState[] = tracks.map((tr, i) => {
-      if (!detectors.current.has(tr.id)) detectors.current.set(tr.id, new HipJumpDetector());
-      const person = frame.persons[i];
-      if (person) detectors.current.get(tr.id)!.push(hipY(person.landmarks));
-      return {
-        id: tr.id,
-        label: tr.label,
-        color: tr.color,
-        jumps: detectors.current.get(tr.id)?.count ?? 0,
-        box: tr.box,
-      };
+    // counter.js 는 **픽셀 좌표**로 판정한다 — 자세 인식이 주는 0~1 좌표를 화면 크기로 되돌린다
+    const obs = frame.persons.map((p) => {
+      const pts = toPixels(p.landmarks, frame.width, frame.height);
+      return { pts, sig: extractSignals(pts, SESSION_CONFIG) };
     });
+    session.current.update(obs, frame.ts / 1000);
+
+    const next: PersonView[] = session.current.persons
+      .flatMap((p) => (p.stable && p.pts ? [{ person: p, pts: p.pts }] : []))
+      .sort((a, b) => a.person.id - b.person.id)
+      .map(({ person, pts }, i) => ({
+        id: person.id,
+        label: `${i + 1}번`,
+        color: COLORS[i % COLORS.length],
+        jumps: person.count,
+        box: boxOf(pts, frame.width, frame.height),
+      }));
     setPeople(next);
     draw(frame, next);
   }
 
-  function draw(frame: PoseFrame, list: PersonState[]) {
+  /** 사람을 감싸는 네모 — 화면 비율(0~1)로 돌려준다 (그리는 쪽이 그렇게 기대한다) */
+  function boxOf(pts: { x: number; y: number }[], w: number, h: number) {
+    const xs = pts.map((p) => p.x / w);
+    const ys = pts.map((p) => p.y / h);
+    const x = Math.min(...xs);
+    const y = Math.min(...ys);
+    return { x, y, w: Math.max(...xs) - x, h: Math.max(...ys) - y };
+  }
+
+  function draw(frame: PoseFrame, list: PersonView[]) {
     const canvas = canvasRef.current;
     const video = videoRef.current;
     if (!canvas) return;
@@ -95,9 +118,8 @@ export default function MultiJumpPage() {
 
   async function startSim() {
     stop();
-    tracker.current = new IoUTracker();
-    detectors.current = new Map();
-    const a = createSimulationPoseAdapter(4);
+    session.current = new Session(SESSION_CONFIG);
+    const a = createSimulationPoseAdapter(4, "jump");
     adapterRef.current = a;
     await a.start(videoRef.current!, onFrame);
     setMode("sim");
@@ -107,8 +129,7 @@ export default function MultiJumpPage() {
 
   async function startCam() {
     stop();
-    tracker.current = new IoUTracker();
-    detectors.current = new Map();
+    session.current = new Session(SESSION_CONFIG);
     try {
       stopCam.current = await startCamera(videoRef.current!);
       const a = createMediaPipePoseAdapter(6);
@@ -191,8 +212,8 @@ export default function MultiJumpPage() {
           </Card>
           <Card>
             <p className="mb-2 text-sm font-semibold">측정 현황</p>
-            <ul className="space-y-2">
-              {(people.length ? people : [{ id: "0", label: "대기", jumps: 0, color: "#0f6cbd" }]).map((p, i) => (
+            <ul className="space-y-2" data-testid="people">
+              {(people.length ? people : [{ id: 0, label: "대기", jumps: 0, color: COLORS[0] }]).map((p, i) => (
                 <li key={p.id} className="flex items-baseline justify-between gap-2 border-b border-[var(--line)] py-[var(--space-100)] last:border-0">
                   <span className="font-semibold" style={{ color: p.color }}>
                     학생 {String(i + 1).padStart(2, "0")}

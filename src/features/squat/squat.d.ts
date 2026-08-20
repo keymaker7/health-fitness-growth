@@ -51,9 +51,29 @@ export const SESSION_STATES: { WAITING: string; COUNTDOWN: string; RUNNING: stri
 export function extractSquat(pts: Point[], cfg?: unknown): SquatSignals;
 export function angleAt(a: Point, b: Point, c: Point): number;
 
+/** 앉음·일어섬이 바뀌는 순간에만 나오는 메시지 (micro:bit 판과 같은 모양) */
+export interface SquatMessage {
+  count: number;
+  pitch: number;
+  state: "UP" | "DOWN";
+  depth: number;
+}
+
+/**
+ * 한 사람의 스쿼트 카운터. 여러 명·손들기 준비가 필요 없는 화면(게임 등)은
+ * SquatSession 대신 이것을 쓴다 — 프레임마다 신호를 먹이면 된다.
+ */
 export class SquatCounter {
   constructor(cfg?: unknown);
   count: number;
+  dropRatio: number;
+  kneeAngle: number | null;
+  legsVisible: boolean;
+  lastRepS: number | null;
+  /** @returns 상태가 바뀐 순간에만 메시지, 그 외에는 null */
+  update(sig: SquatSignals, now: number): SquatMessage | null;
+  /** 기준(서 있는 자세)을 다시 잡는다 */
+  recapture(): void;
   reset(): void;
 }
 

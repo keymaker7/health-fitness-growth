@@ -48,8 +48,26 @@ export const STATES: { WAITING: string; COUNTDOWN: string; RUNNING: string };
 
 export function extractSignals(pts: Point[], cfg?: unknown): Signals;
 
+/**
+ * 한 사람의 상태. Session 이 안에서 만들고 이어 준다 —
+ * 화면은 `session.persons` 로 읽기만 한다.
+ */
+export declare class PersonState {
+  id: number;
+  count: number;
+  ready: boolean;
+  /** 유령 인식이 아니라 실제 참가자로 인정된 사람 */
+  stable: boolean;
+  centerX: number;
+  bodyHeight: number;
+  pts: Point[] | null;
+  present(now: number): boolean;
+}
+
 export class Session {
   constructor(cfg?: unknown);
+  /** 지금 이어지고 있는 사람들 (사라진 사람은 잠시 남아 있다가 빠진다) */
+  readonly persons: PersonState[];
   update(observations: Observation[], now: number): void;
   snapshot(now: number): Snapshot;
   reset(now: number): void;
