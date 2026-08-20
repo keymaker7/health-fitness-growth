@@ -513,7 +513,23 @@ export function ShuttleRun({ onCount }: { onCount?: (total: number) => void }) {
           </label>
           <label className="text-[var(--font-size-300)]">
             레인 수 (한 번에 뛰는 인원)
-            <input className="field mt-[var(--space-50)]" type="number" min={1} max={8} value={lanes} onChange={(e) => setLanes(Number(e.target.value))} />
+            <input
+              className="field mt-[var(--space-50)]"
+              type="number"
+              min={1}
+              max={8}
+              value={lanes}
+              onChange={(e) => {
+                // 원본처럼 바꾸는 즉시 레인 띠·조 편성에 반영한다 (적용 버튼을 기다리지 않는다)
+                const n = Math.max(1, Math.min(8, Number(e.target.value) || 4));
+                setLanes(n);
+                roster.lanes = n;
+                syncLanes();
+                roster.nextHeat();
+                save();
+                bump();
+              }}
+            />
           </label>
           <label className="text-[var(--font-size-300)] sm:row-span-2">
             명단 (한 줄에 한 명, «이름 남/여»)
