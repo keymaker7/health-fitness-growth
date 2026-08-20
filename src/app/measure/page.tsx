@@ -11,14 +11,19 @@ import { CameraCounter } from "@/features/jump-rope/CameraCounter";
 import { SquatCamera } from "@/features/squat/SquatCamera";
 import { ShuttleRun } from "@/features/shuttle-run/ShuttleRun";
 import { LongJumpCamera } from "@/features/long-jump/LongJumpCamera";
-import { MEASURE_TOOLS, getMeasureTool } from "@/features/measure/registry";
+import { MEASURE_TOOLS, getMeasureTool, type MeasureTool } from "@/features/measure/registry";
 
-/** 앱 안에서 재는 도구를 종목에 맞게 고른다. */
-function NativeTool({ id, onCount }: { id: string; onCount: (total: number) => void }) {
-  if (id === "squat-cam") return <SquatCamera onCount={onCount} />;
-  if (id === "shuttle-run") return <ShuttleRun onCount={onCount} />;
-  if (id === "long-jump") return <LongJumpCamera onCount={onCount} />;
-  return <CameraCounter onCount={onCount} />;
+// 종목별 도구는 아래 JSX에서 각자 제 자리를 갖는다.
+// 한 자리에서 key 만 바꿔 갈아끼우는 방식은 이 Next/React 조합에서
+// 이전 종목 화면을 못 지우는 버그가 있다 — 탭을 바꿀 때마다 카드가 쌓였다.
+
+/** 값 전달은 바깥 도구와 같은 길(postMessage)을 쓴다. 받는 쪽을 두 벌 만들지 않기 위해서다. */
+function sendCount(tool: MeasureTool) {
+  return (total: number) =>
+    window.postMessage(
+      { source: "measure-tool", tool: tool.id, value: total, unit: tool.record.unit },
+      window.location.origin,
+    );
 }
 
 export default function MeasurePage() {
@@ -79,19 +84,11 @@ function MeasureInner() {
         ) : null}
       </Card>
 
-      {tool.native ? (
-        <NativeTool
-          key={tool.id}
-          id={tool.id}
-          onCount={(total) =>
-            // 값 전달은 바깥 도구와 같은 길을 쓴다. 받는 쪽을 두 벌 만들지 않기 위해서다.
-            window.postMessage(
-              { source: "measure-tool", tool: tool.id, value: total, unit: tool.record.unit },
-              window.location.origin,
-            )
-          }
-        />
-      ) : (
+      {tool.native && tool.id === "shuttle-run" ? <ShuttleRun onCount={sendCount(tool)} /> : null}
+      {tool.native && tool.id === "long-jump" ? <LongJumpCamera onCount={sendCount(tool)} /> : null}
+      {tool.native && tool.id === "jump-rope" ? <CameraCounter onCount={sendCount(tool)} /> : null}
+      {tool.native && tool.id === "squat-cam" ? <SquatCamera onCount={sendCount(tool)} /> : null}
+      {!tool.native ? (
         <div className="measure-frame">
           <iframe
             key={tool.id}
@@ -101,16 +98,44 @@ function MeasureInner() {
             allow="camera; microphone; fullscreen; autoplay; accelerometer; gyroscope"
           />
         </div>
-      )}
+      ) : null}
+
+      {/* 고른 종목의 사용 방법만 보인다 — 탭을 바꾸면 이 카드도 같이 바뀐다 */}
+      <Card>
+        <div className="flex flex-wrap items-center gap-[var(--space-50)]">
+          <Tag tone="brand">사용 방법</Tag>
+          <Tag>{tool.name}</Tag>
+        </div>
+        <p className="mt-[var(--space-150)] text-[var(--font-size-300)] font-semibold">준비</p>
+        <ul className="mt-[var(--space-50)] list-disc space-y-[var(--space-50)] pl-[var(--space-300)] text-[var(--font-size-300)]">
+          {tool.guide.ready.map((s, i) => (
+            <li key={i}>{s}</li>
+          ))}
+        </ul>
+        <p className="mt-[var(--space-150)] text-[var(--font-size-300)] font-semibold">순서</p>
+        <ol className="mt-[var(--space-50)] list-decimal space-y-[var(--space-50)] pl-[var(--space-300)] text-[var(--font-size-300)]">
+          {tool.guide.steps.map((s, i) => (
+            <li key={i}>{s}</li>
+          ))}
+        </ol>
+        <p className="mt-[var(--space-150)] text-[var(--font-size-300)] font-semibold">알아두면 좋아요</p>
+        <ul className="mt-[var(--space-50)] list-disc space-y-[var(--space-50)] pl-[var(--space-300)] text-[var(--font-size-300)] text-[var(--muted)]">
+          {tool.guide.tips.map((s, i) => (
+            <li key={i}>{s}</li>
+          ))}
+        </ul>
+      </Card>
 
       <MeasureRecordForm key={tool.id} tool={tool} />
       <AskAgentButton
-        title="측정 방법이 헷갈리나요?"
+        title={`${tool.record.exerciseName} 측정이 헷갈리나요?`}
         hint="파울, 신호음, 준비물, 안전 수칙을 Teams 도우미가 매뉴얼 근거로 알려줘요."
       />
-      <p className="text-[var(--font-size-200)] text-[var(--muted)]">
-        카메라를 쓰는 도구는 브라우저가 권한을 물어봐요. 화면이 비어 있으면 새 탭에서 열어 주세요.
-      </p>
+      {tool.camera ? (
+        <p className="text-[var(--font-size-200)] text-[var(--muted)]">
+          카메라를 쓰는 도구는 브라우저가 권한을 물어봐요. 화면이 비어 있으면 권한을 허용했는지 확인해 주세요.
+        </p>
+      ) : null}
     </div>
   );
 }
