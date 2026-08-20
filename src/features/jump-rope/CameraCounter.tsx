@@ -25,6 +25,7 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
   const landmarkerRef = useRef<Landmarker | null>(null);
   const camRef = useRef<CameraController | null>(null);
   const rafRef = useRef(0);
+  const loopRef = useRef<(() => void) | null>(null);
   const lastVideoTime = useRef(-1);
 
   const [status, setStatus] = useState("«카메라 켜기»를 누르면 시작해요.");
@@ -94,6 +95,7 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
         }
         rafRef.current = requestAnimationFrame(loop);
       };
+      loopRef.current = loop;
       rafRef.current = requestAnimationFrame(loop);
     } catch (e) {
       stop();
@@ -110,7 +112,30 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
     }
   }, []);
 
+  /**
+   * 인원 바꾸기. 카메라가 켜져 있어도 «세기 시작 전»(손 들기 대기)이라면 바꿀 수 있다.
+   * 자세 인식이 인원 수로 만들어지므로 그것만 새로 만들고, 카메라는 그대로 둔다.
+   */
+  const changingRef = useRef(false);
+  const changePeople = useCallback(async (n: number) => {
+    setMaxPeople(n);
+    if (!camRef.current?.stream || changingRef.current) return;
+    changingRef.current = true;
+    cancelAnimationFrame(rafRef.current);
+    landmarkerRef.current?.close?.();
+    landmarkerRef.current = null;
+    setStatus(`${n}명 기준으로 다시 준비하는 중…`);
+    landmarkerRef.current = await createLandmarker(n);
+    sessionRef.current = new Session(CONFIG);
+    setSnap(null);
+    setStatus("온몸이 화면에 들어오게 서고, 손을 들면 시작해요.");
+    if (loopRef.current) rafRef.current = requestAnimationFrame(loopRef.current);
+    changingRef.current = false;
+  }, []);
+
   const total = snap?.totalCount ?? 0;
+  // 세기 전(손 들기 대기)까지는 인원을 바꿀 수 있다. 카운트다운·세는 중에만 잠근다.
+  const peopleLocked = running && !!snap && snap.session !== "WAITING";
 
   return (
     <Card>
@@ -141,8 +166,8 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
           <select
             className="field inline-block w-auto"
             value={maxPeople}
-            disabled={running}
-            onChange={(e) => setMaxPeople(Number(e.target.value))}
+            disabled={peopleLocked}
+            onChange={(e) => void changePeople(Number(e.target.value))}
           >
             {[1, 2, 3, 4].map((n) => (
               <option key={n} value={n}>
