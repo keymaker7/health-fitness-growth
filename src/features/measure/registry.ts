@@ -33,7 +33,7 @@ export const MEASURE_TOOLS: MeasureTool[] = [
     exerciseIds: ["jump-rope"],
     record: { exerciseId: "jump-rope", exerciseName: "줄넘기", exerciseType: "cardio", unit: "회" },
     // keymaker님이 만드는 중 — 링크가 오면 url 만 채우면 된다 (2026-08-21)
-    alsoAt: { label: "줄넘기 대결하기 (제작 중 — 곧 열려요)", url: "" },
+    alsoAt: { label: "micro:bit로 줄넘기하기 (제작 중)", url: "" },
     guide: {
       ready: [
         "발끝까지 온몸이 화면에 들어오게 서요. 여러 명이면 좌우로 벌려 서요.",
