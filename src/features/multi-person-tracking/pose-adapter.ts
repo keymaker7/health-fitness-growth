@@ -1,4 +1,5 @@
-import { createLandmarker, openCamera, type Landmarker } from "@/features/pose/localPose";
+import { createLandmarker, type Landmarker } from "@/features/pose/localPose";
+import { CameraController } from "@/features/pose/camera.js";
 
 export interface PoseLandmark {
   x: number;
@@ -148,11 +149,17 @@ export function createMediaPipePoseAdapter(numPoses = 1): PoseAdapter {
   };
 }
 
-/** 카메라 열기도 측정 도구와 같은 것을 쓴다 — 해상도 조건이 갈리면 정확도도 갈린다 */
-export async function startCamera(video: HTMLVideoElement) {
-  const stream = await openCamera(video);
-  return () => {
-    stream.getTracks().forEach((t) => t.stop());
-    video.srcObject = null;
+/** 카메라 열기도 측정 도구와 같은 컨트롤러를 쓴다 — 해상도 조건이 갈리면 정확도도 갈린다 */
+export type CameraHandle = { stop: () => void; controller: CameraController };
+
+export async function startCamera(video: HTMLVideoElement, prefKey = "jumprope.camera"): Promise<CameraHandle> {
+  const cam = new CameraController(video, { prefKey });
+  if (!(await cam.start())) throw new Error("카메라를 열 수 없어요");
+  return {
+    controller: cam,
+    stop: () => {
+      cam.stream?.getTracks().forEach((t) => t.stop());
+      video.srcObject = null;
+    },
   };
 }

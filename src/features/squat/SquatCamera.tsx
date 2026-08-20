@@ -4,7 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { BtnRow, Button, Card, Tag } from "@/components/ui";
 import { SQUAT_CONFIG, SquatSession, extractSquat } from "@/features/squat/squat.js";
 import type { SquatObservation, SquatUpdate } from "@/features/squat/squat";
-import { createLandmarker, openCamera, toPixels, type Landmarker } from "@/features/pose/localPose";
+import { createLandmarker, toPixels, type Landmarker } from "@/features/pose/localPose";
+import { CameraController, type CameraFacing } from "@/features/pose/camera.js";
 
 /**
  * 앱 안에서 카메라로 스쿼트를 세는 화면.
@@ -21,7 +22,7 @@ export function SquatCamera({ onCount }: { onCount?: (total: number) => void }) 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sessionRef = useRef<InstanceType<typeof SquatSession> | null>(null);
   const landmarkerRef = useRef<Landmarker | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
+  const camRef = useRef<CameraController | null>(null);
   const rafRef = useRef(0);
   const lastVideoTime = useRef(-1);
 
@@ -29,11 +30,12 @@ export function SquatCamera({ onCount }: { onCount?: (total: number) => void }) 
   const [running, setRunning] = useState(false);
   const [snap, setSnap] = useState<SquatUpdate | null>(null);
   const [maxPeople, setMaxPeople] = useState(1);
+  const [facing, setFacing] = useState<CameraFacing>("user");
 
   const stop = useCallback(() => {
     cancelAnimationFrame(rafRef.current);
-    streamRef.current?.getTracks().forEach((t) => t.stop());
-    streamRef.current = null;
+    camRef.current?.stream?.getTracks().forEach((t) => t.stop());
+    camRef.current = null;
     landmarkerRef.current?.close?.();
     landmarkerRef.current = null;
     setRunning(false);
@@ -47,7 +49,13 @@ export function SquatCamera({ onCount }: { onCount?: (total: number) => void }) 
     if (!video || !canvas) return;
     try {
       setStatus("카메라를 여는 중…");
-      streamRef.current = await openCamera(video);
+      const cam = new CameraController(video, {
+        prefKey: "squatcam.camera",
+        onChange: (c) => setFacing(c.facing),
+        onError: (m) => { if (m) setStatus(m); },
+      });
+      camRef.current = cam;
+      if (!(await cam.start())) throw new Error("카메라를 열 수 없어요");
 
       setStatus("자세 인식 모델을 불러오는 중… (처음 한 번만, 약 6MB)");
       landmarkerRef.current = await createLandmarker(maxPeople);
@@ -91,6 +99,15 @@ export function SquatCamera({ onCount }: { onCount?: (total: number) => void }) 
     }
   }, [maxPeople, stop]);
 
+  const flip = useCallback(async () => {
+    const cam = camRef.current;
+    if (!cam || cam.busy) return;
+    if (await cam.switchNext()) {
+      sessionRef.current?.reset();
+      setStatus(`${cam.facingKo} 카메라로 바꿨어요 — 다시 준비부터 시작해요.`);
+    }
+  }, []);
+
   const people = snap?.people.filter((p) => p.established) ?? [];
   const total = people.reduce((n, p) => n + p.count, 0);
   const readyCount = people.filter((p) => p.ready).length;
@@ -109,7 +126,8 @@ export function SquatCamera({ onCount }: { onCount?: (total: number) => void }) 
 
       <div className="relative mt-[var(--space-150)] overflow-hidden rounded-[var(--radius-medium)] bg-black">
         <video ref={videoRef} playsInline muted className="hidden" />
-        <canvas ref={canvasRef} className="w-full -scale-x-100" />
+        {/* 뒷면 카메라는 거울을 끈다 — 원본과 같은 규칙 (mirror = facing !== 'environment') */}
+        <canvas ref={canvasRef} className={facing === "environment" ? "w-full" : "w-full -scale-x-100"} />
         {snap?.countdownLeft ? (
           <div className="pointer-events-none absolute inset-0 grid place-items-center">
             <span className="text-[6rem] font-bold text-white drop-shadow">{Math.ceil(snap.countdownLeft)}</span>
@@ -167,6 +185,11 @@ export function SquatCamera({ onCount }: { onCount?: (total: number) => void }) 
         {running ? (
           <Button variant="ghost" onClick={() => sessionRef.current?.reset()}>
             다시 준비
+          </Button>
+        ) : null}
+        {running ? (
+          <Button variant="ghost" onClick={() => void flip()}>
+            📷 {camRef.current?.otherKo ?? "뒷면"} 카메라로
           </Button>
         ) : null}
         {total > 0 && onCount ? (

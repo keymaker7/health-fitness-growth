@@ -4,7 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { BtnRow, Button, Card, Tag } from "@/components/ui";
 import { CONFIG, SKELETON, Session, extractSignals } from "@/features/jump-rope/counter.js";
 import type { Observation, Point, Snapshot } from "@/features/jump-rope/counter";
-import { createLandmarker, openCamera, toPixels, type Landmarker } from "@/features/pose/localPose";
+import { createLandmarker, toPixels, type Landmarker } from "@/features/pose/localPose";
+import { CameraController, type CameraFacing } from "@/features/pose/camera.js";
 
 /**
  * 앱 안에서 카메라로 줄넘기를 세는 화면.
@@ -22,7 +23,7 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sessionRef = useRef<InstanceType<typeof Session> | null>(null);
   const landmarkerRef = useRef<Landmarker | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
+  const camRef = useRef<CameraController | null>(null);
   const rafRef = useRef(0);
   const lastVideoTime = useRef(-1);
 
@@ -30,11 +31,12 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
   const [running, setRunning] = useState(false);
   const [snap, setSnap] = useState<Snapshot | null>(null);
   const [maxPeople, setMaxPeople] = useState(2);
+  const [facing, setFacing] = useState<CameraFacing>("user");
 
   const stop = useCallback(() => {
     cancelAnimationFrame(rafRef.current);
-    streamRef.current?.getTracks().forEach((t) => t.stop());
-    streamRef.current = null;
+    camRef.current?.stream?.getTracks().forEach((t) => t.stop());
+    camRef.current = null;
     landmarkerRef.current?.close?.();
     landmarkerRef.current = null;
     setRunning(false);
@@ -49,7 +51,13 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
 
     try {
       setStatus("카메라를 여는 중…");
-      streamRef.current = await openCamera(video);
+      const cam = new CameraController(video, {
+        prefKey: "jumprope.camera",
+        onChange: (c) => setFacing(c.facing),
+        onError: (m) => { if (m) setStatus(m); },
+      });
+      camRef.current = cam;
+      if (!(await cam.start())) throw new Error("카메라를 열 수 없어요");
 
       setStatus("자세 인식 모델을 불러오는 중… (처음 한 번만, 약 6MB)");
       landmarkerRef.current = await createLandmarker(maxPeople);
@@ -93,6 +101,15 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
     }
   }, [maxPeople, stop]);
 
+  const flip = useCallback(async () => {
+    const cam = camRef.current;
+    if (!cam || cam.busy) return;
+    if (await cam.switchNext()) {
+      sessionRef.current?.reset(performance.now() / 1000);
+      setStatus(`${cam.facingKo} 카메라로 바꿨어요 — 처음부터 다시 셉니다.`);
+    }
+  }, []);
+
   const total = snap?.totalCount ?? 0;
 
   return (
@@ -105,7 +122,8 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
 
       <div className="relative mt-[var(--space-150)] overflow-hidden rounded-[var(--radius-medium)] bg-black">
         <video ref={videoRef} playsInline muted className="hidden" />
-        <canvas ref={canvasRef} className="w-full -scale-x-100" />
+        {/* 뒷면 카메라는 거울을 끈다 — 원본과 같은 규칙 (mirror = facing !== 'environment') */}
+        <canvas ref={canvasRef} className={facing === "environment" ? "w-full" : "w-full -scale-x-100"} />
         {snap && snap.countdown ? (
           <div className="pointer-events-none absolute inset-0 grid place-items-center">
             <span className="text-[6rem] font-bold text-white drop-shadow">{snap.countdown}</span>
@@ -159,6 +177,11 @@ export function CameraCounter({ onCount }: { onCount?: (total: number) => void }
         {running ? (
           <Button variant="ghost" onClick={() => sessionRef.current?.reset(performance.now() / 1000)}>
             다시 세기
+          </Button>
+        ) : null}
+        {running ? (
+          <Button variant="ghost" onClick={() => void flip()}>
+            📷 {camRef.current?.otherKo ?? "뒷면"} 카메라로
           </Button>
         ) : null}
         {total > 0 && onCount ? (

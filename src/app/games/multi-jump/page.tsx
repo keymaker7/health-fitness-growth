@@ -9,6 +9,7 @@ import {
   createMediaPipePoseAdapter,
   createSimulationPoseAdapter,
   startCamera,
+  type CameraHandle,
   type PoseFrame,
 } from "@/features/multi-person-tracking/pose-adapter";
 import { CONFIG, Session, extractSignals } from "@/features/jump-rope/counter.js";
@@ -35,7 +36,7 @@ export default function MultiJumpPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const session = useRef(new Session(SESSION_CONFIG));
-  const stopCam = useRef<null | (() => void)>(null);
+  const stopCam = useRef<null | CameraHandle>(null);
   const adapterRef = useRef<ReturnType<typeof createSimulationPoseAdapter> | null>(null);
   const [people, setPeople] = useState<PersonView[]>([]);
   const [running, setRunning] = useState(false);
@@ -159,9 +160,21 @@ export default function MultiJumpPage() {
 
   function stop() {
     adapterRef.current?.stop();
-    stopCam.current?.();
+    stopCam.current?.stop();
     stopCam.current = null;
     setRunning(false);
+  }
+
+  async function flipCam() {
+    const cam = stopCam.current?.controller;
+    if (!cam || cam.busy) return;
+    if (await cam.switchNext()) {
+      session.current = new Session(SESSION_CONFIG);
+      setPeople([]);
+      setStatus(`${cam.facingKo} 카메라로 바꿨어요 — 처음부터 다시 셉니다.`);
+    } else {
+      setStatus("전환할 다른 카메라가 없어요. (노트북·PC는 대부분 카메라가 하나입니다)");
+    }
   }
 
   if (step === "after") {
@@ -240,6 +253,11 @@ export default function MultiJumpPage() {
       </div>
       <BtnRow>
         <Button onClick={() => void startCam()}>카메라 측정</Button>
+        {mode === "camera" ? (
+          <Button variant="ghost" onClick={() => void flipCam()}>
+            📷 {stopCam.current?.controller.otherKo ?? "뒷면"} 카메라로
+          </Button>
+        ) : null}
         <Button variant="soft" onClick={() => void startSim()}>
           시뮬레이션 시작
         </Button>

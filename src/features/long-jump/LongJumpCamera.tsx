@@ -4,7 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { BtnRow, Button, Card, Tag } from "@/components/ui";
 import { Calibration, LJ_CONFIG, LongJumpSession, extractFoot } from "@/features/long-jump/longjump.js";
 import type { LJObservation, LJSnapshot, Point } from "@/features/long-jump/longjump";
-import { createLandmarker, openCamera, toPixels, type Landmarker } from "@/features/pose/localPose";
+import { createLandmarker, toPixels, type Landmarker } from "@/features/pose/localPose";
+import { CameraController } from "@/features/pose/camera.js";
 
 /**
  * 앱 안에서 제자리멀리뛰기를 재는 화면.
@@ -23,7 +24,7 @@ export function LongJumpCamera({ onCount }: { onCount?: (total: number) => void 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sessionRef = useRef<InstanceType<typeof LongJumpSession> | null>(null);
   const landmarkerRef = useRef<Landmarker | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
+  const camRef = useRef<CameraController | null>(null);
   const rafRef = useRef(0);
   const lastVideoTime = useRef(-1);
   const cornersRef = useRef<Point[]>([]);
@@ -37,8 +38,8 @@ export function LongJumpCamera({ onCount }: { onCount?: (total: number) => void 
 
   const stop = useCallback(() => {
     cancelAnimationFrame(rafRef.current);
-    streamRef.current?.getTracks().forEach((t) => t.stop());
-    streamRef.current = null;
+    camRef.current?.stream?.getTracks().forEach((t) => t.stop());
+    camRef.current = null;
     landmarkerRef.current?.close?.();
     landmarkerRef.current = null;
     setRunning(false);
@@ -52,7 +53,12 @@ export function LongJumpCamera({ onCount }: { onCount?: (total: number) => void 
     if (!video || !canvas) return;
     try {
       setStatus("카메라를 여는 중…");
-      streamRef.current = await openCamera(video);
+      const cam = new CameraController(video, {
+        prefKey: "longjump.camera",
+        onError: (m) => { if (m) setStatus(m); },
+      });
+      camRef.current = cam;
+      if (!(await cam.start())) throw new Error("카메라를 열 수 없어요");
       setStatus("자세 인식 모델을 불러오는 중… (처음 한 번만, 약 6MB)");
       landmarkerRef.current = await createLandmarker(1);
 
@@ -94,6 +100,19 @@ export function LongJumpCamera({ onCount }: { onCount?: (total: number) => void 
       setStatus(`카메라를 열지 못했어요. (${(e as Error).message})`);
     }
   }, [stop]);
+
+  const flip = useCallback(async () => {
+    const cam = camRef.current;
+    if (!cam || cam.busy) return;
+    if (await cam.switchNext()) {
+      // 카메라가 바뀌면 화면 좌표가 통째로 달라진다 — 바닥 기준을 다시 잡아야 한다.
+      sessionRef.current = new LongJumpSession(LJ_CONFIG, null);
+      setCorners([]);
+      cornersRef.current = [];
+      setSnap(null);
+      setStatus(`${cam.facingKo} 카메라로 바꿨어요. 바닥 네 귀퉁이를 다시 눌러 주세요.`);
+    }
+  }, []);
 
   function onCanvasClick(e: React.MouseEvent<HTMLCanvasElement>) {
     const canvas = canvasRef.current;
@@ -203,6 +222,11 @@ export function LongJumpCamera({ onCount }: { onCount?: (total: number) => void 
             }}
           >
             기준 다시 잡기
+          </Button>
+        ) : null}
+        {running ? (
+          <Button variant="ghost" onClick={() => void flip()}>
+            📷 {camRef.current?.otherKo ?? "뒷면"} 카메라로
           </Button>
         ) : null}
         {best && onCount ? (

@@ -11,6 +11,7 @@ import {
   createMediaPipePoseAdapter,
   createSimulationPoseAdapter,
   startCamera,
+  type CameraHandle,
   type PoseFrame,
 } from "@/features/multi-person-tracking/pose-adapter";
 import { formatTime } from "@/lib/utils";
@@ -35,7 +36,7 @@ export default function SquatRacePage() {
   const deepReps = useRef(0);
   const manual = useRef(0);            // 카메라 없이 손으로 더한 횟수 (판정이 센 것과 섞지 않는다)
   const adapter = useRef<ReturnType<typeof createSimulationPoseAdapter> | null>(null);
-  const stopCam = useRef<null | (() => void)>(null);
+  const stopCam = useRef<null | CameraHandle>(null);
   const [count, setCount] = useState(0);
   const [acc, setAcc] = useState(100);
   const [feedback, setFeedback] = useState("스쿼트를 시작하면 캐릭터가 달려요.");
@@ -55,7 +56,7 @@ export default function SquatRacePage() {
 
   async function start(kind: "sim" | "camera") {
     adapter.current?.stop();
-    stopCam.current?.();
+    stopCam.current?.stop();
     det.current = new SquatCounter();
     deepReps.current = 0;
     manual.current = 0;
@@ -229,7 +230,7 @@ export default function SquatRacePage() {
           variant="danger"
           onClick={() => {
             adapter.current?.stop();
-            stopCam.current?.();
+            stopCam.current?.stop();
             setRunning(false);
             setStep("after");
           }}
