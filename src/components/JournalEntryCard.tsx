@@ -159,7 +159,7 @@ export function JournalEntryCard({ date = dayKey() }: { date?: string }) {
       </div>
 
       <label className="mt-[var(--space-200)] block text-[var(--font-size-300)] font-semibold" htmlFor="journal-text">
-        오늘 어땠나요?
+        Reflect에서 선택한 감정에 대해 이야기해 주세요. 어떤 일이 있었나요?
       </label>
       <textarea
         id="journal-text"
