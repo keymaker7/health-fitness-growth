@@ -65,7 +65,8 @@ export function GrowthLandscape({ level = 5 }: Props) {
       return;
     }
 
-    const fogColor = 0xc5d6c8;
+    // Windows 11 Bloom 팔레트 — 파랑 기조에 보라·연두 포인트 (keymaker님 레퍼런스 이미지 기준)
+    const fogColor = 0xd7e6f7;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.4 : 1.75));
     renderer.setSize(Math.max(1, mount.clientWidth), Math.max(1, mount.clientHeight));
     renderer.setClearColor(fogColor, 1);
@@ -85,11 +86,11 @@ export function GrowthLandscape({ level = 5 }: Props) {
     camera.position.set(0.55, 2.05, 6.4);
     camera.lookAt(0.1, 0.85, -0.2);
 
-    scene.add(new THREE.HemisphereLight(0xd9ece0, 0x3d4a30, 1.05));
-    const sun = new THREE.DirectionalLight(0xfff3d6, 1.2);
+    scene.add(new THREE.HemisphereLight(0xe6f2fd, 0x27407a, 1.05));
+    const sun = new THREE.DirectionalLight(0xfdfbf2, 1.2);
     sun.position.set(5.5, 8.5, 3.2);
     scene.add(sun);
-    const rim = new THREE.DirectionalLight(0xb7d4c4, 0.35);
+    const rim = new THREE.DirectionalLight(0xb9d7f7, 0.35);
     rim.position.set(-4, 3, -6);
     scene.add(rim);
 
@@ -102,9 +103,9 @@ export function GrowthLandscape({ level = 5 }: Props) {
     for (let i = 0; i < skyGeo.attributes.position.count; i++) {
       const y = skyGeo.attributes.position.getY(i);
       const t = THREE.MathUtils.clamp((y + 4) / 28, 0, 1);
-      skyCol[i * 3] = 0.72 + t * 0.16;
-      skyCol[i * 3 + 1] = 0.8 + t * 0.12;
-      skyCol[i * 3 + 2] = 0.74 + t * 0.14;
+      skyCol[i * 3] = 0.93 - t * 0.31;
+      skyCol[i * 3 + 1] = 0.96 - t * 0.14;
+      skyCol[i * 3 + 2] = 0.99 - t * 0.01;
     }
     skyGeo.setAttribute("color", new THREE.BufferAttribute(skyCol, 3));
     const skyMat = new THREE.MeshBasicMaterial({ vertexColors: true, fog: false, depthWrite: false });
@@ -119,7 +120,7 @@ export function GrowthLandscape({ level = 5 }: Props) {
       pos.setY(i, heightAt(pos.getX(i), pos.getZ(i)));
     }
     terrainGeo.computeVertexNormals();
-    const terrainMat = new THREE.MeshLambertMaterial({ color: 0x4d6a3d });
+    const terrainMat = new THREE.MeshLambertMaterial({ color: 0x3a5ea8 });
     const terrain = new THREE.Mesh(terrainGeo, terrainMat);
     scene.add(terrain);
     geos.push(terrainGeo);
@@ -127,7 +128,7 @@ export function GrowthLandscape({ level = 5 }: Props) {
 
     const soil = new THREE.Mesh(
       new THREE.CircleGeometry(8.5, 40),
-      new THREE.MeshLambertMaterial({ color: 0x3a3328 }),
+      new THREE.MeshLambertMaterial({ color: 0x243a6e }),
     );
     soil.rotation.x = -Math.PI / 2;
     soil.position.y = 0.02;
@@ -149,20 +150,20 @@ export function GrowthLandscape({ level = 5 }: Props) {
     tube(
       [lift(-3.8, 3.4, 0.04), lift(-2.2, 1.6, 0.1), lift(-0.6, 0.4, 0.22), lift(0.5, -0.8, 0.38), lift(1.3, -2.2, 0.2)],
       0.09 + g * 0.05,
-      0x4a3728,
+      0x31488c,
     );
     tube(
       [lift(0.2, 0.3, 0.2), lift(1.4, 0.1, 0.28), lift(2.6, -0.6, 0.16), lift(3.4, -1.8, 0.08)],
       0.05 + g * 0.03,
-      0x5a4330,
+      0x3f57a0,
     );
     tube(
       [lift(-0.4, 0.2, 0.18), lift(-1.8, -0.4, 0.24), lift(-2.8, -1.5, 0.12)],
       0.045,
-      0x3f2f22,
+      0x283c78,
     );
     if (g > 0.35) {
-      tube([lift(0.6, -0.4, 0.3), lift(0.2, -1.4, 0.34), lift(-0.8, -2.2, 0.18)], 0.04, 0x4e3b2a);
+      tube([lift(0.6, -0.4, 0.3), lift(0.2, -1.4, 0.34), lift(-0.8, -2.2, 0.18)], 0.04, 0x35508f);
     }
 
     const bladeGeo = new THREE.PlaneGeometry(0.046, 0.52, 1, 6);
@@ -197,7 +198,11 @@ export function GrowthLandscape({ level = 5 }: Props) {
       dummy.scale.set(0.65 + rand() * 0.7, h, 1);
       dummy.updateMatrix();
       grass.setMatrixAt(i, dummy.matrix);
-      tint.setHSL(0.27 + rand() * 0.07, 0.42 + rand() * 0.18, 0.26 + rand() * 0.16);
+      // Bloom 배색: 파랑이 주(62%), 보라(25%), 연두 포인트(13%)
+      const w = rand();
+      if (w < 0.62) tint.setHSL(0.575 + rand() * 0.055, 0.48 + rand() * 0.18, 0.5 + rand() * 0.18);
+      else if (w < 0.87) tint.setHSL(0.70 + rand() * 0.06, 0.42 + rand() * 0.16, 0.56 + rand() * 0.14);
+      else tint.setHSL(0.28 + rand() * 0.06, 0.48 + rand() * 0.16, 0.58 + rand() * 0.12);
       grass.setColorAt(i, tint);
     }
     if (grass.instanceColor) grass.instanceColor.needsUpdate = true;
@@ -208,7 +213,7 @@ export function GrowthLandscape({ level = 5 }: Props) {
 
     const fernGeo = new THREE.PlaneGeometry(0.28, 0.42, 1, 3);
     fernGeo.translate(0, 0.2, 0);
-    const fernMat = new THREE.MeshLambertMaterial({ color: 0x2f6a3a, side: THREE.DoubleSide, flatShading: true });
+    const fernMat = new THREE.MeshLambertMaterial({ color: 0x5a6fd6, side: THREE.DoubleSide, flatShading: true });
     const fernCount = reduce ? 20 : isMobile ? 70 : 140;
     const ferns = new THREE.InstancedMesh(fernGeo, fernMat, fernCount);
     for (let i = 0; i < fernCount; i++) {
@@ -227,7 +232,7 @@ export function GrowthLandscape({ level = 5 }: Props) {
     mats.push(fernMat);
 
     const bloomGeo = new THREE.SphereGeometry(0.07, 7, 5);
-    const bloomMat = new THREE.MeshLambertMaterial({ color: 0xf4d5de, flatShading: true });
+    const bloomMat = new THREE.MeshLambertMaterial({ color: 0xe8f0fc, flatShading: true });
     const bloomCount = Math.round(8 + g * 28);
     const blooms = new THREE.InstancedMesh(bloomGeo, bloomMat, bloomCount);
     for (let i = 0; i < bloomCount; i++) {
@@ -240,7 +245,7 @@ export function GrowthLandscape({ level = 5 }: Props) {
       dummy.scale.setScalar(0.7 + rand() * 0.8);
       dummy.updateMatrix();
       blooms.setMatrixAt(i, dummy.matrix);
-      blooms.setColorAt(i, tint.setHSL(i % 3 === 0 ? 0.96 : i % 3 === 1 ? 0.13 : 0.08, 0.45, 0.72));
+      blooms.setColorAt(i, tint.setHSL(i % 3 === 0 ? 0.55 : i % 3 === 1 ? 0.74 : 0.3, 0.5, 0.78));
     }
     if (blooms.instanceColor) blooms.instanceColor.needsUpdate = true;
     scene.add(blooms);
@@ -251,7 +256,7 @@ export function GrowthLandscape({ level = 5 }: Props) {
       const canopy = new THREE.Group();
       const trunk = new THREE.Mesh(
         new THREE.CylinderGeometry(0.08 + g * 0.06, 0.14 + g * 0.08, 0.9 + g * 1.2, 7),
-        new THREE.MeshLambertMaterial({ color: 0x5a4030, flatShading: true }),
+        new THREE.MeshLambertMaterial({ color: 0x51629e, flatShading: true }),
       );
       trunk.position.set(0.15, heightAt(0.15, -1.05) + 0.45 + g * 0.55, -1.05);
       canopy.add(trunk);
@@ -261,7 +266,7 @@ export function GrowthLandscape({ level = 5 }: Props) {
       for (let i = 0; i < layers; i++) {
         const ball = new THREE.Mesh(
           new THREE.IcosahedronGeometry(0.42 + g * 0.28 - i * 0.05, 0),
-          new THREE.MeshLambertMaterial({ color: i % 2 ? 0x2d6b38 : 0x3d7c44, flatShading: true }),
+          new THREE.MeshLambertMaterial({ color: i % 2 ? 0x5b9bf0 : 0x82b6f7, flatShading: true }),
         );
         ball.position.set(
           0.15 + (rand() - 0.5) * 0.35,
@@ -286,7 +291,7 @@ export function GrowthLandscape({ level = 5 }: Props) {
     pollenGeo.setAttribute("position", new THREE.BufferAttribute(pollenPos, 3));
     const pollen = new THREE.Points(
       pollenGeo,
-      new THREE.PointsMaterial({ color: 0xfff6cc, size: 0.055, transparent: true, opacity: 0.82, depthWrite: false }),
+      new THREE.PointsMaterial({ color: 0xeaf5ff, size: 0.055, transparent: true, opacity: 0.82, depthWrite: false }),
     );
     scene.add(pollen);
     geos.push(pollenGeo);
@@ -298,7 +303,7 @@ export function GrowthLandscape({ level = 5 }: Props) {
     trailGeo.setAttribute("position", new THREE.BufferAttribute(trailPos, 3));
     const trail = new THREE.Points(
       trailGeo,
-      new THREE.PointsMaterial({ color: 0xfffbe6, size: 0.08, transparent: true, opacity: 0.65, depthWrite: false }),
+      new THREE.PointsMaterial({ color: 0xffffff, size: 0.08, transparent: true, opacity: 0.65, depthWrite: false }),
     );
     scene.add(trail);
     geos.push(trailGeo);
