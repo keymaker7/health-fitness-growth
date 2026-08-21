@@ -6,8 +6,6 @@ import { useEffect, useRef, useState, type ComponentType } from "react";
 import {
   Alert20Filled,
   Alert20Regular,
-  ArrowRepeatAll20Filled,
-  ArrowRepeatAll20Regular,
   BookOpen20Filled,
   BookOpen20Regular,
   CalendarLtr20Filled,
@@ -69,10 +67,10 @@ const NAV: { href: string; label: string; Regular: IconCmp; Filled: IconCmp; ali
 
 const BOTTOM = [
   { href: "/", label: "홈", Regular: Home20Regular, Filled: Home20Filled },
+  { href: "/journal", label: "기록", Regular: CalendarLtr20Regular, Filled: CalendarLtr20Filled, aliases: ["/growth"] },
+  { href: "/measure", label: "측정도구", Regular: Timer20Regular, Filled: Timer20Filled },
   { href: "/paps", label: "PAPS", Regular: BookOpen20Regular, Filled: BookOpen20Filled },
   { href: "/prescription", label: "운동처방", Regular: ClipboardPulse20Regular, Filled: ClipboardPulse20Filled },
-  { href: "/games/multi-jump", label: "줄넘기", Regular: ArrowRepeatAll20Regular, Filled: ArrowRepeatAll20Filled },
-  { href: "/journal", label: "기록", Regular: CalendarLtr20Regular, Filled: CalendarLtr20Filled, aliases: ["/growth"] },
 ];
 
 function isActive(path: string, href: string, aliases?: string[]) {
