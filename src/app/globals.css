@@ -539,9 +539,11 @@ input[type="range"] {
 }
 .level-mascot {
   display: block;
-  width: 3.25rem;
-  height: 3.25rem;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 254 / 207; /* 잘라낸 그림 원본 비율 — 카드 폭을 꽉 채워 크게 보이게 */
   margin-inline: auto;
+  border-radius: var(--radius-small);
 }
 @media print {
   html, body {
