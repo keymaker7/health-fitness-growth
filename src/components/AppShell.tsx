@@ -68,6 +68,8 @@ const NAV: { href: string; label: string; Regular: IconCmp; Filled: IconCmp; ali
   { href: "/portfolio", label: "성장 포트폴리오", Regular: DocumentOnePage20Regular, Filled: DocumentOnePage20Filled, tint: "#8661c5" },
   // Reflect Brain Break 4종(명상·활동·게임·음악)으로 바로 가는 화면
   { href: "/brain-break", label: "Reflect-뇌의 휴식", Regular: Sparkle20Regular, Filled: Sparkle20Filled, tint: "#e3008c" },
+  // 시연 핵심 화면이라 재배치 때 빠졌던 것을 keymaker님 «니 추천대로»로 복귀 (2026-08-21)
+  { href: "/teacher", label: "교사용 도우미", Regular: Person20Regular, Filled: Person20Filled, tint: "#ca5010" },
   // 심사·참관용 — 사이트가 어떻게 짜였는지 그림 한 장씩으로 설명한다
   { href: "/system/composition", label: "시스템 구성도", Regular: Organization20Regular, Filled: Organization20Filled, tint: "#486991" },
   { href: "/system/architecture", label: "시스템 구조도", Regular: Flowchart20Regular, Filled: Flowchart20Filled, tint: "#038387" },
