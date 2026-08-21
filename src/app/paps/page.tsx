@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { PageTitle, SearchField, Tag } from "@/components/ui";
 import { PAPS_EVENTS, getExercise } from "@/lib/catalog";
+import { HealthFitnessSection, SportFitnessSection } from "@/features/fitness/FitnessSections";
 
 export default function PapsPage() {
   return (
@@ -26,7 +27,7 @@ function PapsInner() {
   return (
     <div className="stack-lg">
       <PageTitle
-        kicker="PAPS"
+        kicker="PAPS와 이론"
         title="학생건강체력평가를 쉽게 이해해요"
         sub="종목 카드에서 측정 요소, 방법, 관련 운동만 먼저 보고 자세히 들어가세요."
       />
@@ -66,6 +67,23 @@ function PapsInner() {
           );
         })}
       </div>
+      {/* PAPS 종목 아래에 이론(건강체력·운동체력)을 이어 붙인다 — 메뉴 «PAPS와 이론» 한 곳에서 다 본다 */}
+      <section className="stack">
+        <PageTitle
+          kicker="이론 · 건강체력"
+          title="매일의 삶을 지키는 힘"
+          sub="건강체력은 오래 움직이고, 힘을 내고, 몸을 부드럽게 쓰고, 몸의 구성을 돌보는 능력이에요. 각 요인을 고르면 맞는 운동 종목을 추천해요."
+        />
+        <HealthFitnessSection />
+      </section>
+      <section className="stack">
+        <PageTitle
+          kicker="이론 · 운동체력"
+          title="스포츠를 더 잘하게 하는 힘"
+          sub="순발력·민첩성·평형성·협응성은 건강체력과 구분해요. 각 요인을 고르면 맞는 운동 종목을 추천해요."
+        />
+        <SportFitnessSection />
+      </section>
     </div>
   );
 }

@@ -6,8 +6,18 @@ import { useEffect, useRef, useState, type ComponentType } from "react";
 import {
   Alert20Filled,
   Alert20Regular,
+  ArrowBounce20Filled,
+  ArrowBounce20Regular,
+  ArrowRepeatAll20Filled,
+  ArrowRepeatAll20Regular,
   BookOpen20Filled,
   BookOpen20Regular,
+  Dumbbell20Filled,
+  Dumbbell20Regular,
+  PlugConnected20Filled,
+  PlugConnected20Regular,
+  Run20Filled,
+  Run20Regular,
   CalendarLtr20Filled,
   CalendarLtr20Regular,
   ClipboardPulse20Filled,
@@ -15,8 +25,6 @@ import {
   DocumentOnePage20Filled,
   DocumentOnePage20Regular,
   Dismiss20Regular,
-  HeartPulse20Filled,
-  HeartPulse20Regular,
   Flowchart20Filled,
   Flowchart20Regular,
   Home20Filled,
@@ -31,8 +39,6 @@ import {
   Search20Regular,
   Sparkle20Filled,
   Sparkle20Regular,
-  Sport20Filled,
-  Sport20Regular,
   Timer20Filled,
   Timer20Regular,
 } from "@fluentui/react-icons";
@@ -47,15 +53,16 @@ const NAV: { href: string; label: string; Regular: IconCmp; Filled: IconCmp; ali
   { href: "/", label: "홈", Regular: Home20Regular, Filled: Home20Filled },
   // «나의 기록» 을 홈 바로 밑에 둔다 — 아이가 매일 여는 곳이라 맨 위에 있어야 한다
   { href: "/journal", label: "나의 기록", Regular: CalendarLtr20Regular, Filled: CalendarLtr20Filled, aliases: ["/growth", "/my-fitness"] },
-  // «측정 도구» 는 나의 기록 바로 아래 — 재고 바로 기록하는 흐름이 이어지도록
+  // 측정 4종은 탭 대신 개별 메뉴로 — /measure?tool= 링크라 isActive 는 안 켜진다(의도)
   // 제자리멀리뛰기·AI 줄넘기·스쿼트 게임은 메뉴에서 뺐다 (2026-08-21, keymaker님 검토 요청).
-  // 멀리뛰기는 측정 도구 탭 안에 있고, 게임 둘은 홈 카드·/games 목록·모바일 하단바로 들어간다.
-  { href: "/measure", label: "측정 도구", Regular: Timer20Regular, Filled: Timer20Filled },
-  // 교사용 — 체육 수업 도우미에게 앱 안에서 바로 묻는다 (K-Weather 라우팅·등급 거절 시연)
-  { href: "/teacher", label: "교사용 도우미", Regular: Person20Regular, Filled: Person20Filled },
-  { href: "/paps", label: "PAPS", Regular: BookOpen20Regular, Filled: BookOpen20Filled },
-  { href: "/health-fitness", label: "건강체력", Regular: HeartPulse20Regular, Filled: HeartPulse20Filled },
-  { href: "/sport-fitness", label: "운동체력", Regular: Sport20Regular, Filled: Sport20Filled },
+  { href: "/measure?tool=jump-rope", label: "줄넘기 카운터", Regular: ArrowRepeatAll20Regular, Filled: ArrowRepeatAll20Filled },
+  { href: "/measure?tool=squat-cam", label: "스쿼트", Regular: Dumbbell20Regular, Filled: Dumbbell20Filled },
+  { href: "/measure?tool=long-jump", label: "제자리멀리뛰기 측정", Regular: ArrowBounce20Regular, Filled: ArrowBounce20Filled },
+  { href: "/measure?tool=shuttle-run", label: "왕복오래달리기 측정", Regular: Run20Regular, Filled: Run20Filled },
+  // micro:bit 기기용 별도 사이트 2개(줄넘기 카운터·스쿼트 파이터) 링크 모음
+  { href: "/microbit", label: "Microbit:연결", Regular: PlugConnected20Regular, Filled: PlugConnected20Filled },
+  // 건강체력·운동체력 이론은 /paps 아래쪽에 통합 — 단독 화면(/health-fitness·/sport-fitness)은 딥링크용으로 남아 있다
+  { href: "/paps", label: "PAPS와 이론", Regular: BookOpen20Regular, Filled: BookOpen20Filled, aliases: ["/health-fitness", "/sport-fitness"] },
   { href: "/prescription", label: "맞춤 운동처방", Regular: ClipboardPulse20Regular, Filled: ClipboardPulse20Filled },
   { href: "/portfolio", label: "성장 포트폴리오", Regular: DocumentOnePage20Regular, Filled: DocumentOnePage20Filled },
   // Reflect Brain Break 4종(명상·활동·게임·음악)으로 바로 가는 화면

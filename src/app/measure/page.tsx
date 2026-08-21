@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Open20Regular } from "@fluentui/react-icons";
 import { Card, PageTitle, Pivot, Tag } from "@/components/ui";
@@ -39,6 +39,11 @@ function MeasureInner() {
   const sp = useSearchParams();
   const initial = getMeasureTool(sp.get("tool") ?? "") ?? MEASURE_TOOLS[0];
   const [current, setCurrent] = useState(initial.id);
+  // 사이드바가 종목별 /measure?tool= 링크를 갖는다 — 이미 이 화면에 있어도 링크를 누르면 종목이 바뀌어야 한다.
+  const spTool = sp.get("tool");
+  useEffect(() => {
+    if (spTool && getMeasureTool(spTool)) setCurrent(spTool);
+  }, [spTool]);
   const tool = getMeasureTool(current) ?? MEASURE_TOOLS[0];
 
   return (
