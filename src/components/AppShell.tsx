@@ -39,8 +39,6 @@ import {
   Search20Regular,
   Sparkle20Filled,
   Sparkle20Regular,
-  Timer20Filled,
-  Timer20Regular,
 } from "@fluentui/react-icons";
 import { cn } from "@/lib/utils";
 import { useApp } from "@/features/dashboard/AppProvider";
@@ -77,9 +75,9 @@ const NAV: { href: string; label: string; Regular: IconCmp; Filled: IconCmp; ali
 
 const BOTTOM = [
   { href: "/", label: "홈", Regular: Home20Regular, Filled: Home20Filled, tint: "#0f6cbd" },
-  { href: "/journal", label: "기록", Regular: CalendarLtr20Regular, Filled: CalendarLtr20Filled, aliases: ["/growth"], tint: "#107c41" },
-  { href: "/measure", label: "측정도구", Regular: Timer20Regular, Filled: Timer20Filled, tint: "#d83b01" },
-  { href: "/paps", label: "PAPS", Regular: BookOpen20Regular, Filled: BookOpen20Filled, tint: "#185abd" },
+  { href: "/journal", label: "나의 기록", Regular: CalendarLtr20Regular, Filled: CalendarLtr20Filled, aliases: ["/growth"], tint: "#107c41" },
+  { href: "/measure?tool=jump-rope", label: "줄넘기 카운터", Regular: ArrowRepeatAll20Regular, Filled: ArrowRepeatAll20Filled, tint: "#d83b01" },
+  { href: "/measure?tool=squat-cam", label: "스쿼트", Regular: Dumbbell20Regular, Filled: Dumbbell20Filled, tint: "#036c70" },
   { href: "/prescription", label: "운동처방", Regular: ClipboardPulse20Regular, Filled: ClipboardPulse20Filled, tint: "#13a10e" },
 ];
 
