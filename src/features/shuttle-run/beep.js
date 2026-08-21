@@ -43,10 +43,11 @@ export class BeepPlayer {
   }
 
   /** 짧은 삐 소리 하나를 오디오 시계의 특정 시각에 예약한다 */
-  tone(at, { freq = 880, ms = 120, gain = 0.35 } = {}) {
+  // 체육관에서 태블릿 스피커로는 사인파가 묻힌다 — 배음이 많은 사각파 + 게인 상향 (원본과 달라진 지점)
+  tone(at, { freq = 880, ms = 120, gain = 0.6 } = {}) {
     const osc = this.ctx.createOscillator();
     const amp = this.ctx.createGain();
-    osc.type = 'sine';
+    osc.type = 'square';
     osc.frequency.value = freq;
     // 뚝 끊으면 '틱' 잡음이 나서 앞뒤를 짧게 눕힌다
     amp.gain.setValueAtTime(0.0001, at);
@@ -72,7 +73,7 @@ export class BeepPlayer {
     // 카운트다운 3·2·1 — 낮은 음, 시작음은 높게
     for (let i = countdownSec; i >= 1; i--) {
       const at = this.startAt - i;
-      this.tone(at, { freq: 520, ms: 100, gain: 0.3 });
+      this.tone(at, { freq: 520, ms: 100, gain: 0.5 });
     }
 
     this._loop();
@@ -152,8 +153,8 @@ export class BeepPlayer {
   blip(kind = 'ok') {
     if (!this.ctx) return;
     const at = this.ctx.currentTime + 0.01;
-    if (kind === 'warn') { this.tone(at, { freq: 400, ms: 90, gain: 0.25 }); this.tone(at + 0.12, { freq: 320, ms: 120, gain: 0.25 }); }
-    else if (kind === 'end') { this.tone(at, { freq: 300, ms: 260, gain: 0.3 }); }
-    else this.tone(at, { freq: 760, ms: 70, gain: 0.2 });
+    if (kind === 'warn') { this.tone(at, { freq: 400, ms: 90, gain: 0.45 }); this.tone(at + 0.12, { freq: 320, ms: 120, gain: 0.45 }); }
+    else if (kind === 'end') { this.tone(at, { freq: 300, ms: 260, gain: 0.5 }); }
+    else this.tone(at, { freq: 760, ms: 70, gain: 0.35 });
   }
 }
