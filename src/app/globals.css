@@ -148,6 +148,17 @@
 
 * { box-sizing: border-box; }
 
+/* Copilot 아이콘풍 그라데이션 도트 — 앱 타이틀 옆 포인트 */
+.copilot-dot {
+  /* display 는 일부러 안 정한다 — 유틸리티(hidden·lg:hidden)가 이겨야 반응형이 산다 */
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: 5px;
+  background: conic-gradient(from 220deg, #0f6cbd, #038387, #13a10e, #ffb900, #d83b01, #c239b3, #8661c5, #0f6cbd);
+  box-shadow: 0 0 6px rgba(134, 97, 197, 0.35);
+}
+
 html, body {
   min-height: 100%;
   min-width: 0;
@@ -155,9 +166,13 @@ html, body {
   overflow-wrap: break-word;
   color: var(--ink);
   background-color: var(--bg);
+  /* M365 아이콘 무대 느낌 — 흰 바탕에 틸·보라·주황 글로우를 아주 옅게 (keymaker님 레퍼런스) */
   background-image:
     radial-gradient(1100px 560px at 8% -12%, rgba(207, 228, 250, 0.95), transparent 58%),
     radial-gradient(820px 480px at 96% 0%, rgba(235, 243, 252, 0.95), transparent 52%),
+    radial-gradient(560px 340px at 92% 34%, rgba(3, 131, 135, 0.06), transparent 60%),
+    radial-gradient(640px 400px at 4% 96%, rgba(134, 97, 197, 0.08), transparent 60%),
+    radial-gradient(520px 320px at 60% 112%, rgba(216, 59, 1, 0.05), transparent 62%),
     radial-gradient(720px 420px at 78% 108%, rgba(79, 107, 237, 0.1), transparent 58%),
     linear-gradient(180deg, #eef3f8 0%, var(--neutral-4) 42%, #eef2f6 100%);
   background-attachment: fixed;

@@ -49,35 +49,36 @@ import { resolveSearchPath } from "@/lib/search";
 
 type IconCmp = ComponentType<{ className?: string }>;
 
-const NAV: { href: string; label: string; Regular: IconCmp; Filled: IconCmp; aliases?: string[] }[] = [
-  { href: "/", label: "홈", Regular: Home20Regular, Filled: Home20Filled },
+// tint: Microsoft 365 앱 아이콘 팔레트 — 메뉴마다 M365 런처처럼 다른 색을 준다 (keymaker님 레퍼런스, 2026-08-21)
+const NAV: { href: string; label: string; Regular: IconCmp; Filled: IconCmp; aliases?: string[]; tint: string }[] = [
+  { href: "/", label: "홈", Regular: Home20Regular, Filled: Home20Filled, tint: "#0f6cbd" },
   // «나의 기록» 을 홈 바로 밑에 둔다 — 아이가 매일 여는 곳이라 맨 위에 있어야 한다
-  { href: "/journal", label: "나의 기록", Regular: CalendarLtr20Regular, Filled: CalendarLtr20Filled, aliases: ["/growth", "/my-fitness"] },
+  { href: "/journal", label: "나의 기록", Regular: CalendarLtr20Regular, Filled: CalendarLtr20Filled, aliases: ["/growth", "/my-fitness"], tint: "#107c41" },
   // 측정 4종은 탭 대신 개별 메뉴로 — /measure?tool= 링크라 isActive 는 안 켜진다(의도)
   // 제자리멀리뛰기·AI 줄넘기·스쿼트 게임은 메뉴에서 뺐다 (2026-08-21, keymaker님 검토 요청).
-  { href: "/measure?tool=jump-rope", label: "줄넘기 카운터", Regular: ArrowRepeatAll20Regular, Filled: ArrowRepeatAll20Filled },
-  { href: "/measure?tool=squat-cam", label: "스쿼트", Regular: Dumbbell20Regular, Filled: Dumbbell20Filled },
-  { href: "/measure?tool=long-jump", label: "제자리멀리뛰기 측정", Regular: ArrowBounce20Regular, Filled: ArrowBounce20Filled },
-  { href: "/measure?tool=shuttle-run", label: "왕복오래달리기 측정", Regular: Run20Regular, Filled: Run20Filled },
+  { href: "/measure?tool=jump-rope", label: "줄넘기 카운터", Regular: ArrowRepeatAll20Regular, Filled: ArrowRepeatAll20Filled, tint: "#d83b01" },
+  { href: "/measure?tool=squat-cam", label: "스쿼트", Regular: Dumbbell20Regular, Filled: Dumbbell20Filled, tint: "#036c70" },
+  { href: "/measure?tool=long-jump", label: "제자리멀리뛰기 측정", Regular: ArrowBounce20Regular, Filled: ArrowBounce20Filled, tint: "#4f6bed" },
+  { href: "/measure?tool=shuttle-run", label: "왕복오래달리기 측정", Regular: Run20Regular, Filled: Run20Filled, tint: "#c239b3" },
   // micro:bit 기기용 별도 사이트 2개(줄넘기 카운터·스쿼트 파이터) 링크 모음
-  { href: "/microbit", label: "Microbit:연결", Regular: PlugConnected20Regular, Filled: PlugConnected20Filled },
+  { href: "/microbit", label: "Microbit:연결", Regular: PlugConnected20Regular, Filled: PlugConnected20Filled, tint: "#5b5fc7" },
   // 건강체력·운동체력 이론은 /paps 아래쪽에 통합 — 단독 화면(/health-fitness·/sport-fitness)은 딥링크용으로 남아 있다
-  { href: "/paps", label: "PAPS와 이론", Regular: BookOpen20Regular, Filled: BookOpen20Filled, aliases: ["/health-fitness", "/sport-fitness"] },
-  { href: "/prescription", label: "맞춤 운동처방", Regular: ClipboardPulse20Regular, Filled: ClipboardPulse20Filled },
-  { href: "/portfolio", label: "성장 포트폴리오", Regular: DocumentOnePage20Regular, Filled: DocumentOnePage20Filled },
+  { href: "/paps", label: "PAPS와 이론", Regular: BookOpen20Regular, Filled: BookOpen20Filled, aliases: ["/health-fitness", "/sport-fitness"], tint: "#185abd" },
+  { href: "/prescription", label: "맞춤 운동처방", Regular: ClipboardPulse20Regular, Filled: ClipboardPulse20Filled, tint: "#13a10e" },
+  { href: "/portfolio", label: "성장 포트폴리오", Regular: DocumentOnePage20Regular, Filled: DocumentOnePage20Filled, tint: "#8661c5" },
   // Reflect Brain Break 4종(명상·활동·게임·음악)으로 바로 가는 화면
-  { href: "/brain-break", label: "Reflect-뇌의 휴식", Regular: Sparkle20Regular, Filled: Sparkle20Filled },
+  { href: "/brain-break", label: "Reflect-뇌의 휴식", Regular: Sparkle20Regular, Filled: Sparkle20Filled, tint: "#e3008c" },
   // 심사·참관용 — 사이트가 어떻게 짜였는지 그림 한 장씩으로 설명한다
-  { href: "/system/composition", label: "시스템 구성도", Regular: Organization20Regular, Filled: Organization20Filled },
-  { href: "/system/architecture", label: "시스템 구조도", Regular: Flowchart20Regular, Filled: Flowchart20Filled },
+  { href: "/system/composition", label: "시스템 구성도", Regular: Organization20Regular, Filled: Organization20Filled, tint: "#486991" },
+  { href: "/system/architecture", label: "시스템 구조도", Regular: Flowchart20Regular, Filled: Flowchart20Filled, tint: "#038387" },
 ];
 
 const BOTTOM = [
-  { href: "/", label: "홈", Regular: Home20Regular, Filled: Home20Filled },
-  { href: "/journal", label: "기록", Regular: CalendarLtr20Regular, Filled: CalendarLtr20Filled, aliases: ["/growth"] },
-  { href: "/measure", label: "측정도구", Regular: Timer20Regular, Filled: Timer20Filled },
-  { href: "/paps", label: "PAPS", Regular: BookOpen20Regular, Filled: BookOpen20Filled },
-  { href: "/prescription", label: "운동처방", Regular: ClipboardPulse20Regular, Filled: ClipboardPulse20Filled },
+  { href: "/", label: "홈", Regular: Home20Regular, Filled: Home20Filled, tint: "#0f6cbd" },
+  { href: "/journal", label: "기록", Regular: CalendarLtr20Regular, Filled: CalendarLtr20Filled, aliases: ["/growth"], tint: "#107c41" },
+  { href: "/measure", label: "측정도구", Regular: Timer20Regular, Filled: Timer20Filled, tint: "#d83b01" },
+  { href: "/paps", label: "PAPS", Regular: BookOpen20Regular, Filled: BookOpen20Filled, tint: "#185abd" },
+  { href: "/prescription", label: "운동처방", Regular: ClipboardPulse20Regular, Filled: ClipboardPulse20Filled, tint: "#13a10e" },
 ];
 
 function isActive(path: string, href: string, aliases?: string[]) {
@@ -137,7 +138,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               on ? "bg-[var(--brand-soft)] font-semibold text-[var(--brand-ink)]" : "text-[var(--ink)] hover:bg-[var(--colorNeutralBackground1Hover)]",
             )}
           >
-            <Icon />
+            <span className="flex shrink-0" style={{ color: item.tint }} aria-hidden>
+              <Icon />
+            </span>
             {item.label}
           </Link>
         );
@@ -149,7 +152,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-dvh min-w-0 lg:grid lg:grid-cols-[var(--nav-w)_minmax(0,1fr)]">
       <aside className="glass-chrome print-hidden sticky top-0 hidden h-dvh flex-col overflow-y-auto border-r lg:flex">
         <div className="flex h-[var(--header-h)] items-center px-[var(--space-200)]">
-          <Link href="/" className="min-w-0">
+          <Link href="/" className="flex min-w-0 items-center gap-[var(--space-100)]">
+            <span className="copilot-dot inline-block" aria-hidden />
             <p className="truncate text-[var(--font-size-300)] font-semibold">건강체력 성장일지</p>
           </Link>
         </div>
@@ -172,6 +176,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <button className="icon-btn tap lg:hidden" onClick={() => setOpen(true)} aria-label="메뉴 열기">
             <Navigation20Regular />
           </button>
+          <span className="copilot-dot inline-block lg:hidden" aria-hidden />
           <p className="min-w-0 truncate text-[var(--font-size-300)] font-semibold lg:hidden">건강체력 성장일지</p>
           <form onSubmit={submitSearch} className="mx-auto hidden min-w-0 max-w-xl flex-1 md:block">
             <label className="relative block">
@@ -292,7 +297,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   on ? "bg-[var(--brand-soft)] font-semibold text-[var(--brand-ink)]" : "text-[var(--muted)]",
                 )}
               >
-                <Icon />
+                <span className="flex" style={{ color: item.tint }} aria-hidden>
+                  <Icon />
+                </span>
                 <span className="w-full truncate text-center">{item.label}</span>
               </Link>
             );
