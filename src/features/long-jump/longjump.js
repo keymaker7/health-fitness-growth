@@ -303,6 +303,36 @@ function solve8(A, b) {
   return M.map((row, i) => row[n] / row[i]);      // 대각원소로 나눠 해를 얻는다
 }
 
+/** 3×3 선형 연립방정식 (가우스 소거). 특이하면 null. */
+function solve3(M, y) {
+  const a = M.map((row, i) => [...row, y[i]]);
+  for (let col = 0; col < 3; col++) {
+    let piv = col;
+    for (let r = col + 1; r < 3; r++) if (Math.abs(a[r][col]) > Math.abs(a[piv][col])) piv = r;
+    if (Math.abs(a[piv][col]) < 1e-12) return null;
+    [a[col], a[piv]] = [a[piv], a[col]];
+    for (let r = 0; r < 3; r++) {
+      if (r === col) continue;
+      const fr = a[r][col] / a[col][col];
+      for (let cc = col; cc <= 3; cc++) a[r][cc] -= fr * a[col][cc];
+    }
+  }
+  return [a[0][3] / a[0][0], a[1][3] / a[1][1], a[2][3] / a[2][2]];
+}
+
+/** N×3 최소제곱: rows·x ≈ b 를 정규방정식(AᵀA x = Aᵀb)으로 푼다. 실패 시 null. */
+function solveLeastSquares3(rows, b) {
+  const AtA = [[0, 0, 0], [0, 0, 0], [0, 0, 0]], Atb = [0, 0, 0];
+  for (let k = 0; k < rows.length; k++) {
+    const r = rows[k];
+    for (let i = 0; i < 3; i++) {
+      Atb[i] += r[i] * b[k];
+      for (let j = 0; j < 3; j++) AtA[i][j] += r[i] * r[j];
+    }
+  }
+  return solve3(AtA, Atb);
+}
+
 /** 3x3 역행렬 (행 우선 9개) — 실좌표를 다시 화면 좌표로 되돌릴 때 쓴다 */
 function invert3(m) {
   const [a, b, c, d, e, f, g, h, i] = m;
@@ -352,7 +382,63 @@ export class Calibration {
     });
   }
 
-  get ok() { return this.kind === 'rect' || this.kind === 'two'; }
+  /**
+   * 뛰는 방향 직선 위의 «거리를 아는 점들»로 보정한다 — 제자리멀리뛰기 전용.
+   *
+   * 사각형(fromRect)과 달리 세로 크기를 따로 입력받지 않는다. 점마다 "발구름선에서 몇 cm" 인지가
+   * 이미 정해져 있어서(0·100·200·300…), 그 값들이 곧 기준이다. 세로 기본값을 잘못 둬서
+   * 5cm 점프가 300m 로 뻥튀기되던 사고를 구조적으로 없앤다.
+   *
+   * 원근 처리: 바닥 직선을 비스듬히 본 카메라에서 «화면상 위치 t» 와 «실제 거리 d» 는
+   * 1차식이 아니라 사영변환 d = (a·t + b)/(c·t + 1) 로 이어진다(뫼비우스). 점이 3개 이상이면
+   * 이 곡선을 맞춰 먼 쪽 압축까지 잡고, 2개뿐이면 c=0 인 직선(카메라 수직/원거리 가정)으로 물러선다.
+   *
+   * @param {{x:number,y:number,distCm:number}[]} marks  뛰는 방향으로 찍은 점들 (N>=2), distCm 오름차순 권장
+   */
+  static fromRuler(marks) {
+    if (!marks || marks.length < 2) return new Calibration('none', { error: '점이 2개 이상 필요합니다' });
+    const n = marks.length;
+    // 1) 점들을 지나는 직선(뛰는 축)을 최소제곱으로 찾는다 — 손으로 찍어 살짝 어긋나도 견딘다.
+    const mx = marks.reduce((s, m) => s + m.x, 0) / n;
+    const my = marks.reduce((s, m) => s + m.y, 0) / n;
+    let sxx = 0, syy = 0, sxy = 0;
+    for (const m of marks) { const dx = m.x - mx, dy = m.y - my; sxx += dx * dx; syy += dy * dy; sxy += dx * dy; }
+    if (sxx + syy < 1) return new Calibration('none', { error: '점들이 한 자리에 뭉쳐 있어요' });
+    const th = 0.5 * Math.atan2(2 * sxy, sxx - syy);   // 주축(공분산 큰 방향) = 직선 방향
+    let ax = Math.cos(th), ay = Math.sin(th);
+    const far = marks.reduce((a, b) => (b.distCm > a.distCm ? b : a));
+    const origin = marks.reduce((a, b) => (b.distCm < a.distCm ? b : a));   // 보통 0cm(발구름선)
+    if ((far.x - origin.x) * ax + (far.y - origin.y) * ay < 0) { ax = -ax; ay = -ay; }  // t 증가 = d 증가
+    const proj = (x, y) => (x - origin.x) * ax + (y - origin.y) * ay;       // 축 위 위치(px)
+    // 2) t(px) → d(cm) 사영변환 맞춤
+    const T = marks.map(m => proj(m.x, m.y));
+    const D = marks.map(m => m.distCm);
+    let a, b, c;
+    if (n === 2) {
+      const slope = (D[1] - D[0]) / ((T[1] - T[0]) || 1e-9);
+      a = slope; b = D[0] - slope * T[0]; c = 0;
+    } else {
+      // d·(c·t + 1) = a·t + b  →  [t, 1, -d·t]·[a,b,c] = d
+      const sol = solveLeastSquares3(T.map((t, i) => [t, 1, -D[i] * t]), D);
+      if (!sol) return new Calibration('none', { error: '점 배치가 애매해요 — 다시 찍어 주세요' });
+      [a, b, c] = sol;
+    }
+    // 3) 사영 특이점(분모 c·t+1 = 0)이 측정 구간 안이면 값이 폭발한다 — 극점을 직접 계산해 거부한다.
+    //    (여기가 5cm→300m 뻥튀기를 막는 마지막 관문이다)
+    const T0 = Math.min(...T), T1 = Math.max(...T), span = (T1 - T0) || 1;
+    if (Math.abs(c) > 1e-9) {
+      const tPole = -1 / c;
+      if (tPole >= T0 - 0.2 * span && tPole <= T1 + 0.6 * span) {
+        return new Calibration('none', { error: '점이 원근으로 무너져요 — 카메라를 옆으로 더 멀리 두고 찍어 주세요' });
+      }
+    }
+    return new Calibration('ruler', {
+      marks, origin, axis: { x: ax, y: ay }, a, b, c,
+      distMin: Math.min(...D), distMax: Math.max(...D),
+    });
+  }
+
+  get ok() { return this.kind === 'rect' || this.kind === 'two' || this.kind === 'ruler'; }
 
   /** 화면 좌표 → 바닥 실좌표(cm). Y가 발구름선으로부터의 거리다. */
   toWorld(x, y) {
@@ -368,6 +454,16 @@ export class Calibration {
         x: (-vx * this.axis.y + vy * this.axis.x) * this.cmPerPx,   // 옆으로 벗어난 양
         y: (vx * this.axis.x + vy * this.axis.y) * this.cmPerPx,    // 뛴 방향 거리
       };
+    }
+    if (this.kind === 'ruler') {
+      const ax = this.axis.x, ay = this.axis.y;
+      const t = (x - this.origin.x) * ax + (y - this.origin.y) * ay;        // 축 위 위치(px)
+      const perp = (x - this.origin.x) * (-ay) + (y - this.origin.y) * ax;  // 축에서 벗어난 양(px)
+      const w = this.c * t + 1;
+      if (Math.abs(w) < 1e-6) return null;
+      const dist = (this.a * t + this.b) / w;                              // 뛴 방향 거리(cm)
+      const cmPerPx = (this.a - this.b * this.c) / (w * w);                 // 그 지점 국소 배율
+      return { x: perp * cmPerPx, y: dist };
     }
     return null;
   }
@@ -390,6 +486,18 @@ export class Calibration {
       return {
         x: this.p1.x + this.axis.x * py - this.axis.y * px,
         y: this.p1.y + this.axis.y * py + this.axis.x * px,
+      };
+    }
+    if (this.kind === 'ruler') {
+      // d·(c·t+1)=a·t+b  →  t = (d - b)/(a - d·c)
+      const t = (Y - this.b) / (this.a - Y * this.c);
+      if (!isFinite(t)) return null;
+      const w = this.c * t + 1;
+      const cmPerPx = (this.a - this.b * this.c) / (w * w);
+      const perpPx = cmPerPx ? X / cmPerPx : 0;
+      return {
+        x: this.origin.x + this.axis.x * t - this.axis.y * perpPx,
+        y: this.origin.y + this.axis.y * t + this.axis.x * perpPx,
       };
     }
     return null;
@@ -421,6 +529,13 @@ export class Calibration {
 
   /** 착지 구역의 거리 해상도 (1cm 가 화면 몇 px 인가) */
   resolutionPxPerCm() {
+    if (this.kind === 'ruler') {
+      const Y = (this.distMin + this.distMax) / 2;
+      const t = (Y - this.b) / (this.a - Y * this.c);
+      const w = this.c * t + 1;
+      const cmPerPx = (this.a - this.b * this.c) / (w * w);
+      return cmPerPx ? Math.abs(1 / cmPerPx) : null;
+    }
     if (this.kind !== 'rect') return null;
     const X = this.widthCm / 2, Y = this.depthCm * 0.6;
     const a = this.toImage(X, Y), b = this.toImage(X, Y + 10);
@@ -428,9 +543,14 @@ export class Calibration {
     return Math.hypot(a.x - b.x, a.y - b.y) / 10;
   }
 
-  /** 캘리브레이션 사각형 밖이면 오차가 커진다 — 정직하게 알리기 위한 검사 */
+  /** 기준 범위 밖이면 오차가 커진다 — 정직하게 알리기 위한 검사 */
   outOfRange(world) {
-    if (this.kind !== 'rect' || !world) return false;
+    if (!world) return false;
+    if (this.kind === 'ruler') {
+      const m = 30;   // 눈금 밖 30cm 여유
+      return world.y < this.distMin - m || world.y > this.distMax + m;
+    }
+    if (this.kind !== 'rect') return false;
     const m = 20;   // 여유 20cm
     return world.x < -m || world.x > this.widthCm + m || world.y < -m || world.y > this.depthCm + m;
   }
@@ -869,7 +989,7 @@ export class LongJumpSession {
       foulAtSet: this.foulAtSet,
       result: this.result,
       attempts: this.attempts,
-      best: this.attempts.reduce((m, a) => (a.distanceCm && !a.foul && (!m || a.distanceCm > m) ? a.distanceCm : m), null),
+      best: this.attempts.reduce((m, a) => (a.distanceCm && !a.foul && !a.implausible && (!m || a.distanceCm > m) ? a.distanceCm : m), null),
       warning: this.warning,
     };
   }

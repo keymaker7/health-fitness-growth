@@ -14,6 +14,7 @@ export interface Attempt {
   distanceCm: number | null;
   foul?: boolean;
   implausible?: boolean;
+  warning?: string | null;
   error?: string;
   landedAt?: number;
 }
@@ -43,14 +44,24 @@ export const LJ_MIN_PLAUSIBLE_CM: number;
 export function plausibleDistance(cm: number): boolean;
 export function extractFoot(pts: Point[], cfg?: unknown): unknown;
 
+export interface RulerMark extends Point {
+  distCm: number;
+}
+
 export class Calibration {
   constructor(kind: string, data?: unknown);
   readonly ok: boolean;
   kind: string;
   error?: string;
+  distMin?: number;
+  distMax?: number;
   static fromRect(imgPts: Point[], widthCm: number, depthCm: number): Calibration;
   static fromTwoPoints(p1: Point, p2: Point, distCm: number): Calibration;
+  static fromRuler(marks: RulerMark[]): Calibration;
   toWorld(x: number, y: number): { x: number; y: number } | null;
+  toImage(X: number, Y: number): { x: number; y: number } | null;
+  resolutionPxPerCm(): number | null;
+  outOfRange(world: { x: number; y: number } | null): boolean;
 }
 
 export class LongJumpSession {
