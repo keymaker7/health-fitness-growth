@@ -17,17 +17,6 @@ export function VideoPlayer({ video, title, flush }: { video?: ExerciseVideo; ti
       </div>
     );
   }
-  return (
-    <div
-      className={cn(
-        "flex aspect-video flex-col items-center justify-center bg-[var(--bg-subtle)] p-[var(--space-200)] text-center",
-        flush ? "media-flush" : "rounded-[var(--radius-medium)] border border-dashed border-[var(--line)]",
-      )}
-    >
-      <p className="font-semibold">{title ?? video?.title ?? "운동 영상"}</p>
-      <p className="mt-[var(--space-50)] text-[var(--font-size-300)] text-[var(--muted)]">
-        아직 연결된 영상이 없어요. 학교에서 안내 영상을 연결하면 여기에 나타납니다.
-      </p>
-    </div>
-  );
+  // 연결된 영상이 없으면 자리 표시 없이 그냥 숨긴다 (keymaker님 요청, 2026-08-21)
+  return null;
 }
